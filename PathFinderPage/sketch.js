@@ -67,7 +67,7 @@ function preload() {
   LocationSelect = loadSound('materials/sounds/LocationSelected.mp3');
   MenuBts = loadSound('materials/sounds/MenuBts.Wav');
   MenuBT = loadSound('materials/sounds/MenuBT2.mp3');
-  ScanBT = loadSound('materials/sounds/ScanBT.Wav');
+  ScanBT = loadSound('Paradox_Of_The_Lunatic/materials/sounds/ScanBT.Wav');
   MapPiece = loadSound('materials/sounds/MapPiece.mp3');
   SubmitBT = loadSound('materials/sounds/SubmitBT.Wav');
   CompleteMap = loadSound('materials/sounds/CompleteMap.mp3');
