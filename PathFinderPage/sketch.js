@@ -85,51 +85,51 @@ function setup() {
   console.log("Pixel density:", pixelDensity());
   
   
-    // Add custom CSS for a dark theme input box and placeholder
-	const style = document.createElement("style");
-	style.type = "text/css";
-	style.innerHTML = `
-	  input {
-		background-color: #1e1e1e; /* Dark background for the input box */
-		color: #ffffff; /* White text inside the input box */
-		border: 2px solid #3a3a3a; /* Subtle border */
-		border-radius: 8px;
-		padding: 10px;
-		font-size: 16px;
-	  }
+    const customStyleElement = document.createElement("style");
+customStyleElement.type = "text/css";
+customStyleElement.innerHTML = `
+  input {
+    background-color: #1e1e1e; /* Dark background for the input box */
+    color: #ffffff; /* White text inside the input box */
+    border: 2px solid #3a3a3a; /* Subtle border */
+    border-radius: 8px;
+    padding: 10px;
+    font-size: 16px;
+  }
 
-	  input:focus {
-		outline: none; /* Remove default focus outline */
-		border-color: #4caf50; /* Highlight border when focused */
-		box-shadow: 0 0 10px #4caf50; /* Glow effect */
-	  }
+  input:focus {
+    outline: none; /* Remove default focus outline */
+    border-color: #4caf50; /* Highlight border when focused */
+    box-shadow: 0 0 10px #4caf50; /* Glow effect */
+  }
 
-	  input::placeholder {
-		color: #7a7a7a; /* Lighter gray for placeholder text */
-		font-size: 14px;
-		font-style: italic;
-	  }
+  input::placeholder {
+    color: #7a7a7a; /* Lighter gray for placeholder text */
+    font-size: 14px;
+    font-style: italic;
+  }
 
-	  button {
-		background-color: #4caf50; /* Green background for button */
-		color: #ffffff; /* White text on button */
-		border: none; /* Remove border */
-		border-radius: 8px;
-		padding: 10px 20px;
-		cursor: pointer;
-		font-size: 16px;
-		transition: background-color 0.3s ease;
-	  }
+  button {
+    background-color: #4caf50; /* Green background for button */
+    color: #ffffff; /* White text on button */
+    border: none; /* Remove border */
+    border-radius: 8px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+  }
 
-	  button:hover {
-		background-color: #45a049; /* Darker green on hover */
-	  }
+  button:hover {
+    background-color: #45a049; /* Darker green on hover */
+  }
 
-	  button:active {
-		background-color: #3e8e41; /* Even darker green on click */
-	  }
-	`;
-	document.head.appendChild(style);
+  button:active {
+    background-color: #3e8e41; /* Even darker green on click */
+  }
+`;
+document.head.appendChild(customStyleElement);
+
   
   MLP3_Width = width * 0.5242;
   MLP3_Height = height * 0.6419;
