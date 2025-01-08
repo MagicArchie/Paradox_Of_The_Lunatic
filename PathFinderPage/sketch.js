@@ -65,13 +65,13 @@ function preload() {
   //backgroundMS = loadSound('materials/sounds/horrorBGM.mp3');
   
   LocationSelect = loadSound('materials/sounds/LocationSelected.mp3');
-  MenuBts = loadSound('materials/sounds/MenuBts.Wav');
+  MenuBts = loadSound('materials/sounds/MenuBts.mp3');
   MenuBT = loadSound('materials/sounds/MenuBT2.mp3');
-  ScanBT = loadSound('Paradox_Of_The_Lunatic/materials/sounds/ScanBT.Wav');
+  ScanBT = loadSound('Paradox_Of_The_Lunatic/materials/sounds/ScanBT.mp3');
   MapPiece = loadSound('materials/sounds/MapPiece.mp3');
-  SubmitBT = loadSound('materials/sounds/SubmitBT.Wav');
+  SubmitBT = loadSound('materials/sounds/SubmitBT.mp3');
   CompleteMap = loadSound('materials/sounds/CompleteMap.mp3');
-  Error = loadSound('materials/sounds/Error.Wav');
+  Error = loadSound('materials/sounds/Error.mp3');
 }
 
 function setup() {
