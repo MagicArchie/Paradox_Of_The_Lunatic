@@ -48,7 +48,7 @@ function preload() {
   backgroundImage1 = loadImage('materials/images/PuzzleMasterBG.png');
   backgroundImage2 = loadImage('materials/images/PuzzleMasterBG.png');
   
-  MenuBts = loadSound('materials/sounds/MenuBts.Wav');
+  MenuBts = loadSound('materials/sounds/MenuBts.wav');
   MenuBT = loadSound('materials/sounds/MenuBT2.mp3');
   
   //Background Music
