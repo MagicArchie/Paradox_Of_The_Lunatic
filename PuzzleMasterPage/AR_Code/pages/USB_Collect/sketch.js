@@ -91,5 +91,34 @@ function Choice2() {
 	setTimeout(function () {
 		//Ending 1
 		console.log("Ending 1")
+		showEndingScreen();
     }, 500);
+}
+
+function showEndingScreen() {
+    // Create a black rectangle
+    const blackRect = document.createElement('div');
+    blackRect.style.position = 'fixed';
+    blackRect.style.top = '0';
+    blackRect.style.left = '0';
+    blackRect.style.width = '100%';
+    blackRect.style.height = '100%';
+    blackRect.style.backgroundColor = 'black';
+    blackRect.style.display = 'flex';
+    blackRect.style.justifyContent = 'center';
+    blackRect.style.alignItems = 'center';
+    blackRect.style.zIndex = '1000'; // Ensure it overlays other elements
+
+    // Create the text element
+    const textElement = document.createElement('div');
+    textElement.textContent = 'Ending 1';
+    textElement.style.color = 'white';
+    textElement.style.fontSize = '8rem';
+    textElement.style.fontFamily = 'Arial, sans-serif';
+
+    // Append the text to the rectangle
+    blackRect.appendChild(textElement);
+
+    // Append the rectangle to the body
+    document.body.appendChild(blackRect);
 }
