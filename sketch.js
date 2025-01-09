@@ -288,7 +288,7 @@ function drawMessage(msg) {
     textAlign(CENTER, CENTER);
     fill(255);
     textSize(15);
-    text(msg, width / 2, height / 2.7);
+    text(msg, width / 2, height / 2.75);
 }
 
 function windowResized() {
