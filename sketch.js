@@ -347,9 +347,6 @@ function lunaticSelected() {
 //Code for Play Button
 //Create Functions for Game Start
 function playPressed(){
-  let fs = fullscreen();
-  fullscreen(!fs);
-	
   showMessage = false; // Reset the message flag
   message = ""; // Clear previous message
   
@@ -440,4 +437,11 @@ function drawMessage(msg) {
   setTimeout(function () {
     showMessage = false;
   }, 3500);
+}
+
+function mousePressed() {
+  if (mouseX > 0 && mouseX < width && mouseY > 0 && mouseY < height) {
+    let fs = fullscreen();
+    fullscreen(!fs);
+  }
 }
