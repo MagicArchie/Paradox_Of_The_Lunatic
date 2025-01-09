@@ -152,11 +152,11 @@ function updateButtonPositions() {
     const centerY = height / 2;
 
     buttonPositions.pathfinder = {
-        x: centerX - buttonDimensions.pathfinderDiameter - 30,
+        x: centerX - buttonDimensions.pathfinderDiameter - width * 0.06,
         y: centerY - buttonDimensions.pathfinderDiameter / 5,
     };
     buttonPositions.puzzlemaster = {
-        x: centerX + 30,
+        x: centerX + width * 0.06,
         y: centerY - buttonDimensions.puzzlemasterDiameter / 5,
     };
 
@@ -167,9 +167,9 @@ function updateButtonPositions() {
     PuzzleMasterBT.size(buttonDimensions.puzzlemasterDiameter, buttonDimensions.puzzlemasterDiameter);
 
     buttonPositions.difficulty = [
-        { x: centerX - buttonDimensions.difficultyDiameter * 1.75, y: centerY + 200 },
-        { x: centerX - buttonDimensions.difficultyDiameter / 2, y: centerY + 200 },
-        { x: centerX + buttonDimensions.difficultyDiameter * 0.75, y: centerY + 200 },
+        { x: centerX - buttonDimensions.difficultyDiameter * 1.75, y: centerY + height * 0.215 },
+        { x: centerX - buttonDimensions.difficultyDiameter / 2, y: centerY + height * 0.215 },
+        { x: centerX + buttonDimensions.difficultyDiameter * 0.75, y: centerY + height * 0.215 },
     ];
 
     CrazyBT.position(buttonPositions.difficulty[0].x, buttonPositions.difficulty[0].y);
@@ -183,7 +183,7 @@ function updateButtonPositions() {
 
     buttonPositions.play = {
         x: centerX - buttonDimensions.playWidth / 2,
-        y: centerY + 322,
+        y: centerY + height * 0.345,
     };
 
     PlayBT.position(buttonPositions.play.x, buttonPositions.play.y);
