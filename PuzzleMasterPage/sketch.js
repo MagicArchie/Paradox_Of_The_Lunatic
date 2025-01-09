@@ -406,3 +406,13 @@ function Achievement_Pressed() {
 		AchievementBT.attribute("src", "materials/images/buttons/Achievement_Button.png");
     }, 400);
 }
+
+let fullscreenActivated = false;
+
+function mousePressed() {
+  if (!fullscreenActivated && mouseX > 0 && mouseX < width && mouseY > 0 && mouseY < height) {
+    let fs = fullscreen();
+    fullscreen(!fs);
+    fullscreenActivated = true; // Mark as activated
+  }
+}

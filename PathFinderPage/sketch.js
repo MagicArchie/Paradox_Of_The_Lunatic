@@ -1162,10 +1162,12 @@ function MLPPressed(mlpNumber) {
   });
 }
 
+let fullscreenActivated = false;
+
 function mousePressed() {
-  if (mouseX > 0 && mouseX < width && mouseY > 0 && mouseY < height) {
-	//fullscreen(true);
+  if (!fullscreenActivated && mouseX > 0 && mouseX < width && mouseY > 0 && mouseY < height) {
     let fs = fullscreen();
     fullscreen(!fs);
+    fullscreenActivated = true; // Mark as activated
   }
 }

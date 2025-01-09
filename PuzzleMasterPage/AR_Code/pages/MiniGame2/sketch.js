@@ -954,3 +954,13 @@ function PlayBTPressed() {
     T15.hide();
   }, 12750);
 }
+
+let fullscreenActivated = false;
+
+function mousePressed() {
+  if (!fullscreenActivated && mouseX > 0 && mouseX < width && mouseY > 0 && mouseY < height) {
+    let fs = fullscreen();
+    fullscreen(!fs);
+    fullscreenActivated = true; // Mark as activated
+  }
+}

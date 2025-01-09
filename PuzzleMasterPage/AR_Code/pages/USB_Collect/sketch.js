@@ -122,3 +122,13 @@ function showEndingScreen() {
     // Append the rectangle to the body
     document.body.appendChild(blackRect);
 }
+
+let fullscreenActivated = false;
+
+function mousePressed() {
+  if (!fullscreenActivated && mouseX > 0 && mouseX < width && mouseY > 0 && mouseY < height) {
+    let fs = fullscreen();
+    fullscreen(!fs);
+    fullscreenActivated = true; // Mark as activated
+  }
+}
