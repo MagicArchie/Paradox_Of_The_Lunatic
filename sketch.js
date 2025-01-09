@@ -347,6 +347,9 @@ function lunaticSelected() {
 //Code for Play Button
 //Create Functions for Game Start
 function playPressed(){
+  let fs = fullscreen();
+  fullscreen(!fs);
+	
   showMessage = false; // Reset the message flag
   message = ""; // Clear previous message
   
