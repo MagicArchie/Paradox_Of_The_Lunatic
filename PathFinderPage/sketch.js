@@ -1164,8 +1164,8 @@ function MLPPressed(mlpNumber) {
 
 function mousePressed() {
   if (mouseX > 0 && mouseX < width && mouseY > 0 && mouseY < height) {
-	fullscreen(true);
-    //let fs = fullscreen();
-    //fullscreen(!fs);
+	//fullscreen(true);
+    let fs = fullscreen();
+    fullscreen(!fs);
   }
 }
