@@ -1322,7 +1322,7 @@ function MLPPressed(mlpNumber) {
   });
 }
 
-let fullscreenActivated = true;
+let fullscreenActivated = false;
 
 function mousePressed() {
   if (!fullscreenActivated && mouseX > 0 && mouseX < width && mouseY > 0 && mouseY < height) {
