@@ -64,6 +64,8 @@ function preload() {
   //Background Music
   //backgroundMS = loadSound('materials/sounds/horrorBGM.mp3');
   
+  CloseInfo = loadSound('materials/sounds/CloseInfo.mp3');
+  MarkerPress = loadSound('materials/sounds/MarkerPress.mp3');
   LocationSelect = loadSound('materials/sounds/LocationSelected.mp3');
   MenuBts = loadSound('materials/sounds/MenuBts.mp3');
   MenuBT = loadSound('materials/sounds/MenuBT2.mp3');
@@ -241,46 +243,52 @@ document.head.appendChild(customStyleElement);
   ScanRoom_BT.position(width * 0.856, height * 0.71);
   ScanRoom_BT.mousePressed(ScanRoomPressed);
   
-  MapMarker1 = createImg('materials/images/buttons/MapMarker2.png', 'Map Marker 1');
+  MapMarker1 = createImg('materials/images/buttons/MapMarker1_1.png', 'Map Marker 1');
   MapMarker1.size(BT_WH3, BT_WH3);
   MapMarker1.position(width * 0.5, height * 0.7);
-  //MapMarker1.mousePressed(MapMarker1Pressed);
+  MapMarker1.mousePressed(MapMarker1Pressed);
   MapMarker1.hide();
   
-  MapMarker2 = createImg('materials/images/buttons/MapMarker2.png', 'Map Marker 2');
+  MapMarker2 = createImg('materials/images/buttons/MapMarker1_1.png', 'Map Marker 2');
   MapMarker2.size(BT_WH3, BT_WH3);
   MapMarker2.position(width * 0.66, height * 0.26);
-  //MapMarker2.mousePressed(MapMarker2Pressed);
+  MapMarker2.mousePressed(MapMarker2Pressed);
   MapMarker2.hide();
   
-  MapMarker3 = createImg('materials/images/buttons/MapMarker2.png', 'Map Marker 3');
+  MapMarker3 = createImg('materials/images/buttons/MapMarker1_1.png', 'Map Marker 3');
   MapMarker3.size(BT_WH3, BT_WH3);
   MapMarker3.position(width * 0.43, height * 0.52);
-  //MapMarker3.mousePressed(MapMarker3Pressed);
+  MapMarker3.mousePressed(MapMarker3Pressed);
   MapMarker3.hide();
   
-  MapMarker4 = createImg('materials/images/buttons/MapMarker2.png', 'Map Marker 4');
+  MapMarker_USB = createImg('materials/images/buttons/MapMarker2_1.png', 'Map Marker for Item 1');
+  MapMarker_USB.size(BT_WH3, BT_WH3);
+  MapMarker_USB.position(width * 0.28, height * 0.35);
+  MapMarker_USB.mousePressed(MapMarker_USBPressed);
+  MapMarker_USB.hide();
+  
+  MapMarker4 = createImg('materials/images/buttons/MapMarker1_1.png', 'Map Marker 4');
   MapMarker4.size(BT_WH3, BT_WH3);
   MapMarker4.position(width * 0.67, height * 0.51);
-  //MapMarker4.mousePressed(MapMarke4Pressed);
+  MapMarker4.mousePressed(MapMarker4Pressed);
   MapMarker4.hide();
   
-  MapMarker5 = createImg('materials/images/buttons/MapMarker2.png', 'Map Marker 5');
+  MapMarker5 = createImg('materials/images/buttons/MapMarker1_1.png', 'Map Marker 5');
   MapMarker5.size(BT_WH3, BT_WH3);
   MapMarker5.position(width * 0.42, height * 0.28);
-  //MapMarker5.mousePressed(MapMarker5Pressed);
+  MapMarker5.mousePressed(MapMarker5Pressed);
   MapMarker5.hide();
   
-  MapMarker6 = createImg('materials/images/buttons/MapMarker2.png', 'Map Marker 6');
+  MapMarker6 = createImg('materials/images/buttons/MapMarker1_1.png', 'Map Marker 6');
   MapMarker6.size(BT_WH3, BT_WH3);
   MapMarker6.position(width * 0.27, height * 0.36);
-  //MapMarker6.mousePressed(MapMarker6Pressed);
+  MapMarker6.mousePressed(MapMarker6Pressed);
   MapMarker6.hide();
   
-  MapMarker7 = createImg('materials/images/buttons/MapMarker2.png', 'Map Marker 7');
+  MapMarker7 = createImg('materials/images/buttons/MapMarker1_1.png', 'Map Marker 7');
   MapMarker7.size(BT_WH3, BT_WH3);
   MapMarker7.position(width * 0.35, height * 0.4);
-  //MapMarker7.mousePressed(MapMarker7Pressed);
+  MapMarker7.mousePressed(MapMarker7Pressed);
   MapMarker7.hide();
 
   
@@ -462,6 +470,152 @@ function draw() {
   }
 }
 
+// Generic function for map marker press handling
+function handleMapMarkerPress(marker, pressedImageSrc, defaultImageSrc, canvasImageSrc, descriptionText) {
+	MarkerPress.play();
+    // Change the marker image to the pressed state
+    marker.attribute("src", pressedImageSrc);
+
+    // Set a timeout to revert back to the default state
+    setTimeout(function () {
+        marker.attribute("src", defaultImageSrc);
+    }, 300);
+
+    // Display a black rectangle with the specific image and description
+	setTimeout(function () {
+		displayBlackRectWithImageAndText(canvasImageSrc, descriptionText);
+	}, 400);
+}
+
+// Function to display the black rectangle with the specific image and text
+function displayBlackRectWithImageAndText(imageSrc, descriptionText) {
+    // Create or find the overlay container
+    let overlay = document.getElementById("overlay");
+    if (!overlay) {
+        overlay = document.createElement("div");
+        overlay.id = "overlay";
+        document.body.appendChild(overlay);
+    }
+
+    // Style the overlay to cover the entire screen
+    overlay.style.position = "fixed";
+    overlay.style.top = "0";
+    overlay.style.left = "0";
+    overlay.style.width = "100vw";
+    overlay.style.height = "100vh";
+    overlay.style.backgroundColor = "black";
+    overlay.style.display = "flex";
+    overlay.style.justifyContent = "center";
+    overlay.style.alignItems = "center";
+    overlay.style.flexDirection = "row";
+    overlay.style.zIndex = "1000";
+
+    // Add the image to the overlay
+    let image = overlay.querySelector("img");
+    if (!image) {
+        image = document.createElement("img");
+        overlay.appendChild(image);
+    }
+
+    image.src = imageSrc;
+    image.style.maxWidth = "100%";
+    image.style.maxHeight = "100%";
+    image.style.marginRight = "30px";
+
+    // Add the text to the overlay
+    let textContainer = overlay.querySelector("div.text-container");
+    if (!textContainer) {
+        textContainer = document.createElement("div");
+        textContainer.className = "text-container";
+        overlay.appendChild(textContainer);
+    }
+
+    textContainer.style.color = "white";
+    textContainer.style.maxWidth = "50%";
+    textContainer.style.textAlign = "center";
+
+    let paragraph = textContainer.querySelector("p");
+    if (!paragraph) {
+        paragraph = document.createElement("p");
+        textContainer.appendChild(paragraph);
+    }
+
+    paragraph.textContent = descriptionText;
+
+    // Add the close button
+    let closeButton = overlay.querySelector("button");
+    if (!closeButton) {
+        closeButton = document.createElement("button");
+        closeButton.textContent = "X";
+        closeButton.style.marginTop = "10px";
+        closeButton.style.padding = "10px 20px";
+        closeButton.style.backgroundColor = "transparent";
+        closeButton.style.color = "white";
+        closeButton.style.border = "2px solid white";
+        closeButton.style.borderRadius = "4px";
+        closeButton.style.fontSize = "18px";
+        closeButton.style.cursor = "pointer";
+        closeButton.style.transition = "transform 0.2s ease, background-color 0.2s ease";
+        textContainer.appendChild(closeButton);
+    }
+
+    closeButton.onmouseover = () => {
+        closeButton.style.backgroundColor = "rgba(255, 255, 255, 0.2)";
+    };
+
+    closeButton.onmouseout = () => {
+        closeButton.style.backgroundColor = "transparent";
+    };
+
+    closeButton.onmousedown = () => {
+        closeButton.style.transform = "scale(0.95)";
+    };
+
+    closeButton.onmouseup = () => {
+        closeButton.style.transform = "scale(1)";
+    };
+
+    closeButton.onclick = () => {
+        overlay.style.display = "none";
+		CloseInfo.play();
+    };
+}
+
+// Define specific marker functions
+function MapMarker1Pressed() {
+    handleMapMarkerPress(MapMarker1, "materials/images/buttons/MapMarker1_2.png", "materials/images/buttons/MapMarker1_1.png", "materials/images/Locations/Location1.jpg", "Deep within the shadowed heart of a crumbling industrial complex lies a location long abandoned but steeped in a sinister history. This forgotten space, once a sterile archive room lined with rows of iron filing cabinets and frosted glass displays, was used to store and showcase the meticulously kept records of human test subjects. The room’s chilling air still bears the faint metallic tang of chemicals, a haunting reminder of the experiments conducted just beyond its walls. Yellowed documents, now scattered across the cracked tile floor, detail disturbing tests that blurred the line between science and monstrosity. Whispered tales suggest that the files were not just records but served as a morbid gallery for the researchers, each case an unsettling triumph of their macabre curiosity. Visitors today speak of the room’s unnatural quiet and the sensation of unseen eyes following them as they step through its decayed remains. Some say the whispers of the test subjects themselves linger, begging for release from an eternity written in ink and fear.");
+}
+
+function MapMarker2Pressed() {
+    handleMapMarkerPress(MapMarker2, "materials/images/buttons/MapMarker1_2.png", "materials/images/buttons/MapMarker1_1.png", "materials/images/Locations/Location2.jpg", "Deep within the shadowed heart of a crumbling industrial complex lies a location long abandoned but steeped in a sinister history. This forgotten space, once a sterile archive room lined with rows of iron filing cabinets and frosted glass displays, was used to store and showcase the meticulously kept records of human test subjects. The room’s chilling air still bears the faint metallic tang of chemicals, a haunting reminder of the experiments conducted just beyond its walls. Yellowed documents, now scattered across the cracked tile floor, detail disturbing tests that blurred the line between science and monstrosity. Whispered tales suggest that the files were not just records but served as a morbid gallery for the researchers, each case an unsettling triumph of their macabre curiosity. Visitors today speak of the room’s unnatural quiet and the sensation of unseen eyes following them as they step through its decayed remains. Some say the whispers of the test subjects themselves linger, begging for release from an eternity written in ink and fear.");
+}
+
+function MapMarker3Pressed() {
+    handleMapMarkerPress(MapMarker3, "materials/images/buttons/MapMarker1_2.png", "materials/images/buttons/MapMarker1_1.png", "materials/images/Locations/Location3.jpg", "Deep within the shadowed heart of a crumbling industrial complex lies a location long abandoned but steeped in a sinister history. This forgotten space, once a sterile archive room lined with rows of iron filing cabinets and frosted glass displays, was used to store and showcase the meticulously kept records of human test subjects. The room’s chilling air still bears the faint metallic tang of chemicals, a haunting reminder of the experiments conducted just beyond its walls. Yellowed documents, now scattered across the cracked tile floor, detail disturbing tests that blurred the line between science and monstrosity. Whispered tales suggest that the files were not just records but served as a morbid gallery for the researchers, each case an unsettling triumph of their macabre curiosity. Visitors today speak of the room’s unnatural quiet and the sensation of unseen eyes following them as they step through its decayed remains. Some say the whispers of the test subjects themselves linger, begging for release from an eternity written in ink and fear.");
+}
+
+function MapMarker4Pressed() {
+    handleMapMarkerPress(MapMarker4, "materials/images/buttons/MapMarker1_2.png", "materials/images/buttons/MapMarker1_1.png", "materials/images/Locations/Location4.jpg", "Deep within the shadowed heart of a crumbling industrial complex lies a location long abandoned but steeped in a sinister history. This forgotten space, once a sterile archive room lined with rows of iron filing cabinets and frosted glass displays, was used to store and showcase the meticulously kept records of human test subjects. The room’s chilling air still bears the faint metallic tang of chemicals, a haunting reminder of the experiments conducted just beyond its walls. Yellowed documents, now scattered across the cracked tile floor, detail disturbing tests that blurred the line between science and monstrosity. Whispered tales suggest that the files were not just records but served as a morbid gallery for the researchers, each case an unsettling triumph of their macabre curiosity. Visitors today speak of the room’s unnatural quiet and the sensation of unseen eyes following them as they step through its decayed remains. Some say the whispers of the test subjects themselves linger, begging for release from an eternity written in ink and fear.");
+}
+
+function MapMarker5Pressed() {
+    handleMapMarkerPress(MapMarker5, "materials/images/buttons/MapMarker1_2.png", "materials/images/buttons/MapMarker1_1.png", "materials/images/Locations/Location5.jpg", "This is a random description for Location 5.");
+}
+
+function MapMarker6Pressed() {
+    handleMapMarkerPress(MapMarker6, "materials/images/buttons/MapMarker1_2.png", "materials/images/buttons/MapMarker1_1.png", "materials/images/Locations/Location6.jpg", "This is a random description for Location 6.");
+}
+
+function MapMarker7Pressed() {
+    handleMapMarkerPress(MapMarker7, "materials/images/buttons/MapMarker1_2.png", "materials/images/buttons/MapMarker1_1.png", "materials/images/Locations/Location7.jpg", "This is a random description for Location 7.");
+}
+
+function MapMarker_USBPressed() {
+    handleMapMarkerPress(MapMarker_USB, "materials/images/buttons/MapMarker2_2.png", "materials/images/buttons/MapMarker2_1.png", "materials/images/Locations/USB_Location.jpg", "Deep within the shadowed heart of a crumbling industrial complex lies a location long abandoned but steeped in a sinister history. This forgotten space, once a sterile archive room lined with rows of iron filing cabinets and frosted glass displays, was used to store and showcase the meticulously kept records of human test subjects. The room’s chilling air still bears the faint metallic tang of chemicals, a haunting reminder of the experiments conducted just beyond its walls. Yellowed documents, now scattered across the cracked tile floor, detail disturbing tests that blurred the line between science and monstrosity. Whispered tales suggest that the files were not just records but served as a morbid gallery for the researchers, each case an unsettling triumph of their macabre curiosity. Visitors today speak of the room’s unnatural quiet and the sensation of unseen eyes following them as they step through its decayed remains. Some say the whispers of the test subjects themselves linger, begging for release from an eternity written in ink and fear.");
+}
+
+
+
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
   
@@ -584,6 +738,10 @@ function MenuPressed2() {
 	JoinRoom_BT.hide();
 	Inventory_BT.hide();
 	Achievement_BT.hide();
+	
+	if (inventoryVisible) {
+		hideInventoryList();
+	}
 	
 	if (currentJoinRoomInput && currentJoinRoomSubmitButton) {
 		currentJoinRoomInput.remove();
@@ -873,7 +1031,9 @@ function ScanRoomPressed() {
     } else if (MLP3_Act === false) {
         MapMarker3.show();
     } else if (MLP4_Act === false) {
-        MapMarker4.show();
+		MapMarker_USB.show();
+	} else if (MLP5_Act === false) { //Check StoryChoice 1
+		MapMarker4.show();
     } else if (MLP5_Act === false) {
         MapMarker5.show();
     } else if (MLP6_Act === false) {
@@ -997,7 +1157,7 @@ function MLPPressed(mlpNumber) {
 
   // Create a title element for the MLP
   currentTitle = createP(titleText);
-  currentTitle.position(width * 0.015, height - (height * 0.2));
+  currentTitle.position(width * 0.015, height - (height * 0.22));
   currentTitle.style("text-align", "center");
   currentTitle.style("font-size", "20px");
   currentTitle.style("color", "#ffffff"); // Set the color of the title (white for dark theme)
@@ -1005,14 +1165,14 @@ function MLPPressed(mlpNumber) {
   // Create an input box for the code
   currentCodeInput = createInput();
   currentCodeInput.size(width * 0.13, height * 0.05);
-  currentCodeInput.position(0, height - (height * 0.1));
+  currentCodeInput.position(2, height - (height * 0.11));
   currentCodeInput.attribute("placeholder", "Enter 4-digit code");
   currentCodeInput.style("text-align", "center");
 
   // Create a button to submit the code
   currentSubmitButton = createButton("Submit");
-  currentSubmitButton.size(width * 0.09, height * 0.1);
-  currentSubmitButton.position(width * 0.155, height - (height * 0.1));
+  currentSubmitButton.size(width * 0.09, height * 0.105);
+  currentSubmitButton.position(width * 0.15, height - (height * 0.11));
   currentSubmitButton.mousePressed(() => {
     let enteredCode = currentCodeInput.value();
 	
@@ -1162,7 +1322,7 @@ function MLPPressed(mlpNumber) {
   });
 }
 
-let fullscreenActivated = false;
+let fullscreenActivated = true;
 
 function mousePressed() {
   if (!fullscreenActivated && mouseX > 0 && mouseX < width && mouseY > 0 && mouseY < height) {

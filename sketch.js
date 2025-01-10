@@ -100,8 +100,9 @@ function startGame() {
     }
 
     animatePlayButton(assets.playButtonImages[3], assets.playButtonImages[4], 300, () => {
+		assets.playButtonSounds.success.play();
         setTimeout(() => {
-            assets.playButtonSounds.success.play();
+            
             console.log("Starting game...");
 
             if (gameState.roleSelected === 1) {
