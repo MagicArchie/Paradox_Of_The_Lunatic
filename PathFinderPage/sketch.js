@@ -3,6 +3,8 @@ const DifficultySL = localStorage.getItem('DifficultySL');
 
 let backgroundImage1, backgroundImage2;
 
+let StartBarrier = true;
+
 let MiniGameN1 = false;
 let MiniGameN2 = false;
 let MiniGameN3 = false;
@@ -33,6 +35,8 @@ let OneUse = false;
 
 let pressedCounter = 0; // Counter to keep track of MLP presses
 
+let backgroundMusic;
+
 // Define the codes for each MLP
   const codes = {
     1: "2468",
@@ -61,8 +65,8 @@ function preload() {
   
   MapBackground = loadImage('materials/images/MapBackground.png');
   
-  //Background Music
-  //backgroundMS = loadSound('materials/sounds/horrorBGM.mp3');
+  // Load background music
+  backgroundMusic = loadSound('materials/sounds/Dark Piano Sociopath.mp3');
   
   CloseInfo = loadSound('materials/sounds/CloseInfo.mp3');
   MarkerPress = loadSound('materials/sounds/MarkerPress.mp3');
@@ -436,10 +440,14 @@ document.head.appendChild(customStyleElement);
   windowResized();
   
   updateInventoryList();
+  
+  // Play background music on loop
+  backgroundMusic.loop();
+  backgroundMusic.setVolume(0.5); // Adjust volume if needed
 }
 
 function draw() {
-  //fullscreen(true);
+  
   if (displayWidth < 700) {
     image(MapBackground, 0, 0, width, height);
   } else {
@@ -719,14 +727,16 @@ function windowResized() {
 }
 
 function MenuPressed1() {
-	MenuBT.setVolume(0.8);
-	MenuBT.play();
-	
-	MenuBT1.hide();
-	MenuBT2.show();
-	JoinRoom_BT.show();
-	Inventory_BT.show();
-	Achievement_BT.show();
+	if (!StartBarrier) {
+		MenuBT.setVolume(0.8);
+		MenuBT.play();
+		
+		MenuBT1.hide();
+		MenuBT2.show();
+		JoinRoom_BT.show();
+		Inventory_BT.show();
+		Achievement_BT.show();
+	}
 }
 
 function MenuPressed2() {
@@ -988,138 +998,152 @@ function AchievementPressed() {
 }
 
 function ScanRoomPressed() {
-    // Check if any of the MapMarkers are visible
-    if (
-        (MapMarker1.show === true) || 
-        (MapMarker2.show === true) || 
-        (MapMarker3.show === true) || 
-        (MapMarker4.show === true) || 
-        (MapMarker5.show === true) || 
-        (MapMarker6.show === true) || 
-        (MapMarker7.show === true)
-    ) {
-        // Play the Error sound if any map marker is visible
-        Error.setVolume(0.5);
-        Error.play();
-    } else if (!MLP5_Act) {
-        // Play the ScanBT sound if MLP5_Act is false
-        ScanBT.setVolume(0.8);
-        ScanBT.play();
-    } else if (!MLP6_Act) {
-        // Play the ScanBT sound twice if MLP6_Act is false
-        ScanBT.play();
-        setTimeout(function () {
-            ScanBT.play();
-        }, 300);
-    } else {
-        // Play the Error sound if no conditions are met
-        Error.setVolume(0.5);
-        Error.play();
-    }
+	if (!StartBarrier) {
+		// Check if any of the MapMarkers are visible
+		if (
+			(MapMarker1.show === true) || 
+			(MapMarker2.show === true) || 
+			(MapMarker3.show === true) || 
+			(MapMarker4.show === true) || 
+			(MapMarker5.show === true) || 
+			(MapMarker6.show === true) || 
+			(MapMarker7.show === true)
+		) {
+			// Play the Error sound if any map marker is visible
+			Error.setVolume(0.5);
+			Error.play();
+		} else if (!MLP5_Act) {
+			// Play the ScanBT sound if MLP5_Act is false
+			ScanBT.setVolume(0.8);
+			ScanBT.play();
+		} else if (!MLP6_Act) {
+			// Play the ScanBT sound twice if MLP6_Act is false
+			ScanBT.play();
+			setTimeout(function () {
+				ScanBT.play();
+			}, 300);
+		} else {
+			// Play the Error sound if no conditions are met
+			Error.setVolume(0.5);
+			Error.play();
+		}
 
-    // Change the button's image to indicate it's pressed
-    ScanRoom_BT.attribute('src', 'materials/images/buttons/ScanRoom_Button_Press.png');
-    setTimeout(function () {
-        ScanRoom_BT.attribute("src", "materials/images/buttons/ScanRoom_Button.png");
-    }, 200);
+		// Change the button's image to indicate it's pressed
+		ScanRoom_BT.attribute('src', 'materials/images/buttons/ScanRoom_Button_Press.png');
+		setTimeout(function () {
+			ScanRoom_BT.attribute("src", "materials/images/buttons/ScanRoom_Button.png");
+		}, 200);
 
-    // Show the correct MapMarker if the corresponding MLP variable is false
-    if (MLP1_Act === false) {
-        MapMarker1.show();
-    } else if (MLP2_Act === false) {
-        MapMarker2.show();
-    } else if (MLP3_Act === false) {
-        MapMarker3.show();
-    } else if (MLP4_Act === false) {
-		MapMarker_USB.show();
-	} else if (MLP5_Act === false) { //Check StoryChoice 1
-		MapMarker4.show();
-    } else if (MLP5_Act === false) {
-        MapMarker5.show();
-    } else if (MLP6_Act === false) {
-        MapMarker6.show();
-        setTimeout(function () {
-            MapMarker7.show();
-        }, 300);
-    }
+		// Show the correct MapMarker if the corresponding MLP variable is false
+		if (MLP1_Act === false) {
+			MapMarker1.show();
+		} else if (MLP2_Act === false) {
+			MapMarker2.show();
+		} else if (MLP3_Act === false) {
+			MapMarker3.show();
+		} else if (MLP4_Act === false) {
+			MapMarker_USB.show();
+		} else if (MLP5_Act === false) { //Check StoryChoice 1
+			MapMarker4.show();
+		} else if (MLP5_Act === false) {
+			MapMarker5.show();
+		} else if (MLP6_Act === false) {
+			MapMarker6.show();
+			setTimeout(function () {
+				MapMarker7.show();
+			}, 300);
+		}
+	}
 }
 
 function MLP1Pressed(){
-	LocationSelect.setVolume(0.8);
-	LocationSelect.play();
-	
-	console.log("Map-Part-1 Pressed");
-	MLPPressed(1); // Call MLPPressed with 1 for MLP1
-	
-	MLP1.attribute("src", "materials/images/Map_Parts/AP1_Press.png");
-	setTimeout(function () {
-		MLP1.attribute("src", "materials/images/Map_Parts/MPL_1.png");
-  }, 600);
+	if (!StartBarrier) {
+		LocationSelect.setVolume(0.8);
+		LocationSelect.play();
+		
+		console.log("Map-Part-1 Pressed");
+		MLPPressed(1); // Call MLPPressed with 1 for MLP1
+		
+		MLP1.attribute("src", "materials/images/Map_Parts/AP1_Press.png");
+		setTimeout(function () {
+			MLP1.attribute("src", "materials/images/Map_Parts/MPL_1.png");
+	  }, 600);
+	}
 }
 
 function MLP2Pressed(){
-	LocationSelect.setVolume(0.8);
-	LocationSelect.play();
-	
-	console.log("Map-Part-2 Pressed");
-	MLPPressed(2); // Call MLPPressed with 2 for MLP2
-	
-	MLP2.attribute("src", "materials/images/Map_Parts/AP2_Press.png");
-	setTimeout(function () {
-		MLP2.attribute("src", "materials/images/Map_Parts/MPL_2.png");
-  }, 600);
+	if (!StartBarrier) {
+		LocationSelect.setVolume(0.8);
+		LocationSelect.play();
+		
+		console.log("Map-Part-2 Pressed");
+		MLPPressed(2); // Call MLPPressed with 2 for MLP2
+		
+		MLP2.attribute("src", "materials/images/Map_Parts/AP2_Press.png");
+		setTimeout(function () {
+			MLP2.attribute("src", "materials/images/Map_Parts/MPL_2.png");
+	  }, 600);
+	}
 }
 
 function MLP3Pressed(){
-	LocationSelect.setVolume(0.8);
-	LocationSelect.play();
-	
-	console.log("Map-Part-3 Pressed");
-	MLPPressed(3); // Call MLPPressed with 3 for MLP3
-	
-	MLP3.attribute("src", "materials/images/Map_Parts/AP3_Press.png");
-	setTimeout(function () {
-		MLP3.attribute("src", "materials/images/Map_Parts/MPL_3.png");
-  }, 600);
+	if (!StartBarrier) {
+		LocationSelect.setVolume(0.8);
+		LocationSelect.play();
+		
+		console.log("Map-Part-3 Pressed");
+		MLPPressed(3); // Call MLPPressed with 3 for MLP3
+		
+		MLP3.attribute("src", "materials/images/Map_Parts/AP3_Press.png");
+		setTimeout(function () {
+			MLP3.attribute("src", "materials/images/Map_Parts/MPL_3.png");
+	  }, 600);
+	}
 }
 
 function MLP4Pressed(){
-	LocationSelect.setVolume(0.8);
-	LocationSelect.play();
-	
-	console.log("Map-Part-4 Pressed");
-	MLPPressed(4); // Call MLPPressed with 4 for MLP4
-	
-	MLP4.attribute("src", "materials/images/Map_Parts/AP4_Press.png");
-	setTimeout(function () {
-		MLP4.attribute("src", "materials/images/Map_Parts/MPL_4.png");
-  }, 600);
+	if (!StartBarrier) {
+		LocationSelect.setVolume(0.8);
+		LocationSelect.play();
+		
+		console.log("Map-Part-4 Pressed");
+		MLPPressed(4); // Call MLPPressed with 4 for MLP4
+		
+		MLP4.attribute("src", "materials/images/Map_Parts/AP4_Press.png");
+		setTimeout(function () {
+			MLP4.attribute("src", "materials/images/Map_Parts/MPL_4.png");
+	  }, 600);
+	}
 }
 
 function MLP5Pressed(){
-	LocationSelect.setVolume(0.8);
-	LocationSelect.play();
-	
-	console.log("Map-Part-5 Pressed");
-	MLPPressed(5); // Call MLPPressed with 5 for MLP5
-	
-	MLP5.attribute("src", "materials/images/Map_Parts/AP5_Press.png");
-	setTimeout(function () {
-		MLP5.attribute("src", "materials/images/Map_Parts/MPL_5.png");
-  }, 600);
+	if (!StartBarrier) {
+		LocationSelect.setVolume(0.8);
+		LocationSelect.play();
+		
+		console.log("Map-Part-5 Pressed");
+		MLPPressed(5); // Call MLPPressed with 5 for MLP5
+		
+		MLP5.attribute("src", "materials/images/Map_Parts/AP5_Press.png");
+		setTimeout(function () {
+			MLP5.attribute("src", "materials/images/Map_Parts/MPL_5.png");
+	  }, 600);
+	}
 }
 
 function MLP6Pressed(){
-	LocationSelect.setVolume(0.8);
-	LocationSelect.play();
-	
-	console.log("Map-Part-6 Pressed");
-	MLPPressed(6); // Call MLPPressed with 6 for MLP6
-	
-	MLP6.attribute("src", "materials/images/Map_Parts/AP6_Press.png");
-	setTimeout(function () {
-		MLP6.attribute("src", "materials/images/Map_Parts/MPL_6.png");
-  }, 600);
+	if (!StartBarrier) {
+		LocationSelect.setVolume(0.8);
+		LocationSelect.play();
+		
+		console.log("Map-Part-6 Pressed");
+		MLPPressed(6); // Call MLPPressed with 6 for MLP6
+		
+		MLP6.attribute("src", "materials/images/Map_Parts/AP6_Press.png");
+		setTimeout(function () {
+			MLP6.attribute("src", "materials/images/Map_Parts/MPL_6.png");
+	  }, 600);
+	}
 }
 
 // Define an array of titles
@@ -1325,6 +1349,10 @@ function MLPPressed(mlpNumber) {
 let fullscreenActivated = false;
 
 function mousePressed() {
+  if (StartBarrier) {
+    StartBarrier = false;
+	backgroundMusic.loop();
+  }
   if (!fullscreenActivated && mouseX > 0 && mouseX < width && mouseY > 0 && mouseY < height) {
     let fs = fullscreen();
     fullscreen(!fs);

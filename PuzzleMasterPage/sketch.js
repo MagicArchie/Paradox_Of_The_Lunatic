@@ -6,6 +6,8 @@ const Choice2 = localStorage.getItem('Choice2');
 
 let backgroundImage1, backgroundImage2;
 
+let StartBarrier = true;
+
 let MiniGameN1 = false;
 let MiniGameN2 = false;
 let MiniGameN3 = false;
@@ -42,7 +44,9 @@ let replacementCodes2 = ["2468", "1357", "2025", "1999", "4321", "1984"];
 // Variable to track if the inventory is currently visible
 let inventoryVisible = false;
 
-const MenuBTs_WH = 160; 
+let backgroundMusic;
+
+let MenuBTs_WH; 
 
 function preload() {
   backgroundImage1 = loadImage('materials/images/PuzzleMasterBG.png');
@@ -51,8 +55,8 @@ function preload() {
   MenuBts = loadSound('materials/sounds/MenuBts.wav');
   MenuBT = loadSound('materials/sounds/MenuBT2.mp3');
   
-  //Background Music
-  //backgroundMS = loadSound('materials/sounds/horrorBGM.mp3');
+  // Load background music
+  backgroundMusic = loadSound('materials/sounds/Dark Piano Sociopath.mp3');
 }
 
 function setup() {
@@ -64,6 +68,8 @@ function setup() {
   console.log("Display width:", displayWidth);
   console.log("Display height:", displayHeight);
   console.log("Pixel density:", pixelDensity());
+  
+  MenuBTs_WH = height * 0.08
   
   // Check if the value exists
   if (DifficultySL) {
@@ -82,37 +88,37 @@ function setup() {
   }
   
   MenuBar1 = createImg('materials/images/buttons/MenuBT2.png', 'Scan-Button');
-  MenuBar1.size(width, 200);
-  MenuBar1.position(-width * 0.7, height * 0.018);
+  MenuBar1.size(width + 100, height * 0.1);
+  MenuBar1.position(-width * 0.9, height * 0.018);
   MenuBar1.mousePressed(MenuBar1_Pressed);
   
   MenuBar2 = createImg('materials/images/buttons/MenuBT2.png', 'Scan-Button');
-  MenuBar2.size(width, 200);
-  MenuBar2.position(-width * 0.14, height * 0.018);
+  MenuBar2.size(width, height * 0.1);
+  MenuBar2.position(-width * 0.15, height * 0.018);
   MenuBar2.mousePressed(MenuBar2_Pressed);
   MenuBar2.hide();
   
   ScanBT = createImg('materials/images/buttons/ScanAR_Button.png', 'Scan-Button');
   ScanBT.size(MenuBTs_WH, MenuBTs_WH);
-  ScanBT.position(width * 0.05, height * 0.028);
+  ScanBT.position(width * 0.02, height * 0.028);
   ScanBT.mousePressed(Scan_Pressed);
   ScanBT.hide();
   
   HelpBT = createImg('materials/images/buttons/Hint_Button.png', 'Scan-Button');
   HelpBT.size(MenuBTs_WH, MenuBTs_WH);
-  HelpBT.position(width * 0.25, height * 0.028);
+  HelpBT.position(width * 0.22, height * 0.028);
   HelpBT.mousePressed(Help_Pressed);
   HelpBT.hide();
   
   InventoryBT = createImg('materials/images/buttons/Inventory_Button.png', 'Scan-Button');
   InventoryBT.size(MenuBTs_WH, MenuBTs_WH);
-  InventoryBT.position(width * 0.45, height * 0.028);
+  InventoryBT.position(width * 0.42, height * 0.028);
   InventoryBT.mousePressed(Inventory_Pressed);
   InventoryBT.hide();
   
   AchievementBT = createImg('materials/images/buttons/Achievement_Button.png', 'Scan-Button');
   AchievementBT.size(MenuBTs_WH, MenuBTs_WH);
-  AchievementBT.position(width * 0.65, height * 0.028);
+  AchievementBT.position(width * 0.62, height * 0.028);
   AchievementBT.mousePressed(Achievement_Pressed);
   AchievementBT.hide();
 
@@ -207,6 +213,10 @@ function setup() {
   updateInventoryList();
   
   windowResized();
+  
+  // Play background music on loop
+  backgroundMusic.loop();
+  backgroundMusic.setVolume(0.5); // Adjust volume if needed
 }
 
 function draw() {
@@ -225,15 +235,17 @@ function windowResized() {
 }
 
 function MenuBar1_Pressed() {
-	MenuBT.setVolume(0.8);
-	MenuBT.play();
-	
-	MenuBar1.hide();
-	MenuBar2.show();
-	ScanBT.show();
-	HelpBT.show();
-	InventoryBT.show();
-	AchievementBT.show();
+	if (!StartBarrier) {
+		MenuBT.setVolume(0.8);
+		MenuBT.play();
+		
+		MenuBar1.hide();
+		MenuBar2.show();
+		ScanBT.show();
+		HelpBT.show();
+		InventoryBT.show();
+		AchievementBT.show();
+	}
 }
 
 function MenuBar2_Pressed() {
@@ -410,6 +422,10 @@ function Achievement_Pressed() {
 let fullscreenActivated = false;
 
 function mousePressed() {
+  if (StartBarrier) {
+    StartBarrier = false;
+	backgroundMusic.loop();
+  }
   if (!fullscreenActivated && mouseX > 0 && mouseX < width && mouseY > 0 && mouseY < height) {
     let fs = fullscreen();
     fullscreen(!fs);

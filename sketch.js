@@ -9,6 +9,9 @@ let gameState = {
 let buttonDimensions, buttonPositions = {};
 let assets = {};
 let PathfinderBT, PuzzleMasterBT, CrazyBT, InsaneBT, LunaticBT, PlayBT;
+let backgroundMusic;
+
+let StartBarrier = true;
 
 function preload() {
     // Load assets
@@ -57,21 +60,28 @@ function preload() {
         success: loadSound('materials/sounds/PlayBT2.wav'),
         error: loadSound('materials/sounds/PlayBT1.wav'),
     };
+	
+	// Load background music
+    backgroundMusic = loadSound('materials/sounds/horrorBGM.mp3');
 }
 
 function setup() {
     createCanvas(windowWidth, windowHeight);
 
     buttonDimensions = {
-        pathfinderDiameter: windowWidth * 0.36,
-        puzzlemasterDiameter: windowWidth * 0.36,
+        pathfinderDiameter: windowWidth * 0.39,
+        puzzlemasterDiameter: windowWidth * 0.39,
         difficultyDiameter: windowWidth * 0.23,
         playWidth: windowWidth * 0.5,
         playHeight: windowWidth * 0.15,
     };
 
     initializeButtons();
-    updateButtonPositions();
+	windowResized();
+	
+	// Play background music on loop
+    backgroundMusic.loop();
+    backgroundMusic.setVolume(0.5); // Adjust volume if needed
 }
 
 function draw() {
@@ -84,6 +94,7 @@ function draw() {
     );
 
     activatePlayButton();
+	updateButtonPositions()
 
     if (gameState.showMessage) {
         drawMessage(gameState.message);
@@ -92,58 +103,72 @@ function draw() {
 
 // Function to handle starting the game
 function startGame() {
-    if (!gameState.roleSelected || !gameState.difficultySelected) {
-        animatePlayButton(assets.playButtonImages[2], assets.playButtonImages[0], 300);
-        displayError("Please select a role and difficulty.");
-        assets.playButtonSounds.error.play();
-        return;
-    }
+	if (!StartBarrier) {
+		if (!gameState.roleSelected || !gameState.difficultySelected) {
+			animatePlayButton(assets.playButtonImages[2], assets.playButtonImages[0], 300);
+			displayError("Please select a role and difficulty.");
+			assets.playButtonSounds.error.play();
+			return;
+		}
 
-    animatePlayButton(assets.playButtonImages[3], assets.playButtonImages[4], 300, () => {
-		assets.playButtonSounds.success.play();
-        setTimeout(() => {
-            
-            console.log("Starting game...");
+		animatePlayButton(assets.playButtonImages[3], assets.playButtonImages[4], 300, () => {
+			assets.playButtonSounds.success.play();
+			setTimeout(() => {
+				
+				console.log("Starting game...");
 
-            if (gameState.roleSelected === 1) {
-                window.location.href = "PathFinderPage/index.html";
-            } else if (gameState.roleSelected === 2) {
-                window.location.href = "PuzzleMasterPage/index.html";
-            }
-        }, 2200);
-    });
+				if (gameState.roleSelected === 1) {
+					window.location.href = "PathFinderPage/index.html";
+				} else if (gameState.roleSelected === 2) {
+					window.location.href = "PuzzleMasterPage/index.html";
+				}
+			}, 2200);
+		});
+	}
 }
 
 // Function to initialize buttons
 function initializeButtons() {
     PathfinderBT = createImg(assets.pathfinderImages[0], 'Pathfinder');
     PathfinderBT.mousePressed(() => {
-        selectRole(1);
+		if (!StartBarrier) {
+			selectRole(1);
+		}
     });
 
     PuzzleMasterBT = createImg(assets.puzzlemasterImages[0], 'PuzzleMaster');
     PuzzleMasterBT.mousePressed(() => {
-        selectRole(2);
+		if (!StartBarrier) {
+			selectRole(2);
+		}
     });
 
     CrazyBT = createImg(assets.difficultyImages.crazy[0], 'Crazy');
     CrazyBT.mousePressed(() => {
-        selectDifficulty(1, CrazyBT, assets.difficultyImages.crazy);
+		if (!StartBarrier) {
+			selectDifficulty(1, CrazyBT, assets.difficultyImages.crazy);
+		}
     });
 
     InsaneBT = createImg(assets.difficultyImages.insane[0], 'Insane');
     InsaneBT.mousePressed(() => {
-        selectDifficulty(2, InsaneBT, assets.difficultyImages.insane);
+		if (!StartBarrier) {
+			selectDifficulty(2, InsaneBT, assets.difficultyImages.insane);
+		}
     });
 
     LunaticBT = createImg(assets.difficultyImages.lunatic[0], 'Lunatic');
     LunaticBT.mousePressed(() => {
-        selectDifficulty(3, LunaticBT, assets.difficultyImages.lunatic);
+		if (!StartBarrier) {
+			selectDifficulty(3, LunaticBT, assets.difficultyImages.lunatic);
+		}
     });
 
     PlayBT = createImg(assets.playButtonImages[0], 'Play');
     PlayBT.mousePressed(() => {
-        startGame();
+		if (!StartBarrier) {
+			startGame();
+		}
     });
 }
 
@@ -300,6 +325,10 @@ function windowResized() {
 let fullscreenActivated = false;
 
 function mousePressed() {
+  if (StartBarrier) {
+    StartBarrier = false;
+	backgroundMusic.loop();
+  }
   if (!fullscreenActivated && mouseX > 0 && mouseX < width && mouseY > 0 && mouseY < height) {
     let fs = fullscreen();
     fullscreen(!fs);
