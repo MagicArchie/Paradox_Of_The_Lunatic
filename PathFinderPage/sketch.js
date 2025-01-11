@@ -1,37 +1,26 @@
 // Retrieve the stored DifficultySL value from localStorage
 const DifficultySL = localStorage.getItem('DifficultySL');
 
+// Retrieve the stored DifficultySL value from localStorage
+const TotorialComplete_C  = localStorage.getItem('TotorialComplete');
+let TotorialComplete = false;
+
 let backgroundImage1, backgroundImage2;
 
 let StartBarrier = true;
+let Totorial = true;
 
-let MiniGameN1 = false;
-let MiniGameN2 = false;
-let MiniGameN3 = false;
-let MiniGameN4 = false;
-let MiniGameN5 = false;
-let MiniGameN6 = false;
-
-let UseN1 = false;
-let UseN11 = false;
-let UseN2 = false;
-let UseN22 = false;
-let UseN3 = false;
-let UseN33 = false;
-let UseN4 = false;
-let UseN44 = false;
-let UseN5 = false;
-let UseN55 = false;
-let UseN6 = false;
-let UseN66 = false;
-
-let MLP1_Act = false;
-let MLP2_Act = false;
-let MLP3_Act = false;
-let MLP4_Act = false;
-let MLP5_Act = false;
-let MLP6_Act = false;
+let MiniGameN1 = false, MiniGameN2 = false, MiniGameN3 = false, MiniGameN4 = false, MiniGameN5 = false, MiniGameN6 = false;
+let UseN1 = false, UseN11 = false, UseN2 = false, UseN22 = false, UseN3 = false, UseN33 = false, UseN4 = false, UseN44 = false, UseN5 = false, UseN55 = false, UseN6 = false, UseN66 = false;
+let MLP1_Act = false, MLP2_Act = false, MLP3_Act = false, MLP4_Act = false, MLP5_Act = false, MLP6_Act = false;
 let OneUse = false;
+
+let Arrow_X1, Arrow_X2, Arrow_X3;
+let Arrow_Y1, Arrow_Y2, Arrow_Y3, Arrow_Y4, Arrow_Y5;
+let Arrow_W;
+let Arrow_H;
+
+let typingSounds = [];
 
 let pressedCounter = 0; // Counter to keep track of MLP presses
 
@@ -68,6 +57,10 @@ function preload() {
   // Load background music
   backgroundMusic = loadSound('materials/sounds/Dark Piano Sociopath.mp3');
   
+  typingSounds.push(loadSound('materials/sounds/Type1.mp3'));
+  typingSounds.push(loadSound('materials/sounds/Type2.mp3'));
+  typingSounds.push(loadSound('materials/sounds/Type3.mp3'));
+  
   CloseInfo = loadSound('materials/sounds/CloseInfo.mp3');
   MarkerPress = loadSound('materials/sounds/MarkerPress.mp3');
   LocationSelect = loadSound('materials/sounds/LocationSelected.mp3');
@@ -90,7 +83,7 @@ function setup() {
   console.log("Display height:", displayHeight);
   console.log("Pixel density:", pixelDensity());
   
-  
+
     const customStyleElement = document.createElement("style");
 customStyleElement.type = "text/css";
 customStyleElement.innerHTML = `
@@ -166,10 +159,27 @@ document.head.appendChild(customStyleElement);
   
   MenuBT_W = width * 0.08;
   MenuBT_H = width * 0.45;
+  
 	
   BT_WH = width * 0.06;
   BT_WH2 = width * 0.12;
   BT_WH3 = width * 0.03;
+  
+  Arrow_W = width * 0.08;
+  Arrow_H = width * 0.15;
+  
+  Arrow_X1 = width * 0.85;
+  Arrow_Y1 = height * 0.4;
+  
+  Arrow_X2 = width * 0.12;
+  Arrow_Y2 = height * 0.1;
+  
+  Arrow_X3 = width * 0.097;
+  Arrow_Y3 = height * 0.028;
+  Arrow_Y4 = height * 0.165;
+  Arrow_Y5 = height * 0.28;
+  
+  
   
   MLP6 = createImg('materials/images/Map_Parts/MPL_6.png', 'Not Active Map Parts 6');
   MLP6.size(MLP6_Width, MLP6_Height);
@@ -294,7 +304,32 @@ document.head.appendChild(customStyleElement);
   MapMarker7.position(width * 0.35, height * 0.4);
   MapMarker7.mousePressed(MapMarker7Pressed);
   MapMarker7.hide();
-
+  
+  TitBit_Point1 = createImg('materials/images/TitBit/Arrow1.png', 'TitBit Arrow 1');
+  TitBit_Point1.size(Arrow_W, Arrow_H);
+  TitBit_Point1.position(Arrow_X1, Arrow_Y1);
+  TitBit_Point1.hide();
+  
+  TitBit_Point2 = createImg('materials/images/TitBit/Arrow2.png', 'TitBit Arrow 2');
+  TitBit_Point2.size(Arrow_H, Arrow_W);
+  TitBit_Point2.position(Arrow_X2, Arrow_Y2);
+  TitBit_Point2.hide();
+  
+  TitBit_Point3 = createImg('materials/images/TitBit/Arrow3.png', 'TitBit Arrow 3');
+  TitBit_Point3.size(Arrow_H, Arrow_W);
+  TitBit_Point3.position(Arrow_X3, Arrow_Y3);
+  TitBit_Point3.hide();
+  
+  TitBit_Point4 = createImg('materials/images/TitBit/Arrow3.png', 'TitBit Arrow 4');
+  TitBit_Point4.size(Arrow_H, Arrow_W);
+  TitBit_Point4.position(Arrow_X3, Arrow_Y4);
+  TitBit_Point4.hide();
+  
+  TitBit_Point5 = createImg('materials/images/TitBit/Arrow4.png', 'TitBit Arrow 5');
+  TitBit_Point5.size(Arrow_H, Arrow_W);
+  TitBit_Point5.position(Arrow_X3, Arrow_Y5);
+  TitBit_Point5.hide();
+  
   
   // Check and restore MLP state
   if (localStorage.getItem('MLP1_Act') === 'true') {
@@ -355,6 +390,11 @@ document.head.appendChild(customStyleElement);
   if (UseN11 == false) {
 	MiniGameN1 = localStorage.getItem('MiniGameN1');
 	UseN11 = true;
+	//
+	if (TotorialComplete_C !== null) {
+	  TotorialComplete = TotorialComplete_C;
+	  console.log("egine kati");
+    }
   }
   if (MiniGameN1 == "true" && UseN1 == false){
 	  console.log("Mini Game 1 Completed!");
@@ -443,7 +483,7 @@ document.head.appendChild(customStyleElement);
   
   // Play background music on loop
   backgroundMusic.loop();
-  backgroundMusic.setVolume(0.5); // Adjust volume if needed
+  backgroundMusic.setVolume(0.4); // Adjust volume if needed
 }
 
 function draw() {
@@ -765,6 +805,14 @@ function MenuPressed2() {
 function InventoryPressed() {
   MenuBts.setVolume(0.2);
   MenuBts.play();
+  
+  //Hide JoinRoom stuff
+  if (currentJoinRoomInput && currentJoinRoomSubmitButton) {
+		currentJoinRoomInput.remove();
+		currentJoinRoomSubmitButton.remove();
+		currentJoinRoomInput = null;
+		currentJoinRoomSubmitButton = null;
+  }
 
   // Update button press visuals
   if (MLP1_Act && MLP2_Act && MLP3_Act && MLP4_Act && MLP5_Act && MLP6_Act) {
@@ -898,6 +946,12 @@ function hideInventoryList() {
 function JoinRoomPressed() {
 	MenuBts.setVolume(0.2);
 	MenuBts.play();
+	
+	//Hide Inventory stuff
+	if (inventoryVisible) {
+		hideInventoryList();
+	}
+	
     if (MLP1_Act == true && MLP2_Act == true && MLP3_Act == true && MLP4_Act == true && MLP5_Act == true && MLP6_Act == true) {
 	  JoinRoom_BT.attribute('src', 'materials/images/buttons/JoinRoom_Button2_Press.png');
       setTimeout(function () {
@@ -937,8 +991,8 @@ function JoinRoomPressed() {
 
   // Create a submit button for the join room code
   currentJoinRoomSubmitButton = createButton("Join");
-  currentJoinRoomSubmitButton.size(width * 0.05, height * 0.1);
-  currentJoinRoomSubmitButton.position(width * 0.235, height * 0.05); // Position next to the input box
+  currentJoinRoomSubmitButton.size(width * 0.05, height * 0.11);
+  currentJoinRoomSubmitButton.position(width * 0.223, height * 0.05); // Position next to the input box
   currentJoinRoomSubmitButton.style("background-color", "#4caf50");
   currentJoinRoomSubmitButton.style("color", "#ffffff");
   currentJoinRoomSubmitButton.style("border", "none");
@@ -1344,14 +1398,218 @@ function MLPPressed(mlpNumber) {
       currentTitle = null;
     }
   });
+  
+  // Style the button for centered text
+	currentSubmitButton.style("display", "flex");
+	currentSubmitButton.style("justify-content", "center");
+	currentSubmitButton.style("align-items", "center");
+	currentSubmitButton.style("text-align", "center");
+	currentSubmitButton.style("line-height", height * 0.105 + "px"); // Align vertically for the button's height
+}
+
+// Store the table of dialogues
+const characterDialogues = [
+  "Oh, joy! Finally, some company! Welcome, esteemed psychologists! I’m TitBit, your trusty assistant AI from the Psyckik Center's golden age — and yes, I’m ancient, but let’s not rub it in. My sole purpose is to help brilliant minds like yours retrieve all that precious lost data scattered across the ruins of your old stomping grounds. Think of me as a mix of a librarian, a tour guide, and a slightly judgmental office clerk with a dash of sarcasm. Shall we begin?",
+  "This little gem comes equipped with a map. I’ve marked all the interesting spots around the old center for you — potential treasure troves of valuable data and items. All you need to do is follow its guidance. Simple enough for even humans to manage!",
+  "Compass Button (Bottom Right Corner): 'When pressed, it will locate your next objective. Simple and effective.'",
+  "Bookmark Button (Top Left Corner): 'When pulled down, it reveals three options:'",
+  "JoinRoom: This button asks for a 6-digit code to connect with the PuzzleMaster. Codes will be given to the PuzzleMaster, so make sure to coordinate.",
+  "Inventory/NoteList: Keeps track of all the codes and notes acquired by the PathFinder.",
+  "Achievement Button: Displays the accomplishments shared with the PuzzleMaster.",
+  "The map itself is divided into six parts. Each part can be unlocked with a 4-digit code that you’ll acquire by solving puzzles. Fun, right? Oh, and a quick heads-up: the map pieces are a bit funky due to the old programming, so try to find the right spot to press them.",
+  "So, to recap: PathFinder keeps you on the right track, PuzzleMaster helps you poke around and unlock stuff, and I… well, I’ll be here, doing what I do best: assisting and offering my colorful commentary. Let’s retrieve that data and revive some old memories! Or at least avoid collapsing floors. Ready to get started?"
+];
+
+
+let currentDialogueIndex = 0; // Track which dialogue to show
+let currentText = ""; // The currently displayed text (animated)
+let targetText = ""; // The full text for the current dialogue
+let textIndex = 0; // Tracks the current character being displayed in the animation
+let textAnimationInterval; // Holds the interval ID for text animation
+let currentImageElement = null; // Track the currently visible image
+
+// Function to play a random typing sound
+function playRandomTypingSound() {
+  const randomIndex = Math.floor(Math.random() * typingSounds.length);
+  const sound = typingSounds[randomIndex];
+  if (sound) {
+    sound.setVolume(0.3); // Adjust volume as needed
+    sound.play();
+  }
+}
+
+// Create a function to show the character image and dialogue
+function showCharacterDialogue() {
+  // Create a container for the dialogue (if not already present)
+  let dialogueContainer = document.getElementById("dialogue-container");
+  if (!dialogueContainer) {
+    dialogueContainer = document.createElement("div");
+    dialogueContainer.id = "dialogue-container";
+    dialogueContainer.style.position = "fixed";
+    dialogueContainer.style.bottom = "20px";
+    dialogueContainer.style.left = "20px";
+    dialogueContainer.style.display = "flex";
+    dialogueContainer.style.alignItems = "flex-start";
+    dialogueContainer.style.gap = "20px";
+    dialogueContainer.style.zIndex = "1000";
+    document.body.appendChild(dialogueContainer);
+  }
+
+  // Create or update the character image
+  let characterImage = document.getElementById("character-image");
+  if (!characterImage) {
+    characterImage = document.createElement("img");
+    characterImage.id = "character-image";
+    characterImage.src = "materials/images/TitBit/TitBit.png";
+    characterImage.style.width = "150px";
+    characterImage.style.height = "auto";
+    characterImage.style.borderRadius = "10px";
+    characterImage.style.boxShadow = "0 0 10px rgba(0, 0, 0, 0.5)";
+    dialogueContainer.appendChild(characterImage);
+  }
+
+  // Create or update the dialogue rectangle
+  let dialogueTextContainer = document.getElementById("dialogue-text-container");
+  if (!dialogueTextContainer) {
+    dialogueTextContainer = document.createElement("div");
+    dialogueTextContainer.id = "dialogue-text-container";
+    dialogueTextContainer.style.backgroundColor = "rgba(0, 0, 0, 0.8)";
+    dialogueTextContainer.style.color = "white";
+    dialogueTextContainer.style.padding = "15px";
+    dialogueTextContainer.style.borderRadius = "10px";
+    dialogueTextContainer.style.width = "500px";
+    dialogueTextContainer.style.fontFamily = "Arial, sans-serif";
+    dialogueTextContainer.style.fontSize = "16px";
+    dialogueTextContainer.style.lineHeight = "1.5";
+    dialogueTextContainer.style.boxShadow = "0 0 10px rgba(0, 0, 0, 0.5)";
+    dialogueContainer.appendChild(dialogueTextContainer);
+  }
+
+  // Set the target text for the animation
+  targetText = characterDialogues[currentDialogueIndex];
+  currentText = ""; // Reset current text
+  textIndex = 0; // Reset text index
+
+  // Hide the currently visible image, if any
+  if (currentImageElement) {
+    currentImageElement.hide();
+    currentImageElement = null;
+  }
+
+  // Determine which image to show and perform actions based on the current dialogue index
+  switch (currentDialogueIndex) {
+    case 2:
+      TitBit_Point1.show();
+      currentImageElement = TitBit_Point1;
+
+      if (characterImage) {
+        characterImage.setAttribute("src", "materials/images/TitBit/TitBit_Point.png");
+      }
+      break;
+    case 3:
+      TitBit_Point2.show();
+      currentImageElement = TitBit_Point2;
+      break;
+    case 4:
+      TitBit_Point3.show();
+      currentImageElement = TitBit_Point3;
+      MenuBT.setVolume(0.8);
+      MenuBT.play();
+      MenuBT1.hide();
+      MenuBT2.show();
+      JoinRoom_BT.show();
+      Inventory_BT.show();
+      Achievement_BT.show();
+
+      MenuBT2.style("pointer-events", "none"); // Disable click events
+      JoinRoom_BT.style("pointer-events", "none");
+      Inventory_BT.style("pointer-events", "none");
+      Achievement_BT.style("pointer-events", "none");
+      break;
+    case 5:
+      TitBit_Point4.show();
+      currentImageElement = TitBit_Point4;
+      break;
+    case 6:
+      TitBit_Point5.show();
+      currentImageElement = TitBit_Point5;
+      break;
+    case 7:
+      MenuBT.setVolume(0.8);
+      MenuBT.play();
+      MenuBT2.hide();
+      MenuBT1.show();
+      JoinRoom_BT.hide();
+      Inventory_BT.hide();
+      Achievement_BT.hide();
+
+      MenuBT2.style("pointer-events", "auto");
+      JoinRoom_BT.style("pointer-events", "auto");
+      Inventory_BT.style("pointer-events", "auto");
+      Achievement_BT.style("pointer-events", "auto");
+
+      if (characterImage) {
+        characterImage.setAttribute("src", "materials/images/TitBit/TitBit.png");
+      }
+      break;
+    default:
+      // No image for other dialogues
+      currentImageElement = null;
+  }
+
+	// Start animating the text
+	textAnimationInterval = setInterval(() => {
+	  if (textIndex < targetText.length) {
+		const currentChar = targetText[textIndex];
+		currentText += currentChar;
+		dialogueTextContainer.innerText = currentText;
+
+		// Play sound only for letters
+		if (/[a-zA-Z]/.test(currentChar)) {
+		  playRandomTypingSound();
+		}
+
+		textIndex++;
+	  } else {
+		clearInterval(textAnimationInterval);
+	  }
+	}, 50); // Adjust speed of text animation
+
+  // Move to the next dialogue for subsequent calls
+  currentDialogueIndex++;
+}
+
+// Advance dialogue on click
+function advanceDialogue() {
+  if (textIndex === targetText.length) {
+    if (currentDialogueIndex < characterDialogues.length) {
+      showCharacterDialogue();
+    } else {
+      let dialogueContainer = document.getElementById("dialogue-container");
+      if (dialogueContainer) {
+        dialogueContainer.style.display = "none";
+        StartBarrier = false;
+		
+		console.log('Totorial Completed!');
+		localStorage.setItem('TotorialComplete', true);
+      }
+      window.removeEventListener("click", advanceDialogue);
+    }
+  }
 }
 
 let fullscreenActivated = false;
 
 function mousePressed() {
+  if (Totorial && TotorialComplete == false) {
+    Totorial = false;
+    showCharacterDialogue();
+    window.addEventListener("click", advanceDialogue);
+  } else {
+	StartBarrier = false;  
+  }
   if (StartBarrier) {
-    StartBarrier = false;
-	backgroundMusic.loop();
+    backgroundMusic.loop();
   }
   if (!fullscreenActivated && mouseX > 0 && mouseX < width && mouseY > 0 && mouseY < height) {
     let fs = fullscreen();
