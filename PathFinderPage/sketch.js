@@ -1506,7 +1506,7 @@ function showCharacterDialogue() {
     dialogueTextContainer.style.borderRadius = "10px";
     dialogueTextContainer.style.width = "500px";
     dialogueTextContainer.style.fontFamily = "Arial, sans-serif";
-    dialogueTextContainer.style.fontSize = "16px";
+    dialogueTextContainer.style.fontSize = "15px";
     dialogueTextContainer.style.lineHeight = "1.5";
     dialogueTextContainer.style.boxShadow = "0 0 10px rgba(0, 0, 0, 0.5)";
     dialogueContainer.appendChild(dialogueTextContainer);
