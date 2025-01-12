@@ -2,7 +2,7 @@
 const DifficultySL = localStorage.getItem('DifficultySL');
 
 // Retrieve the stored DifficultySL value from localStorage
-const TotorialComplete_C  = localStorage.getItem('TotorialComplete');
+const TotorialComplete_C  = localStorage.getItem('TotorialComplete_PathFinder');
 let TotorialComplete = false;
 
 let backgroundImage1, backgroundImage2;
@@ -393,7 +393,6 @@ document.head.appendChild(customStyleElement);
 	//
 	if (TotorialComplete_C !== null) {
 	  TotorialComplete = TotorialComplete_C;
-	  console.log("egine kati");
     }
   }
   if (MiniGameN1 == "true" && UseN1 == false){
@@ -818,6 +817,9 @@ function MenuPressed2() {
 	
 	if (inventoryVisible) {
 		hideInventoryList();
+		
+		// Toggle inventory visibility
+		inventoryVisible = !inventoryVisible;
 	}
 	
 	if (currentJoinRoomInput && currentJoinRoomSubmitButton) {
@@ -977,6 +979,9 @@ function JoinRoomPressed() {
 	//Hide Inventory stuff
 	if (inventoryVisible) {
 		hideInventoryList();
+		
+		// Toggle inventory visibility
+		inventoryVisible = !inventoryVisible;
 	}
 	
     if (MLP1_Act == true && MLP2_Act == true && MLP3_Act == true && MLP4_Act == true && MLP5_Act == true && MLP6_Act == true) {
@@ -1065,6 +1070,22 @@ function JoinRoomPressed() {
 function AchievementPressed() {
 	MenuBts.setVolume(0.2);
 	MenuBts.play();
+	
+	if (inventoryVisible) {
+		hideInventoryList();
+		
+		// Toggle inventory visibility
+		inventoryVisible = !inventoryVisible;
+	}
+	
+	//Hide JoinRoom stuff
+    if (currentJoinRoomInput && currentJoinRoomSubmitButton) {
+		currentJoinRoomInput.remove();
+		currentJoinRoomSubmitButton.remove();
+		currentJoinRoomInput = null;
+		currentJoinRoomSubmitButton = null;
+    }
+	
 	if (MLP1_Act == true && MLP2_Act == true && MLP3_Act == true && MLP4_Act == true && MLP5_Act == true && MLP6_Act == true) {
 	  Achievement_BT.attribute('src', 'materials/images/buttons/Achievement_Button2_Press.png');
 	  setTimeout(function () {
@@ -1619,7 +1640,7 @@ function advanceDialogue() {
         StartBarrier = false;
 		
 		console.log('Totorial Completed!');
-		localStorage.setItem('TotorialComplete', true);
+		localStorage.setItem('TotorialComplete_PathFinder', true);
       }
       window.removeEventListener("click", advanceDialogue);
     }
