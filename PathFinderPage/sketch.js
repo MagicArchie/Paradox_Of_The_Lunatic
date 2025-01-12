@@ -475,10 +475,7 @@ document.head.appendChild(customStyleElement);
 	  MiniGameN6 = false;    
   }
   
-  //backgroundMS.loop();
-  
   windowResized();
-  
   updateInventoryList();
   
   // Play background music on loop
@@ -701,6 +698,20 @@ function windowResized() {
   BT_WH2 = width * 0.12;
   BT_WH3 = width * 0.04;
   
+  Arrow_W = width * 0.08;
+  Arrow_H = width * 0.15;
+  
+  Arrow_X1 = width * 0.85;
+  Arrow_Y1 = height * 0.4;
+  
+  Arrow_X2 = width * 0.12;
+  Arrow_Y2 = height * 0.1;
+  
+  Arrow_X3 = width * 0.097;
+  Arrow_Y3 = height * 0.028;
+  Arrow_Y4 = height * 0.165;
+  Arrow_Y5 = height * 0.28;
+  
   MLP1.size(MLP1_Width, MLP1_Height);
   MLP1.position(MLP1_X, MLP1_Y);
   
@@ -764,6 +775,22 @@ function windowResized() {
   
   Map_Unlk.size(width, height);
   Map_Unlk.position(0, 0);
+  
+  
+  TitBit_Point1.size(Arrow_W, Arrow_H);
+  TitBit_Point1.position(Arrow_X1, Arrow_Y1);
+  
+  TitBit_Point2.size(Arrow_H, Arrow_W);
+  TitBit_Point2.position(Arrow_X2, Arrow_Y2);
+  
+  TitBit_Point3.size(Arrow_H, Arrow_W);
+  TitBit_Point3.position(Arrow_X3, Arrow_Y3);
+  
+  TitBit_Point4.size(Arrow_H, Arrow_W);
+  TitBit_Point4.position(Arrow_X3, Arrow_Y4);
+  
+  TitBit_Point5.size(Arrow_H, Arrow_W);
+  TitBit_Point5.position(Arrow_X3, Arrow_Y5);
 }
 
 function MenuPressed1() {
@@ -1581,6 +1608,7 @@ function showCharacterDialogue() {
 
 // Advance dialogue on click
 function advanceDialogue() {
+	console.log('advanced dialogue');
   if (textIndex === targetText.length) {
     if (currentDialogueIndex < characterDialogues.length) {
       showCharacterDialogue();
@@ -1605,11 +1633,11 @@ function mousePressed() {
     Totorial = false;
     showCharacterDialogue();
     window.addEventListener("click", advanceDialogue);
-  } else {
+  } else if (TotorialComplete == "true") {
 	StartBarrier = false;  
   }
   if (StartBarrier) {
-    backgroundMusic.loop();
+    //backgroundMusic.loop();
   }
   if (!fullscreenActivated && mouseX > 0 && mouseX < width && mouseY > 0 && mouseY < height) {
     let fs = fullscreen();
