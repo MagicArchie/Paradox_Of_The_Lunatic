@@ -586,7 +586,7 @@ function showCharacterDialogue() {
   if (!characterImage) {
     characterImage = document.createElement("img");
     characterImage.id = "character-image";
-    characterImage.src = "materials/images/TitBit/TitBit.png";
+    characterImage.src = "materials/images/TitBit/TitBitV1.png";
     characterImage.style.position = "fixed";
     characterImage.style.top = "20px";
     characterImage.style.right = "20px";
@@ -635,7 +635,9 @@ function showCharacterDialogue() {
 	  animateCharacter1();
 
       if (characterImage) {
-        characterImage.setAttribute("src", "materials/images/TitBit/TitBit_Point.png");
+		setTimeout(function () {
+			characterImage.setAttribute("src", "materials/images/TitBit/TitBitV2.png");
+		}, 700);
       }
       break;
     case 3:
@@ -702,7 +704,9 @@ function showCharacterDialogue() {
       AchievementBT.style("pointer-events", "auto");
 
       if (characterImage) {
-        characterImage.setAttribute("src", "materials/images/TitBit/TitBit.png");
+		setTimeout(function () {
+			characterImage.setAttribute("src", "materials/images/TitBit/TitBitV1.png");
+		}, 700)
       }
       break;
     default:

@@ -515,8 +515,8 @@ function draw() {
 }
 
 // Generic function for map marker press handling
-function handleMapMarkerPress(marker, pressedImageSrc, defaultImageSrc, canvasImageSrc, descriptionText) {
-	MarkerPress.play();
+function handleMapMarkerPress(marker, pressedImageSrc, defaultImageSrc, canvasImageSrc, descriptionText, title) {
+    MarkerPress.play();
     // Change the marker image to the pressed state
     marker.attribute("src", pressedImageSrc);
 
@@ -525,14 +525,14 @@ function handleMapMarkerPress(marker, pressedImageSrc, defaultImageSrc, canvasIm
         marker.attribute("src", defaultImageSrc);
     }, 300);
 
-    // Display a black rectangle with the specific image and description
-	setTimeout(function () {
-		displayBlackRectWithImageAndText(canvasImageSrc, descriptionText);
-	}, 400);
+    // Display a black rectangle with the specific image, title, and description
+    setTimeout(function () {
+        displayBlackRectWithImageAndText(canvasImageSrc, descriptionText, title);
+    }, 400);
 }
 
-// Function to display the black rectangle with the specific image and text
-function displayBlackRectWithImageAndText(imageSrc, descriptionText) {
+// Function to display the black rectangle with the specific image, title, and text
+function displayBlackRectWithImageAndText(imageSrc, descriptionText, title) {
     // Create or find the overlay container
     let overlay = document.getElementById("overlay");
     if (!overlay) {
@@ -549,12 +549,12 @@ function displayBlackRectWithImageAndText(imageSrc, descriptionText) {
     overlay.style.height = "100vh";
     overlay.style.backgroundColor = "black";
     overlay.style.display = "flex";
-    overlay.style.justifyContent = "center";
-    overlay.style.alignItems = "center";
     overlay.style.flexDirection = "row";
+    overlay.style.alignItems = "center";
+    overlay.style.justifyContent = "space-around";
     overlay.style.zIndex = "1000";
 
-    // Add the image to the overlay
+    // Add the image to the left side
     let image = overlay.querySelector("img");
     if (!image) {
         image = document.createElement("img");
@@ -562,46 +562,65 @@ function displayBlackRectWithImageAndText(imageSrc, descriptionText) {
     }
 
     image.src = imageSrc;
-    image.style.maxWidth = "100%";
+    image.style.maxWidth = "40%";
     image.style.maxHeight = "100%";
-    image.style.marginRight = "30px";
+    image.style.objectFit = "contain";
+    image.style.marginLeft = "25px";
 
-    // Add the text to the overlay
-    let textContainer = overlay.querySelector("div.text-container");
-    if (!textContainer) {
-        textContainer = document.createElement("div");
-        textContainer.className = "text-container";
-        overlay.appendChild(textContainer);
+    // Add the content container for title, description, and button
+    let contentContainer = overlay.querySelector("div.content-container");
+    if (!contentContainer) {
+        contentContainer = document.createElement("div");
+        contentContainer.className = "content-container";
+        overlay.appendChild(contentContainer);
     }
 
-    textContainer.style.color = "white";
-    textContainer.style.maxWidth = "50%";
-    textContainer.style.textAlign = "center";
+    contentContainer.style.display = "flex";
+    contentContainer.style.flexDirection = "column";
+    contentContainer.style.justifyContent = "flex-start";
+    contentContainer.style.alignItems = "center";
+    contentContainer.style.color = "white";
+    contentContainer.style.maxWidth = "55%";
 
-    let paragraph = textContainer.querySelector("p");
+    // Add the title
+    let titleElement = contentContainer.querySelector("h1");
+    if (!titleElement) {
+        titleElement = document.createElement("h1");
+        contentContainer.appendChild(titleElement);
+    }
+
+    titleElement.textContent = title;
+    titleElement.style.marginBottom = "10px";
+    titleElement.style.textAlign = "center";
+
+    // Add the text to the content container
+    let paragraph = contentContainer.querySelector("p");
     if (!paragraph) {
         paragraph = document.createElement("p");
-        textContainer.appendChild(paragraph);
+        contentContainer.appendChild(paragraph);
     }
 
     paragraph.textContent = descriptionText;
+    paragraph.style.marginBottom = "30px";
+    paragraph.style.textAlign = "center";
 
-    // Add the close button
-    let closeButton = overlay.querySelector("button");
+    // Add the close button to the content container
+    let closeButton = contentContainer.querySelector("button");
     if (!closeButton) {
         closeButton = document.createElement("button");
         closeButton.textContent = "X";
-        closeButton.style.marginTop = "10px";
-        closeButton.style.padding = "10px 20px";
-        closeButton.style.backgroundColor = "transparent";
-        closeButton.style.color = "white";
-        closeButton.style.border = "2px solid white";
-        closeButton.style.borderRadius = "4px";
-        closeButton.style.fontSize = "18px";
-        closeButton.style.cursor = "pointer";
-        closeButton.style.transition = "transform 0.2s ease, background-color 0.2s ease";
-        textContainer.appendChild(closeButton);
+        contentContainer.appendChild(closeButton);
     }
+
+    closeButton.style.padding = "10px 20px";
+    closeButton.style.backgroundColor = "transparent";
+    closeButton.style.color = "white";
+    closeButton.style.border = "2px solid white";
+    closeButton.style.borderRadius = "4px";
+    closeButton.style.fontSize = "18px";
+    closeButton.style.cursor = "pointer";
+    closeButton.style.transition = "transform 0.2s ease, background-color 0.2s ease";
+    closeButton.style.alignSelf = "center";
 
     closeButton.onmouseover = () => {
         closeButton.style.backgroundColor = "rgba(255, 255, 255, 0.2)";
@@ -621,25 +640,26 @@ function displayBlackRectWithImageAndText(imageSrc, descriptionText) {
 
     closeButton.onclick = () => {
         overlay.style.display = "none";
-		CloseInfo.play();
+        CloseInfo.play();
     };
 }
 
+
 // Define specific marker functions
 function MapMarker1Pressed() {
-    handleMapMarkerPress(MapMarker1, "materials/images/buttons/MapMarker1_2.png", "materials/images/buttons/MapMarker1_1.png", "materials/images/Locations/Location1.jpg", "Deep within the shadowed heart of a crumbling industrial complex lies a location long abandoned but steeped in a sinister history. This forgotten space, once a sterile archive room lined with rows of iron filing cabinets and frosted glass displays, was used to store and showcase the meticulously kept records of human test subjects. The room’s chilling air still bears the faint metallic tang of chemicals, a haunting reminder of the experiments conducted just beyond its walls. Yellowed documents, now scattered across the cracked tile floor, detail disturbing tests that blurred the line between science and monstrosity. Whispered tales suggest that the files were not just records but served as a morbid gallery for the researchers, each case an unsettling triumph of their macabre curiosity.");
+    handleMapMarkerPress(MapMarker1, "materials/images/buttons/MapMarker1_2.png", "materials/images/buttons/MapMarker1_1.png", "materials/images/Locations/Location1.jpg", "Hope lies deep within the rotten walls of the monumental Adylum, left by patients wheeping like little children. Those who passed the stone cold iron gates of the Main Entrance knew no exit. The musty wooden planks nailed outside the pine door of the arched gate left by workers marked the end of a sinister era. The colour on the walls faded and the glass on the windows tarnished and shattered in thousands of pieces. Those who attempt to transpass shall suffer a fate worse than death!", "The Main Entrance");
 }
 
 function MapMarker2Pressed() {
-    handleMapMarkerPress(MapMarker2, "materials/images/buttons/MapMarker1_2.png", "materials/images/buttons/MapMarker1_1.png", "materials/images/Locations/Location2.jpg", "Deep within the shadowed heart of a crumbling industrial complex lies a location long abandoned but steeped in a sinister history. This forgotten space, once a sterile archive room lined with rows of iron filing cabinets and frosted glass displays, was used to store and showcase the meticulously kept records of human test subjects. The room’s chilling air still bears the faint metallic tang of chemicals, a haunting reminder of the experiments conducted just beyond its walls. Yellowed documents, now scattered across the cracked tile floor, detail disturbing tests that blurred the line between science and monstrosity. Whispered tales suggest that the files were not just records but served as a morbid gallery for the researchers, each case an unsettling triumph of their macabre curiosity.");
+    handleMapMarkerPress(MapMarker2, "materials/images/buttons/MapMarker1_2.png", "materials/images/buttons/MapMarker1_1.png", "materials/images/Locations/Location2.jpg", "As they were passing throught the frosty white coridors, the dense cold atmosphere started to choke them and drain every last bit of humanity left within their blood. The room was filled with sitting benches and at the far right  end, the secretary's office where they kept records  of all those poor subjects who God abandoned to rot and putrefy. Now only darkness remains at the frosty white coridors of the Reception, leaving a sence of stench lurking beneath  the locked doors and countless of numerals  piled up on the secretery's office. Some, paid  no mind at them, while others...", "The Reception");
 }
 
 function MapMarker3Pressed() {
-    handleMapMarkerPress(MapMarker3, "materials/images/buttons/MapMarker1_2.png", "materials/images/buttons/MapMarker1_1.png", "materials/images/Locations/Location3.jpg", "Deep within the shadowed heart of a crumbling industrial complex lies a location long abandoned but steeped in a sinister history. This forgotten space, once a sterile archive room lined with rows of iron filing cabinets and frosted glass displays, was used to store and showcase the meticulously kept records of human test subjects. The room’s chilling air still bears the faint metallic tang of chemicals, a haunting reminder of the experiments conducted just beyond its walls. Yellowed documents, now scattered across the cracked tile floor, detail disturbing tests that blurred the line between science and monstrosity. Whispered tales suggest that the files were not just records but served as a morbid gallery for the researchers, each case an unsettling triumph of their macabre curiosity.");
+    handleMapMarkerPress(MapMarker3, "materials/images/buttons/MapMarker1_2.png", "materials/images/buttons/MapMarker1_1.png", "materials/images/Locations/Location3.jpg", "The once bustling hallways of the Repose Chamber have turned into hollow pits of sorrow and fear. Where  once was standing a booth that visitors could hang their  coats and leave their personal items, now only lies empty  hallways with trembling lights and broken pipes. The perished  scientists where once taking their test subjects to the large rooms of the first floor. Where once was liyng madness and terror, now one can find nothing but dust and mold and  broken syrienges used by the 'doctors' to 'treat' their patients in rather uncanny ways. 'It's for the common good' they repeatidly said. 'LET THERE BE LIGHT!' they said. But with great light, comes great darkness as well.", "The Repose Chamber");
 }
 
 function MapMarker4Pressed() {
-    handleMapMarkerPress(MapMarker4, "materials/images/buttons/MapMarker1_2.png", "materials/images/buttons/MapMarker1_1.png", "materials/images/Locations/Location4.jpg", "Deep within the shadowed heart of a crumbling industrial complex lies a location long abandoned but steeped in a sinister history. This forgotten space, once a sterile archive room lined with rows of iron filing cabinets and frosted glass displays, was used to store and showcase the meticulously kept records of human test subjects. The room’s chilling air still bears the faint metallic tang of chemicals, a haunting reminder of the experiments conducted just beyond its walls. Yellowed documents, now scattered across the cracked tile floor, detail disturbing tests that blurred the line between science and monstrosity. Whispered tales suggest that the files were not just records but served as a morbid gallery for the researchers, each case an unsettling triumph of their macabre curiosity.");
+    handleMapMarkerPress(MapMarker4, "materials/images/buttons/MapMarker1_2.png", "materials/images/buttons/MapMarker1_1.png", "materials/images/Locations/Location4.jpg", "This is a random description for Location 4.");
 }
 
 function MapMarker5Pressed() {
@@ -655,7 +675,7 @@ function MapMarker7Pressed() {
 }
 
 function MapMarker_USBPressed() {
-    handleMapMarkerPress(MapMarker_USB, "materials/images/buttons/MapMarker2_2.png", "materials/images/buttons/MapMarker2_1.png", "materials/images/Locations/USB_Location.jpg", "Deep within the shadowed heart of a crumbling industrial complex lies a location long abandoned but steeped in a sinister history. This forgotten space, once a sterile archive room lined with rows of iron filing cabinets and frosted glass displays, was used to store and showcase the meticulously kept records of human test subjects. The room’s chilling air still bears the faint metallic tang of chemicals, a haunting reminder of the experiments conducted just beyond its walls. Yellowed documents, now scattered across the cracked tile floor, detail disturbing tests that blurred the line between science and monstrosity. Whispered tales suggest that the files were not just records but served as a morbid gallery for the researchers, each case an unsettling triumph of their macabre curiosity.");
+    handleMapMarkerPress(MapMarker_USB, "materials/images/buttons/MapMarker2_2.png", "materials/images/buttons/MapMarker2_1.png", "materials/images/Locations/USB_Location.jpg", "The most ominous and excrusiating of actions took places within the narrow dark halls of  the Crematorium. Screams and cries where  constistnly audible through the iron door of  the chambers but never to the outside. Most of those who entered inside never came out. A chapel was built next to the white building, where often a lot of faithful paid a visit to light up a  candle in memory of those who paid with  their flesh. The place today is filled with a bone cracking silence that sometimes feels louder than noise!", "The Crematorium");
 }
 
 
@@ -1290,10 +1310,10 @@ function MLPPressed(mlpNumber) {
 
   // Create an input box for the code
   currentCodeInput = createInput();
-  currentCodeInput.size(width * 0.13, height * 0.05);
+  currentCodeInput.size(width * 0.21, height * 0.045);
   currentCodeInput.position(2, height - (height * 0.11));
   currentCodeInput.attribute("placeholder", "Enter 4-digit code");
-  currentCodeInput.style("text-align", "center");
+  currentCodeInput.style("text-align", "left");
 
   // Create a button to submit the code
   currentSubmitButton = createButton("Submit");
@@ -1508,7 +1528,7 @@ function showCharacterDialogue() {
   if (!characterImage) {
     characterImage = document.createElement("img");
     characterImage.id = "character-image";
-    characterImage.src = "materials/images/TitBit/TitBit.png";
+    characterImage.src = "materials/images/TitBit/TitBitV1.png";
     characterImage.style.width = "150px";
     characterImage.style.height = "auto";
     characterImage.style.borderRadius = "10px";
@@ -1551,7 +1571,7 @@ function showCharacterDialogue() {
       currentImageElement = TitBit_Point1;
 
       if (characterImage) {
-        characterImage.setAttribute("src", "materials/images/TitBit/TitBit_Point.png");
+        characterImage.setAttribute("src", "materials/images/TitBit/TitBitV2.png");
       }
       break;
     case 3:
@@ -1597,7 +1617,7 @@ function showCharacterDialogue() {
       Achievement_BT.style("pointer-events", "auto");
 
       if (characterImage) {
-        characterImage.setAttribute("src", "materials/images/TitBit/TitBit.png");
+        characterImage.setAttribute("src", "materials/images/TitBit/TitBitV1.png");
       }
       break;
     default:
