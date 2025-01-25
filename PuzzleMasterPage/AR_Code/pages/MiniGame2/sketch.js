@@ -551,6 +551,12 @@ function windowResized() {
   T13.size(width, height);
   T14.size(width, height);
   T15.size(width, height);
+  
+  ConfirmBT.size(BT_WH, BT_WH + width * 0.2);
+  ConfirmBT.position(CBT, BTY15);
+  
+  //CancelBT.size(BT_WH, BT_WH);
+  //CancelBT.position(CBT, BTY11);
 }
 
 function ConfirmPressed() {
