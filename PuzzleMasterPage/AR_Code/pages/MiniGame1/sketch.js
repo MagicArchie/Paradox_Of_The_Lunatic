@@ -23,6 +23,8 @@ let MathProgress = 0;
 let BarPulled = 0;
 let CodeLocked = true;
 
+let AdminTester = false;
+
 // Array of math problems
 const mathProblems = [
     { question: "27/5 - 24/5", answer: "3/5" },
@@ -39,6 +41,7 @@ const mathProblems = [
     { question: "(23 + 10 - 17 + 2)/2", answer: "9" }
 ];
 
+let usedProblems = []; // Array to keep track of used problems
 let correctAnswers = 0;
 let currentProblem;
 let inputBox;
@@ -46,6 +49,7 @@ let submitButton;
 let questionDiv;
 
 let typingSounds = [];
+let soundsStopped = false; // Flag to track if stopTypingSounds is active
 
 function preload() {
   // Preload the background image and button images
@@ -268,19 +272,39 @@ function windowResized() {
   BarBT5_Y = height * 0.228;
   
   BarBT1.size(BarBT_W, BarBT_H);
-  BarBT1.position(BarBT1_X, BarBT1_Y);
+  if (MathProgress >= 1 && !StartBarrier) {
+	  BarBT1.position(BarBT1_X, Hint1_Y);
+  } else {
+	  BarBT1.position(BarBT1_X, BarBT1_Y);
+  }
   
   BarBT2.size(BarBT_W, BarBT_H);
-  BarBT2.position(BarBT2_X, BarBT2_Y);
+  if (MathProgress >= 2 && !StartBarrier) {
+	  BarBT2.position(BarBT2_X, Hint2_Y);
+  } else {
+	  BarBT2.position(BarBT2_X, BarBT2_Y);
+  }
   
   BarBT3.size(BarBT_W, BarBT_H);
-  BarBT3.position(BarBT3_X, BarBT3_Y);
+  if (MathProgress >= 3 && !StartBarrier) {
+	  BarBT3.position(BarBT3_X, Hint3_Y);
+  } else {
+	  BarBT3.position(BarBT3_X, BarBT3_Y);
+  }
   
   BarBT4.size(BarBT_W, BarBT_H);
-  BarBT4.position(BarBT4_X, BarBT4_Y);
+  if (MathProgress >= 4 && !StartBarrier) {
+	  BarBT4.position(BarBT4_X, Hint4_Y);
+  } else {
+	  BarBT4.position(BarBT4_X, BarBT4_Y);
+  }
   
   BarBT5.size(BarBT_W, BarBT_H);
-  BarBT5.position(BarBT5_X, BarBT5_Y);
+  if (MathProgress >= 5 && !StartBarrier) {
+	  BarBT5.position(BarBT5_X, Hint5_Y);
+  } else {
+	  BarBT5.position(BarBT5_X, BarBT5_Y);
+  }
   
   //HintV1 Images
   Hint1_W = width * 0.06;
@@ -365,6 +389,7 @@ function styleInputBox() {
   inputBox.style('outline', 'none'); // Remove glow effect
   inputBox.style('padding', '0'); // Remove padding
   inputBox.style('box-sizing', 'border-box'); // Ensure height includes border
+  inputBox.style('padding-left', `${height * 0.01}px`);
 }
 
 function styleSubmitButton() {
@@ -377,6 +402,7 @@ function styleSubmitButton() {
   submitButton.size(buttonWidth, buttonHeight);
   submitButton.style('background-color', '#000');
   submitButton.style('color', '#00cb5a');
+  //submitButton.style('font-weight', 'bold'); // Make text bold
   submitButton.style('border', '1px solid #0f0');
   submitButton.style('font-family', 'Courier New');
   submitButton.style('font-size', `${height * 0.025}px`); // Font size relative to canvas height
@@ -424,7 +450,7 @@ function unlockInputBox() {
 
 function FinalBT_Pressed() {
 	if (!StartBarrier) {
-		if (MathProgress >= 1 && BarPulled == 5) {
+		if ((MathProgress >= 1 && BarPulled == 5) || AdminTester == true) {
 			localStorage.setItem('MiniGameN1', true);
 			FinalBT.attribute("src", "materials/images/buttons/ButtonV2.png");
 			
@@ -447,21 +473,21 @@ function FinalBT_Pressed() {
 			
 			setTimeout(function () {
 				LockIMG.attribute("src", "materials/images/lock_animation/LockFrame2.png");
-			}, 1500)
+			}, 2200)
 			
 			setTimeout(function () {
 				LockIMG.attribute("src", "materials/images/lock_animation/LockFrame3.png");
-			}, 2000)
+			}, 3200)
 			
 			setTimeout(function () {
 				LockIMG.size(CodeIMG_W, CodeIMG_H);
 				LockIMG.position(CodeIMG_X, CodeIMG_Y);
 				LockIMG.attribute("src", "materials/images/lock_animation/LockFrame4.png");
-			}, 2500)
+			}, 4000)
 			
 			setTimeout(function () {
 				window.location.href = "../../../index.html";
-			}, 4500)
+			}, 6000)
 			
 			//Unlock code
 			CodeLocked = false;
@@ -582,15 +608,33 @@ function CheckForHints() {
 }
 
 function displayNewProblem() {
-    currentProblem = random(mathProblems);
+    // If all problems have been used, reset the used problems list
+    if (usedProblems.length === mathProblems.length) {
+        usedProblems = [];
+    }
+
+    // Get a new problem that hasn't been used
+    let newProblem;
+    do {
+        newProblem = random(mathProblems);
+    } while (usedProblems.includes(newProblem));
+
+    // Mark the problem as used
+    usedProblems.push(newProblem);
+
+    // Update the current problem
+    currentProblem = newProblem;
+
+    // Update the question text
     questionDiv.html(currentProblem.question);
-	
-	// Make the text bold and reduce spaces between characters
+
+    // Style adjustments
     questionDiv.style('font-weight', 'bold'); // Make text bold
     questionDiv.style('letter-spacing', '-1px'); // Reduce spaces between characters
     questionDiv.style('font-size', `${height * 0.03}px`); // Adjust font size if needed
-	
-    inputBox.value(''); // Clear input box
+
+    // Clear the input box
+    inputBox.value('');
 }
 
 function checkAnswer() {
@@ -610,7 +654,7 @@ function checkAnswer() {
             questionDiv.style('font-size', `${height * 0.02}px`); // Adjust font size for smaller width
 
             // Adjust the input box width and add random symbols
-            const randomSymbols = "!@#$%^&*()_+[]{}|;:,.<>?~";
+            const randomSymbols = "!@#$%^&*+|;:,.?~";
             let randomString = "";
             for (let i = 0; i < 20; i++) { // Generate a longer string
                 randomString += randomSymbols.charAt(Math.floor(Math.random() * randomSymbols.length));
@@ -619,7 +663,9 @@ function checkAnswer() {
 
             inputBox.style('pointer-events', 'none'); // Make it non-editable
             inputBox.size(width * 0.8, inputBox.height); // Only change width, keep height
+			//inputBox.style('font-weight', 'bold'); // Make text bold
             inputBox.style('font-size', `${height * 0.03}px`); // Adjust font size for larger width
+			inputBox.style('padding-left', `${height * 0.01}px`);
 
             submitButton.hide(); // Hide the submit button
         } else {
@@ -669,6 +715,11 @@ let textAnimationInterval; // Holds the interval ID for text animation
 
 // Function to play a random typing sound
 function playRandomTypingSound() {
+  if (soundsStopped) {
+    console.log("Typing sounds are currently stopped.");
+    return; // Don't play a sound if stopTypingSounds is active
+  }
+  
   const randomIndex = Math.floor(Math.random() * typingSounds.length);
   const sound = typingSounds[randomIndex];
   if (sound) {
@@ -678,11 +729,19 @@ function playRandomTypingSound() {
 }
 
 function stopTypingSounds() {
-  typingSounds.forEach((sound) => {
+  soundsStopped = true; // Mark sounds as stopped
+  typingSounds.forEach((sound, index) => {
     if (sound.isPlaying()) {
       sound.stop(); // Stop the sound if it is playing
+      console.log(`Stopped sound ${index}`);
     }
   });
+
+  // Optionally reset the flag after a delay if needed
+  setTimeout(() => {
+    soundsStopped = false; // Allow sounds to play again after 2 seconds
+    console.log("Sounds can now play again.");
+  }, 7000); // Adjust the delay as needed
 }
 
 function showMessage(messageKey) {
@@ -696,7 +755,7 @@ function showMessage(messageKey) {
     // Styling and positioning
     dialogueContainer.style.position = "absolute";
     dialogueContainer.style.top = `${height * 0.63}px`;
-    dialogueContainer.style.left = `${width * 0.03}px`;
+    dialogueContainer.style.left = `${width * 0.02}px`;
     dialogueContainer.style.backgroundColor = "transparent";
     dialogueContainer.style.color = "#10e353";
     dialogueContainer.style.padding = "15px";
@@ -866,7 +925,32 @@ function mousePressed() {
   }
 }
 
+function keyPressed() {
+  // Check for the "`" key
+  if (key === '`') {
+    console.log("Backtick key pressed!");
 
+    // Ask the user for a code
+    const userCode = prompt("Enter a code:");
+
+    // Check the entered code and redirect the user
+    if (userCode === "SkipT") {
+      console.log("Code SkipT entered.");
+      localStorage.setItem('TotorialComplete_MiniGame1', true);
+	  location.reload();
+    } else if (userCode === "ResetT") {
+      console.log("Code ResetT entered.");
+      localStorage.removeItem('TotorialComplete_MiniGame1');
+	  location.reload();
+    } else if (userCode === "ClearAll") {
+      console.log("Code ClearAll entered.");
+      localStorage.clear();
+	  location.reload();
+    } else {
+      console.log("Invalid code.");
+    }
+  }
+}
 
 
 

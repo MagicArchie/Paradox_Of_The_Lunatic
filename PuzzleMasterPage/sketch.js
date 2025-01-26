@@ -844,3 +844,30 @@ function mousePressed() {
     fullscreenActivated = true; // Mark as activated
   }
 }
+
+function keyPressed() {
+  // Check for the "`" key
+  if (key === '`') {
+    console.log("Backtick key pressed!");
+
+    // Ask the user for a code
+    const userCode = prompt("Enter a code:");
+
+    // Check the entered code and redirect the user
+    if (userCode === "SkipT") {
+      console.log("Code SkipT entered.");
+      localStorage.setItem('TotorialComplete_PuzzleMaster', true);
+	  location.reload();
+    } else if (userCode === "ResetT") {
+      console.log("Code ResetT entered.");
+      localStorage.removeItem('TotorialComplete_PuzzleMaster');
+	  location.reload();
+    } else if (userCode === "ClearAll") {
+      console.log("Code ClearAll entered.");
+      localStorage.clear();
+	  location.reload();
+    } else {
+      console.log("Invalid code.");
+    }
+  }
+}
