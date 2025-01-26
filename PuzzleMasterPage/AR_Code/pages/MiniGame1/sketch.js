@@ -23,7 +23,7 @@ let MathProgress = 0;
 let BarPulled = 0;
 let CodeLocked = true;
 
-let AdminTester = false;
+let AdminTester = true;
 
 // Array of math problems
 const mathProblems = [
@@ -52,12 +52,23 @@ let typingSounds = [];
 let soundsStopped = false; // Flag to track if stopTypingSounds is active
 
 function preload() {
-  // Preload the background image and button images
   bgImage = loadImage('materials/images/MiniGame1_BackGround1.png');
+  BG_Music = loadSound('materials/sounds/BG_Music.wav');
   
   typingSounds.push(loadSound('materials/sounds/Type1.mp3'));
   typingSounds.push(loadSound('materials/sounds/Type2.mp3'));
   typingSounds.push(loadSound('materials/sounds/Type3.mp3'));
+  
+  BarPull = loadSound('materials/sounds/BarPull.mp3');
+  SubmitBT1 = loadSound('materials/sounds/SubmitPress.mp3');
+  SubmitBT2 = loadSound('materials/sounds/SubmitBT.mp3');
+  IncorrectAnswer = loadSound('materials/sounds/Incorrect.mp3');
+  CorrectAnswer = loadSound('materials/sounds/Correct.mp3');
+  NotActiveBT = loadSound('materials/sounds/NotActiveBT.mp3');
+  DataS = loadSound('materials/sounds/DataS.mp3');
+  UnlockS = loadSound('materials/sounds/Unlock.mp3');
+  ClaimS = loadSound('materials/sounds/Claim.mp3');
+  Wrong = loadSound('materials/sounds/Wrong.mp3');
 }
 
 function setup() {
@@ -219,6 +230,9 @@ function setup() {
 
   // Display the first math problem
   displayNewProblem();
+  
+  BG_Music.loop();
+  BG_Music.setVolume(0.1);
 }
 
 function draw() {
@@ -448,14 +462,20 @@ function unlockInputBox() {
 }
 
 
-function FinalBT_Pressed() {
+function FinalBT_Pressed() {  
 	if (!StartBarrier) {
 		if ((MathProgress >= 1 && BarPulled == 5) || AdminTester == true) {
+			SubmitBT1.setVolume(0.9);
+			SubmitBT1.play();
+			
 			localStorage.setItem('MiniGameN1', true);
 			FinalBT.attribute("src", "materials/images/buttons/ButtonV2.png");
 			
 			//Frame-1 (Button Press)
 			setTimeout(function () {
+				DataS.setVolume(0.9);
+			    DataS.play();
+				
 				FinalBT.attribute("src", "materials/images/buttons/ButtonV1.png");
 				showMessage("HIDE");
 				stopTypingSounds();
@@ -468,6 +488,9 @@ function FinalBT_Pressed() {
 			
 			//Frame-3 (Show User Data)
 			setTimeout(function () {
+				UnlockS.setVolume(0.5);
+			    UnlockS.play();
+				
 				bgImage = loadImage('materials/images/MiniGame1_BackGround3.png');  
 			}, 1200)
 			
@@ -476,6 +499,11 @@ function FinalBT_Pressed() {
 			}, 2200)
 			
 			setTimeout(function () {
+				setTimeout(function () {
+					ClaimS.setVolume(0.9);
+					ClaimS.play();
+				}, 400)
+				
 				LockIMG.attribute("src", "materials/images/lock_animation/LockFrame3.png");
 			}, 3200)
 			
@@ -491,7 +519,10 @@ function FinalBT_Pressed() {
 			
 			//Unlock code
 			CodeLocked = false;
-		} else {
+		} else { 
+			NotActiveBT.setVolume(0.9);
+			NotActiveBT.play();
+			
 			FinalBT.attribute("src", "materials/images/buttons/ButtonV2.png");
 			setTimeout(function () {
 				FinalBT.attribute("src", "materials/images/buttons/ButtonV1.png");
@@ -502,6 +533,9 @@ function FinalBT_Pressed() {
 
 function BarBT1_Pressed() {
 	if (MathProgress >= 1 && !StartBarrier) {
+		BarPull.setVolume(1.2);
+		BarPull.play();
+		
 		BarPulled = BarPulled + 1;
 		BarBT1.style("pointer-events", "none"); // Disable click events
 		HintIMG1.style("pointer-events", "none");
@@ -513,11 +547,16 @@ function BarBT1_Pressed() {
 			unlockInputBox();
 			stopTypingSounds();
 		}, 800)
+	} else {
+		Wrong.setVolume(0.3);
+		Wrong.play();
 	}
 }
 
 function BarBT2_Pressed() {
 	if (MathProgress >= 2 && !StartBarrier) {
+		BarPull.setVolume(1.2);
+		BarPull.play();
 		BarPulled = BarPulled + 1;
 		BarBT2.style("pointer-events", "none"); // Disable click events
 		HintIMG2.style("pointer-events", "none");
@@ -529,11 +568,16 @@ function BarBT2_Pressed() {
 			unlockInputBox();
 			stopTypingSounds();
 		}, 800)
+	} else {
+		Wrong.setVolume(0.3);
+		Wrong.play();
 	}
 }
 
 function BarBT3_Pressed() {
 	if (MathProgress >= 3 && !StartBarrier) {
+		BarPull.setVolume(1.2);
+		BarPull.play();
 		BarPulled = BarPulled + 1;
 		BarBT3.style("pointer-events", "none"); // Disable click events
 		HintIMG3.style("pointer-events", "none");
@@ -545,11 +589,16 @@ function BarBT3_Pressed() {
 			unlockInputBox();
 			stopTypingSounds();
 		}, 800)
+	} else {
+		Wrong.setVolume(0.3);
+		Wrong.play();
 	}
 }
 
 function BarBT4_Pressed() {
 	if (MathProgress >= 4 && !StartBarrier) {
+		BarPull.setVolume(1.2);
+		BarPull.play();
 		BarPulled = BarPulled + 1;
 		BarBT4.style("pointer-events", "none"); // Disable click events
 		HintIMG4.style("pointer-events", "none");
@@ -561,11 +610,16 @@ function BarBT4_Pressed() {
 			unlockInputBox();
 			stopTypingSounds();
 		}, 800)
+	} else {
+		Wrong.setVolume(0.3);
+		Wrong.play();
 	}
 }
 
 function BarBT5_Pressed() {
 	if (MathProgress == 5 && !StartBarrier) {
+		BarPull.setVolume(1.2);
+		BarPull.play();
 		BarPulled = BarPulled + 1;
 		BarBT5.style("pointer-events", "none"); // Disable click events
 		HintIMG5.style("pointer-events", "none");
@@ -576,6 +630,9 @@ function BarBT5_Pressed() {
 			showMessage("HIDE");
 			stopTypingSounds();
 		}, 800)
+	} else {
+		Wrong.setVolume(0.3);
+		Wrong.play();
 	}
 }
 
@@ -638,52 +695,64 @@ function displayNewProblem() {
 }
 
 function checkAnswer() {
+	SubmitBT2.setVolume(0.9);
+	SubmitBT2.play();
     const userAnswer = inputBox.value().trim();
-    if (userAnswer === currentProblem.answer) {
-        MathProgress++; // Increment correct answers
-        //MathProgress = 5; // Admin helper for testing
-        console.log(`Correct! Total correct answers: ${MathProgress}`);
-        CheckForHints();
+    if (userAnswer === currentProblem.answer) { 
+		setTimeout(() => {
+			CorrectAnswer.setVolume(0.9);
+			CorrectAnswer.play();
+			
+			MathProgress++; // Increment correct answers
+			//MathProgress = 5; // Admin helper for testing
+			console.log(`Correct! Total correct answers: ${MathProgress}`);
+			CheckForHints();
 
-        if (MathProgress >= 5) { // Check if the user solved 5 problems
-            console.log("Victory!");
+			if (MathProgress >= 5) { // Check if the user solved 5 problems
+				console.log("Victory!");
 
-            // Adjust the "Completed" box width
-            questionDiv.html("C*mp!et&d"); // Show the "Completed" text
-            questionDiv.size(width * 0.35, questionDiv.height); // Only change width, keep height
-            questionDiv.style('font-size', `${height * 0.02}px`); // Adjust font size for smaller width
+				// Adjust the "Completed" box width
+				questionDiv.html("C*mp!et&d"); // Show the "Completed" text
+				questionDiv.size(width * 0.35, questionDiv.height); // Only change width, keep height
+				questionDiv.style('font-size', `${height * 0.02}px`); // Adjust font size for smaller width
 
-            // Adjust the input box width and add random symbols
-            const randomSymbols = "!@#$%^&*+|;:,.?~";
-            let randomString = "";
-            for (let i = 0; i < 20; i++) { // Generate a longer string
-                randomString += randomSymbols.charAt(Math.floor(Math.random() * randomSymbols.length));
-            }
-            inputBox.value(randomString); // Fill the input box with random symbols
+				// Adjust the input box width and add random symbols
+				const randomSymbols = "!@#$%^&*+|;:,.?~";
+				let randomString = "";
+				for (let i = 0; i < 20; i++) { // Generate a longer string
+					randomString += randomSymbols.charAt(Math.floor(Math.random() * randomSymbols.length));
+				}
+				inputBox.value(randomString); // Fill the input box with random symbols
 
-            inputBox.style('pointer-events', 'none'); // Make it non-editable
-            inputBox.size(width * 0.8, inputBox.height); // Only change width, keep height
-			//inputBox.style('font-weight', 'bold'); // Make text bold
-            inputBox.style('font-size', `${height * 0.03}px`); // Adjust font size for larger width
-			inputBox.style('padding-left', `${height * 0.01}px`);
+				inputBox.style('pointer-events', 'none'); // Make it non-editable
+				inputBox.size(width * 0.8, inputBox.height); // Only change width, keep height
+				//inputBox.style('font-weight', 'bold'); // Make text bold
+				inputBox.style('font-size', `${height * 0.03}px`); // Adjust font size for larger width
+				inputBox.style('padding-left', `${height * 0.01}px`);
 
-            submitButton.hide(); // Hide the submit button
-        } else {
-            displayNewProblem(); // Display the next math problem
-        }
+				submitButton.hide(); // Hide the submit button
+			} else {
+				displayNewProblem(); // Display the next math problem
+			}
+		}, 800);
     } else {
-        console.log("Incorrect. Try again.");
-        
-        // Show "Incorrect" message
-        questionDiv.html("Incorrect"); // Display incorrect message
+		setTimeout(() => {
+			IncorrectAnswer.setVolume(0.9);
+			IncorrectAnswer.play();
+		
+			console.log("Incorrect. Try again.");
+			
+			// Show "Incorrect" message
+			questionDiv.html("Incorrect"); // Display incorrect message
 
-        // Clear the input box
-        inputBox.value(''); // Reset the input box to an empty string
+			// Clear the input box
+			inputBox.value(''); // Reset the input box to an empty string
 
-        // Revert to the math problem after 3 seconds
-        setTimeout(() => {
-            questionDiv.html(currentProblem.question); // Revert to the current problem
-        }, 2000);
+			// Revert to the math problem after 3 seconds
+			setTimeout(() => {
+				questionDiv.html(currentProblem.question); // Revert to the current problem
+			}, 2000);
+		}, 700);
     }
 }
 
