@@ -707,34 +707,42 @@ function checkAnswer() {
 			//MathProgress = 5; // Admin helper for testing
 			console.log(`Correct! Total correct answers: ${MathProgress}`);
 			CheckForHints();
+			
+			// Show "Incorrect" message
+			questionDiv.html("Correct"); // Display incorrect message
 
-			if (MathProgress >= 5) { // Check if the user solved 5 problems
-				console.log("Victory!");
+			// Clear the input box
+			inputBox.value(''); // Reset the input box to an empty string
+			
+			setTimeout(() => {
+				if (MathProgress >= 5) { // Check if the user solved 5 problems
+					console.log("Victory!");
 
-				// Adjust the "Completed" box width
-				questionDiv.html("C*mp!et&d"); // Show the "Completed" text
-				questionDiv.size(width * 0.35, questionDiv.height); // Only change width, keep height
-				questionDiv.style('font-size', `${height * 0.02}px`); // Adjust font size for smaller width
+					// Adjust the "Completed" box width
+					questionDiv.html("C*mp!et&d"); // Show the "Completed" text
+					questionDiv.size(width * 0.35, questionDiv.height); // Only change width, keep height
+					questionDiv.style('font-size', `${height * 0.02}px`); // Adjust font size for smaller width
 
-				// Adjust the input box width and add random symbols
-				const randomSymbols = "!@#$%^&*+|;:,.?~";
-				let randomString = "";
-				for (let i = 0; i < 20; i++) { // Generate a longer string
-					randomString += randomSymbols.charAt(Math.floor(Math.random() * randomSymbols.length));
+					// Adjust the input box width and add random symbols
+					const randomSymbols = "!@#$%^&*+|;:,.?~";
+					let randomString = "";
+					for (let i = 0; i < 20; i++) { // Generate a longer string
+						randomString += randomSymbols.charAt(Math.floor(Math.random() * randomSymbols.length));
+					}
+					inputBox.value(randomString); // Fill the input box with random symbols
+
+					inputBox.style('pointer-events', 'none'); // Make it non-editable
+					inputBox.size(width * 0.8, inputBox.height); // Only change width, keep height
+					//inputBox.style('font-weight', 'bold'); // Make text bold
+					inputBox.style('font-size', `${height * 0.03}px`); // Adjust font size for larger width
+					inputBox.style('padding-left', `${height * 0.01}px`);
+
+					submitButton.hide(); // Hide the submit button
+				} else {
+					displayNewProblem(); // Display the next math problem
 				}
-				inputBox.value(randomString); // Fill the input box with random symbols
-
-				inputBox.style('pointer-events', 'none'); // Make it non-editable
-				inputBox.size(width * 0.8, inputBox.height); // Only change width, keep height
-				//inputBox.style('font-weight', 'bold'); // Make text bold
-				inputBox.style('font-size', `${height * 0.03}px`); // Adjust font size for larger width
-				inputBox.style('padding-left', `${height * 0.01}px`);
-
-				submitButton.hide(); // Hide the submit button
-			} else {
-				displayNewProblem(); // Display the next math problem
-			}
-		}, 800);
+			}, 2000);
+		}, 700);
     } else {
 		setTimeout(() => {
 			IncorrectAnswer.setVolume(0.9);
