@@ -806,19 +806,21 @@ function playRandomTypingSound() {
 }
 
 function stopTypingSounds() {
-  soundsStopped = true; // Mark sounds as stopped
-  typingSounds.forEach((sound, index) => {
-    if (sound.isPlaying()) {
-      sound.stop(); // Stop the sound if it is playing
-      console.log(`Stopped sound ${index}`);
-    }
-  });
+  if (BarPulled == 5) {
+	  soundsStopped = true; // Mark sounds as stopped
+	  typingSounds.forEach((sound, index) => {
+		if (sound.isPlaying()) {
+		  sound.stop(); // Stop the sound if it is playing
+		  console.log(`Stopped sound ${index}`);
+		}
+	  });
 
-  // Optionally reset the flag after a delay if needed
-  setTimeout(() => {
-    soundsStopped = false; // Allow sounds to play again after 2 seconds
-    console.log("Sounds can now play again.");
-  }, 7000); // Adjust the delay as needed
+	  // Optionally reset the flag after a delay if needed
+	  setTimeout(() => {
+		soundsStopped = false; // Allow sounds to play again after 2 seconds
+		console.log("Sounds can now play again.");
+	  }, 7000); // Adjust the delay as needed
+  }
 }
 
 function showMessage(messageKey) {
