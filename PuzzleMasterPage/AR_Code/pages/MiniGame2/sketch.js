@@ -7,10 +7,23 @@ let PlayBT_WH = 130;
 let PlayBT_X;
 let PlayBT_Y = 670;
 
-let AnswerBT_W = 170;
-let AnswerBT_H = 60;
+let AnswerBT_WH = 150;
 let AnswerBT_X;
 let AnswerBT_Y = 820;
+
+let AnswerBG_W = 10, AnswerBG_H = 900;
+let AnswerBG_X = 10, AnswerBG_Y = 150;
+
+let MinimizeBT_WH;
+let MinimizeBT_X, MinimizeBT_Y;
+
+let ConfirmBT_WH;
+let ConfirmBT_X, ConfirmBT_Y;
+
+let ResetBT_WH;
+let ResetBT_X, ResetBT_Y;
+
+let VictoryMsg_W, VictoryMsg_H, VictoryMsg_X, VictoryMsg_Y;
 
 let BT_WH = 150;
 
@@ -53,15 +66,15 @@ let CBT, CBT2;
 let RectVisible = false;
 
 function preload() {
-  backgroundImage1 = loadImage('materials/images/PuzzleMasterBG1.png');
-  backgroundImage2 = loadImage('materials/images/PuzzleMasterBG2.png');
+  BackgroundIMG = loadImage('materials/images/PuzzleMasterBG.png');
   
-  BackgroundIMG = loadImage('materials/images/MiniGame2 BG1.2.png');
-  
-  //backgroundMS = loadSound('materials/sounds/horrorBGM.mp3');
+  backgroundMS = loadSound('materials/sounds/DarkPiano_Liar.mp3');
   BitMS = loadSound('materials/sounds/hihatversion4.mp3');
   Fbeat = loadSound('materials/sounds/CompleteBeat.mp3');
-  //BT_Press = loadSound('materials/sounds/.mp3');
+  
+  BoxChecked = loadSound('materials/sounds/BoxCheck.mp3');
+  PlayPressed = loadSound('materials/sounds/PlayBT.mp3');
+  BT_Press = loadSound('materials/sounds/BTPressed.mp3');
 }
 
 function setup() {
@@ -75,27 +88,27 @@ function setup() {
   console.log("Pixel density:", pixelDensity());
   
   PlayBT_X = width / 2 - PlayBT_WH / 2;
-  AnswerBT_X  = width / 2 - AnswerBT_W / 2;
+  AnswerBT_X  = width / 2 - AnswerBT_WH / 2;
   
   BTX1 =  width / 2 - BT_WH / 2;
   CBT = width / 2 - BT_WH / 2;
   CBT2 = width / 5 - BT_WH / 2;
   
-  PlayBT = createImg('materials/images/buttons/Play_BT.png', 'Play Button');
+  PlayBT = createImg('materials/images/buttons/PlayBT.png', 'Play Button');
   PlayBT.size(PlayBT_WH, PlayBT_WH);
   PlayBT.position(PlayBT_X, PlayBT_Y);
   PlayBT.mousePressed(PlayBTPressed);
   //PlayBT.hide();
   
-  AnswerBT = createImg('materials/images/buttons/AnswerBT1.png', 'Answer Button');
-  AnswerBT.size(AnswerBT_W, AnswerBT_H);
+  AnswerBT = createImg('materials/images/buttons/AnswerBT.png', 'Answer Button');
+  AnswerBT.size(AnswerBT_WH, AnswerBT_WH);
   AnswerBT.position(AnswerBT_X, AnswerBT_Y);
   AnswerBT.mousePressed(AnswerBTPressed);
   //AnswerBT.hide();
   
   AnswerBG = createImg('materials/images/AnswerBG.png', 'Answer Background');
-  AnswerBG.size(width, height);
-  AnswerBG.position(0, 0);
+  AnswerBG.size(AnswerBG_W, AnswerBG_H);
+  AnswerBG.position(AnswerBG_X, AnswerBG_Y);
   AnswerBG.hide();
   
   //Animation Frames for Bars
@@ -355,21 +368,27 @@ function setup() {
   BT2_15.hide();
   BT2_15.mousePressed(BT2_15Pressed);
   
-  ConfirmBT = createImg('materials/images/buttons/BTC_Check.png', 'Check');
-  ConfirmBT.size(BT_WH, BT_WH + width * 0.2);
-  ConfirmBT.position(CBT, BTY15);
+  ResetBT = createImg('materials/images/buttons/ResetBT.png', 'Reset Button');
+  ResetBT.size(ResetBT_WH, ResetBT_WH);
+  ResetBT.position(ResetBT_X, ResetBT_Y);
+  ResetBT.hide();
+  ResetBT.mousePressed(ResetPressed);
+  
+  MinimizeBT = createImg('materials/images/buttons/MinimizeBT.png', 'Minimize Button');
+  MinimizeBT.size(MinimizeBT_WH, MinimizeBT_WH);
+  MinimizeBT.position(MinimizeBT_X, MinimizeBT_Y);
+  MinimizeBT.hide();
+  MinimizeBT.mousePressed(MinimizePressed);
+  
+  ConfirmBT = createImg('materials/images/buttons/ConfirmBT.png', 'Confirm Button');
+  ConfirmBT.size(ConfirmBT_WH, ConfirmBT_WH);
+  ConfirmBT.position(ConfirmBT_X, ConfirmBT_Y);
   ConfirmBT.hide();
   ConfirmBT.mousePressed(ConfirmPressed);
   
-  CancelBT = createImg('materials/images/buttons/BTC_Cancel.png', 'Check');
-  CancelBT.size(BT_WH, BT_WH);
-  CancelBT.position(CBT, BTY11);
-  CancelBT.hide();
-  CancelBT.mousePressed(CancelPressed);
-  
   VictoryMsg = createImg('materials/images/VictoryMSG.png', 'Victory Message');
-  VictoryMsg.size(width, height);
-  VictoryMsg.position(0, 0);
+  VictoryMsg.size(VictoryMsg_W, VictoryMsg_H);
+  VictoryMsg.position(VictoryMsg_X, VictoryMsg_Y);
   VictoryMsg.hide();
   
   // Check if the value exists
@@ -388,9 +407,9 @@ function setup() {
     console.log('No difficulty level selected.');
   }
 
-  //...
-  
-  //backgroundMS.loop();
+  // Play background music on loop
+  backgroundMS.loop();
+  backgroundMS.setVolume(0.4);
   
   windowResized();
 }
@@ -410,39 +429,46 @@ function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
   
   // Update positions and sizes dynamically
-  PlayBT_WH = width * 0.3;
+  PlayBT_WH = width * 0.24;
   PlayBT_X = width / 2 - PlayBT_WH / 2;
-  PlayBT_Y = height * 0.75; // Example: Adjust position based on new height
+  PlayBT_Y = height * 0.725; // Example: Adjust position based on new height
 
-  AnswerBT_W = width / 2.5;
-  AnswerBT_H = width / 8;
-  AnswerBT_X = width / 2 - AnswerBT_W / 2;
-  AnswerBT_Y = height * 0.92; // Adjusted position
+  AnswerBT_WH = width * 0.27;
+  AnswerBT_X = width / 2 - AnswerBT_WH / 2;
+  AnswerBT_Y = height * 0.85; // Adjusted position
+  
+  AnswerBG_W = width * 0.8;
+  AnswerBG_H = height * 0.8;
+  AnswerBG_X = width / 2 - AnswerBG_W / 2;
+  AnswerBG_Y = height * 0.02;
 	
-  BT_WH = width * 0.12;
-  BTX1 = width / 2 - BT_WH / 2 - (width/5.5);
-  BTX2 = width / 2 - BT_WH / 2 + (width/5.5);
-  BTY1 = height * 0.05; // Center in the new height
-  BTY2 = height * 0.11;
-  BTY3 = height * 0.17;
-  BTY4 = height * 0.23;
-  BTY5 = height * 0.29; 
-  BTY6 = height * 0.35;
-  BTY7 = height * 0.41;
-  BTY8 = height * 0.47;
-  BTY9 = height * 0.53;
-  BTY10 = height * 0.59; 
-  BTY11 = height * 0.65;
-  BTY12 = height * 0.71;
-  BTY13 = height * 0.77; 
-  BTY14 = height * 0.83;
-  BTY15 = height * 0.89;
+  BT_WH = width * 0.095;
+  BTX1 = width / 2 - BT_WH / 2 - (width/5);
+  BTX2 = width / 2 - BT_WH / 2 + (width/5);
+  BTY1 = height * 0.065; // Center in the new height
+  BTY2 = height * 0.112;
+  BTY3 = height * 0.159;
+  BTY4 = height * 0.206;
+  BTY5 = height * 0.253; 
+  BTY6 = height * 0.300;
+  BTY7 = height * 0.347;
+  BTY8 = height * 0.394;
+  BTY9 = height * 0.441;
+  BTY10 = height * 0.488; 
+  BTY11 = height * 0.535;
+  BTY12 = height * 0.582;
+  BTY13 = height * 0.629; 
+  BTY14 = height * 0.676;
+  BTY15 = height * 0.723;
   
   // Reposition the buttons
   PlayBT.position(PlayBT_X, PlayBT_Y);
   PlayBT.size(PlayBT_WH, PlayBT_WH);
   AnswerBT.position(AnswerBT_X, AnswerBT_Y);
-  AnswerBT.size(AnswerBT_W, AnswerBT_H);
+  AnswerBT.size(AnswerBT_WH, AnswerBT_WH);
+  
+  AnswerBG.size(AnswerBG_W, AnswerBG_H); // Set size first
+  AnswerBG.position(AnswerBG_X, AnswerBG_Y); // Then set position
   
   BT1_1.position(BTX1, BTY1);
   BT1_1.size(BT_WH, BT_WH);
@@ -535,7 +561,6 @@ function windowResized() {
   BT2_15.size(BT_WH, BT_WH);
 
   // Resize or reposition other elements if needed
-  AnswerBG.size(width, height);
   T1.size(width, height);
   T2.size(width, height);
   T3.size(width, height);
@@ -550,36 +575,65 @@ function windowResized() {
   T12.size(width, height);
   T13.size(width, height);
   T14.size(width, height);
-  T15.size(width, height);
+  T15.size(width, height);  
   
-  ConfirmBT.size(BT_WH, BT_WH + width * 0.2);
-  ConfirmBT.position(CBT, BTY15);
+  ResetBT_WH = width * 0.2;
+  ResetBT_X = width / 2 - ResetBT_WH / 2;
+  ResetBT_Y = height * 0.35;
   
-  //CancelBT.size(BT_WH, BT_WH);
-  //CancelBT.position(CBT, BTY11);
+  MinimizeBT_WH = width * 0.22;
+  MinimizeBT_X = width / 2 - MinimizeBT_WH / 2;
+  MinimizeBT_Y = height * 0.45;
+  
+  ConfirmBT_WH = width * 0.2;
+  ConfirmBT_X = width / 2 - ConfirmBT_WH / 2;
+  ConfirmBT_Y = height * 0.56;
+  
+  ResetBT.size(ResetBT_WH, ResetBT_WH);
+  ResetBT.position(ResetBT_X, ResetBT_Y);
+  
+  MinimizeBT.size(MinimizeBT_WH, MinimizeBT_WH);
+  MinimizeBT.position(MinimizeBT_X, MinimizeBT_Y);
+  
+  ConfirmBT.size(ConfirmBT_WH, ConfirmBT_WH);
+  ConfirmBT.position(ConfirmBT_X, ConfirmBT_Y);
+  
+  VictoryMsg_W = width * 0.45;
+  VictoryMsg_H = height * 0.15;
+  VictoryMsg_X = width / 2 - VictoryMsg_W / 2;
+  VictoryMsg_Y = height / 2.2 - VictoryMsg_H / 2;
+  
+  VictoryMsg.size(VictoryMsg_W, VictoryMsg_H);
+  VictoryMsg.position(VictoryMsg_X, VictoryMsg_Y);
 }
 
 function ConfirmPressed() {
+	BT_Press.setVolume(0.5);
+	BT_Press.play();
+	
+	ConfirmBT.attribute("src", "materials/images/buttons/ConfirmBT_Pressed.png");
+	setTimeout(function () {
+		ConfirmBT.attribute("src", "materials/images/buttons/ConfirmBT.png");
+	}, 200);
+	
 	if (B1 == 1 && B2 == 1 && B3 == 1 && B4 == 2 && B5 == 1 && B6 == 1 && B7 == 2 && B8 == 1 && B9 == 1 && B10 == 2 && B11 == 1 && B12 == 1 && B13 == 2 && B14 == 1 && B15 ==1) {
 		//Victory
 		console.log('Victory');
-		VictoryMsg.show();
-		
-		//Play Complete Music
-		Fbeat.setVolume(0.4);
-		Fbeat.play();
 		
 		setTimeout(function () { 
 			localStorage.setItem('MiniGameN2', true);
 			window.location.href = "../../../index.html";
-			//VictoryMsg.hide();
-		}, 12500);
+		}, 25000);
 		
 		setTimeout(function () { 
 		  AnswerBG.hide();
 		  AnswerBT.show();
-		  ConfirmBT.hide();
-		  CancelBT.hide();
+		  AnswerBT.mousePressed(null);
+		  PlayBT.show();
+		  PlayBT.mousePressed(null);
+		  ConfirmBT.hide()
+		  MinimizeBT.hide();
+		  ResetBT.hide();
 		  BT1_1.hide();
 		  BT2_1.hide();
 		  BT1_2.hide();
@@ -610,7 +664,64 @@ function ConfirmPressed() {
 		  BT2_14.hide();
 		  BT1_15.hide();
 		  BT2_15.hide();
-		}, 3500);
+		}, 1500);
+		
+		//Animation Section
+		setTimeout(function () { 
+		  setTimeout(function () {
+			Fbeat.setVolume(0.4);
+		    Fbeat.play();  
+			  
+			T1.show();
+		  }, 1500);
+		  setTimeout(function () {
+			T2.show();
+		  }, 2250);
+		  setTimeout(function () {
+			T3.show();
+		  }, 3000);
+		  setTimeout(function () {
+			T4.show();
+		  }, 3750);
+		  setTimeout(function () {
+			T5.show();
+		  }, 4500);
+		  setTimeout(function () {
+			T6.show();
+		  }, 5250);
+		  setTimeout(function () {
+			T7.show();
+		  }, 6000);
+		  setTimeout(function () {
+			T8.show();
+		  }, 6750);
+		  setTimeout(function () {
+			T9.show();
+		  }, 7500);
+		  setTimeout(function () {
+			T10.show();
+		  }, 8250);
+		  setTimeout(function () {
+			T11.show();
+		  }, 9000);
+		  setTimeout(function () {
+			T12.show();
+		  }, 9750);
+		  setTimeout(function () {
+			T13.show();
+		  }, 10500);
+		  setTimeout(function () {
+			T14.show();
+		  }, 11250);
+		  setTimeout(function () { 
+			T15.show();
+		  }, 12000);
+		  setTimeout(function () {
+			VictoryMsg.show();
+		  }, 12750);
+			
+		}, 1500);
+		
 	} else {
 		//Diffeat
 		console.log('Diffeat');
@@ -618,20 +729,22 @@ function ConfirmPressed() {
 }
 
 function AnswerBTPressed() {
-  //BT_Press.setVolume(0.4);
-  //BT_Press.play();
+  BT_Press.setVolume(0.5);
+  BT_Press.play();
   
   RectVisible = true;
   
-  AnswerBT.attribute("src", "materials/images/buttons/AnswerBT2.png");
+  AnswerBT.attribute("src", "materials/images/buttons/AnswerBT_Pressed.png");
   setTimeout(function () {
-    AnswerBT.attribute("src", "materials/images/buttons/AnswerBT1.png");
-  }, 1000);
+    AnswerBT.attribute("src", "materials/images/buttons/AnswerBT.png");
+  }, 200);
   setTimeout(function () {
+	ConfirmBT.show();
+	ResetBT.show();
+	PlayBT.hide();
     AnswerBT.hide();
     AnswerBG.show();
-	ConfirmBT.show();
-	CancelBT.show();
+	MinimizeBT.show();
     BT1_1.show();
 	BT2_1.show();
 	BT1_2.show();
@@ -662,14 +775,25 @@ function AnswerBTPressed() {
 	BT2_14.show();
 	BT1_15.show();
 	BT2_15.show();
-  }, 1500);
+  }, 500);
 }
 
-function CancelPressed() {
+function MinimizePressed() {
+	BT_Press.setVolume(0.5);
+	BT_Press.play();
+	
+	MinimizeBT.attribute("src", "materials/images/buttons/MinimizeBT_Pressed.png");
+    setTimeout(function () {
+	   MinimizeBT.attribute("src", "materials/images/buttons/MinimizeBT.png");
+    }, 200);
+	
+	setTimeout(function () {
+	  PlayBT.show();
+	  ResetBT.hide();
 	  AnswerBG.hide();
 	  AnswerBT.show();
 	  ConfirmBT.hide();
-	  CancelBT.hide();
+	  MinimizeBT.hide();
       BT1_1.hide();
 	  BT2_1.hide();
 	  BT1_2.hide();
@@ -700,196 +824,317 @@ function CancelPressed() {
 	  BT2_14.hide();
 	  BT1_15.hide();
 	  BT2_15.hide();
+	}, 500);
+}
+
+function ResetPressed(){
+	BT_Press.setVolume(0.5);
+	BT_Press.play();
+	
+	ResetBT.attribute("src", "materials/images/buttons/ResetBT_Pressed.png");
+	setTimeout(function () {
+		ResetBT.attribute("src", "materials/images/buttons/ResetBT.png");
+	}, 200);
+	
+	setTimeout(function () {
+		BT1_1.attribute("src", "materials/images/buttons/GBT0.png");
+		BT2_1.attribute("src", "materials/images/buttons/GBT0.png");
+		B1 = 0;
+		BT1_2.attribute("src", "materials/images/buttons/GBT0.png");
+		BT2_2.attribute("src", "materials/images/buttons/GBT0.png");
+		B2 = 0;
+		BT1_3.attribute("src", "materials/images/buttons/GBT0.png");
+		BT2_3.attribute("src", "materials/images/buttons/GBT0.png");
+		B3 = 0;
+		BT1_4.attribute("src", "materials/images/buttons/GBT0.png");
+		BT2_4.attribute("src", "materials/images/buttons/GBT0.png");
+		B4 = 0;
+		BT1_5.attribute("src", "materials/images/buttons/GBT0.png");
+		BT2_5.attribute("src", "materials/images/buttons/GBT0.png");
+		B5 = 0;
+		BT1_6.attribute("src", "materials/images/buttons/GBT0.png");
+		BT2_6.attribute("src", "materials/images/buttons/GBT0.png");
+		B6 = 0;
+		BT1_7.attribute("src", "materials/images/buttons/GBT0.png");
+		BT2_7.attribute("src", "materials/images/buttons/GBT0.png");
+		B7 = 0;
+		BT1_8.attribute("src", "materials/images/buttons/GBT0.png");
+		BT2_8.attribute("src", "materials/images/buttons/GBT0.png");
+		B8 = 0;
+		BT1_9.attribute("src", "materials/images/buttons/GBT0.png");
+		BT2_9.attribute("src", "materials/images/buttons/GBT0.png");
+		B9 = 0;
+		BT1_10.attribute("src", "materials/images/buttons/GBT0.png");
+		BT2_10.attribute("src", "materials/images/buttons/GBT0.png");
+		B10 = 0;
+		BT1_11.attribute("src", "materials/images/buttons/GBT0.png");
+		BT2_11.attribute("src", "materials/images/buttons/GBT0.png");
+		B11 = 0;
+		BT1_12.attribute("src", "materials/images/buttons/GBT0.png");
+		BT2_12.attribute("src", "materials/images/buttons/GBT0.png");
+		B12 = 0;
+		BT1_13.attribute("src", "materials/images/buttons/GBT0.png");
+		BT2_13.attribute("src", "materials/images/buttons/GBT0.png");
+		B13 = 0;
+		BT1_14.attribute("src", "materials/images/buttons/GBT0.png");
+		BT2_14.attribute("src", "materials/images/buttons/GBT0.png");
+		B14 = 0;
+		BT1_15.attribute("src", "materials/images/buttons/GBT0.png");
+		BT2_15.attribute("src", "materials/images/buttons/GBT0.png");
+		B15 = 0;
+	}, 400);
 }
 
 function BT1_1Pressed(){
+	BoxChecked.setVolume(0.9);
+	BoxChecked.play();
 	BT2_1.attribute("src", "materials/images/buttons/GBT0.png");
 	BT1_1.attribute("src", "materials/images/buttons/BTC.png");
 	B1 = 1;
 }
 	
 function BT2_1Pressed(){
+	BoxChecked.setVolume(0.9);
+	BoxChecked.play();
 	BT1_1.attribute("src", "materials/images/buttons/GBT0.png");
 	BT2_1.attribute("src", "materials/images/buttons/BTC.png");
 	B1 = 2;
 }	
 
 function BT1_2Pressed(){
+	BoxChecked.setVolume(0.9);
+	BoxChecked.play();
 	BT2_2.attribute("src", "materials/images/buttons/GBT0.png");
 	BT1_2.attribute("src", "materials/images/buttons/BTC.png");
 	B2 = 1;
 }
 	
 function BT2_2Pressed(){
+	BoxChecked.setVolume(0.9);
+	BoxChecked.play();
 	BT1_2.attribute("src", "materials/images/buttons/GBT0.png");
 	BT2_2.attribute("src", "materials/images/buttons/BTC.png");
 	B2 = 2;
 }
 
 function BT1_3Pressed(){
+	BoxChecked.setVolume(0.9);
+	BoxChecked.play();
 	BT2_3.attribute("src", "materials/images/buttons/GBT0.png");
 	BT1_3.attribute("src", "materials/images/buttons/BTC.png");
 	B3 = 1;
 }
 	
 function BT2_3Pressed(){
+	BoxChecked.setVolume(0.9);
+	BoxChecked.play();
 	BT1_3.attribute("src", "materials/images/buttons/GBT0.png");
 	BT2_3.attribute("src", "materials/images/buttons/BTC.png");
 	B3 = 2;
 }		
 
 function BT1_4Pressed(){
+	BoxChecked.setVolume(0.9);
+	BoxChecked.play();
 	BT2_4.attribute("src", "materials/images/buttons/GBT0.png");
 	BT1_4.attribute("src", "materials/images/buttons/BTC.png");
 	B4 = 1;
 }
 	
 function BT2_4Pressed(){
+	BoxChecked.setVolume(0.9);
+	BoxChecked.play();
 	BT1_4.attribute("src", "materials/images/buttons/GBT0.png");
 	BT2_4.attribute("src", "materials/images/buttons/BTC.png");
 	B4 = 2;
 }		
 
 function BT1_5Pressed(){
+	BoxChecked.setVolume(0.9);
+	BoxChecked.play();
 	BT2_5.attribute("src", "materials/images/buttons/GBT0.png");
 	BT1_5.attribute("src", "materials/images/buttons/BTC.png");
 	B5 = 1;
 }
 	
 function BT2_5Pressed(){
+	BoxChecked.setVolume(0.9);
+	BoxChecked.play();
 	BT1_5.attribute("src", "materials/images/buttons/GBT0.png");
 	BT2_5.attribute("src", "materials/images/buttons/BTC.png");
 	B5 = 2;
 }	
 
 function BT1_6Pressed(){
+	BoxChecked.setVolume(0.9);
+	BoxChecked.play();
 	BT2_6.attribute("src", "materials/images/buttons/GBT0.png");
 	BT1_6.attribute("src", "materials/images/buttons/BTC.png");
 	B6 = 1;
 }
 	
 function BT2_6Pressed(){
+	BoxChecked.setVolume(0.9);
+	BoxChecked.play();
 	BT1_6.attribute("src", "materials/images/buttons/GBT0.png");
 	BT2_6.attribute("src", "materials/images/buttons/BTC.png");
 	B6 = 2;
 }	
 
 function BT1_7Pressed(){
+	BoxChecked.setVolume(0.9);
+	BoxChecked.play();
 	BT2_7.attribute("src", "materials/images/buttons/GBT0.png");
 	BT1_7.attribute("src", "materials/images/buttons/BTC.png");
 	B7 = 1;
 }
 	
 function BT2_7Pressed(){
+	BoxChecked.setVolume(0.9);
+	BoxChecked.play();
 	BT1_7.attribute("src", "materials/images/buttons/GBT0.png");
 	BT2_7.attribute("src", "materials/images/buttons/BTC.png");
 	B7 = 2;
 }	
 
 function BT1_8Pressed(){
+	BoxChecked.setVolume(0.9);
+	BoxChecked.play();
 	BT2_8.attribute("src", "materials/images/buttons/GBT0.png");
 	BT1_8.attribute("src", "materials/images/buttons/BTC.png");
 	B8 = 1;
 }
 	
 function BT2_8Pressed(){
+	BoxChecked.setVolume(0.9);
+	BoxChecked.play();
 	BT1_8.attribute("src", "materials/images/buttons/GBT0.png");
 	BT2_8.attribute("src", "materials/images/buttons/BTC.png");
 	B8 = 2;
 }	
 
 function BT1_9Pressed(){
+	BoxChecked.setVolume(0.9);
+	BoxChecked.play();
 	BT2_9.attribute("src", "materials/images/buttons/GBT0.png");
 	BT1_9.attribute("src", "materials/images/buttons/BTC.png");
 	B9 = 1;
 }
 	
 function BT2_9Pressed(){
+	BoxChecked.setVolume(0.9);
+	BoxChecked.play();
 	BT1_9.attribute("src", "materials/images/buttons/GBT0.png");
 	BT2_9.attribute("src", "materials/images/buttons/BTC.png");
 	B9 = 2;
 }	
 
 function BT1_10Pressed(){
+	BoxChecked.setVolume(0.9);
+	BoxChecked.play();
 	BT2_10.attribute("src", "materials/images/buttons/GBT0.png");
 	BT1_10.attribute("src", "materials/images/buttons/BTC.png");
 	B10 = 1;
 }
 	
 function BT2_10Pressed(){
+	BoxChecked.setVolume(0.9);
+	BoxChecked.play();
 	BT1_10.attribute("src", "materials/images/buttons/GBT0.png");
 	BT2_10.attribute("src", "materials/images/buttons/BTC.png");
 	B10 = 2;
 }
 
 function BT1_11Pressed(){
+	BoxChecked.setVolume(0.9);
+	BoxChecked.play();
 	BT2_11.attribute("src", "materials/images/buttons/GBT0.png");
 	BT1_11.attribute("src", "materials/images/buttons/BTC.png");
 	B11 = 1;
 }
 	
 function BT2_11Pressed(){
+	BoxChecked.setVolume(0.9);
+	BoxChecked.play();
 	BT1_11.attribute("src", "materials/images/buttons/GBT0.png");
 	BT2_11.attribute("src", "materials/images/buttons/BTC.png");
 	B11 = 2;
 }		
 
 function BT1_12Pressed(){
+	BoxChecked.setVolume(0.9);
+	BoxChecked.play();
 	BT2_12.attribute("src", "materials/images/buttons/GBT0.png");
 	BT1_12.attribute("src", "materials/images/buttons/BTC.png");
 	B12 = 1;
 }
 	
 function BT2_12Pressed(){
+	BoxChecked.setVolume(0.9);
+	BoxChecked.play();
 	BT1_12.attribute("src", "materials/images/buttons/GBT0.png");
 	BT2_12.attribute("src", "materials/images/buttons/BTC.png");
 	B12 = 2;
 }	
 
 function BT1_13Pressed(){
+	BoxChecked.setVolume(0.9);
+	BoxChecked.play();
 	BT2_13.attribute("src", "materials/images/buttons/GBT0.png");
 	BT1_13.attribute("src", "materials/images/buttons/BTC.png");
 	B13 = 1;
 }
 	
 function BT2_13Pressed(){
+	BoxChecked.setVolume(0.9);
+	BoxChecked.play();
 	BT1_13.attribute("src", "materials/images/buttons/GBT0.png");
 	BT2_13.attribute("src", "materials/images/buttons/BTC.png");
 	B13 = 2;
 }	
 
 function BT1_14Pressed(){
+	BoxChecked.setVolume(0.9);
+	BoxChecked.play();
 	BT2_14.attribute("src", "materials/images/buttons/GBT0.png");
 	BT1_14.attribute("src", "materials/images/buttons/BTC.png");
 	B14 = 1;
 }
 	
 function BT2_14Pressed(){
+	BoxChecked.setVolume(0.9);
+	BoxChecked.play();
 	BT1_14.attribute("src", "materials/images/buttons/GBT0.png");
 	BT2_14.attribute("src", "materials/images/buttons/BTC.png");
 	B14 = 2;
 }	
 						
 function BT1_15Pressed(){
+	BoxChecked.setVolume(0.9);
+	BoxChecked.play();
 	BT2_15.attribute("src", "materials/images/buttons/GBT0.png");
 	BT1_15.attribute("src", "materials/images/buttons/BTC.png");
 	B15 = 1;
 }
 	
 function BT2_15Pressed(){
+	BoxChecked.setVolume(0.9);
+	BoxChecked.play();
 	BT1_15.attribute("src", "materials/images/buttons/GBT0.png");
 	BT2_15.attribute("src", "materials/images/buttons/BTC.png");
 	B15 = 2;
 }						
 
 function PlayBTPressed() {
-  //BT_Press.setVolume(0.4);
-  //BT_Press.play();
+  PlayPressed.setVolume(0.9);
+  PlayPressed.play();
+  
+  backgroundMS.setVolume(0.05);
 
-  PlayBT.attribute("src", "materials/images/buttons/Play_BT2.png");
+  PlayBT.attribute("src", "materials/images/buttons/PlayBT_Pressed.png");
   setTimeout(function () {
-    PlayBT.attribute("src", "materials/images/buttons/Play_BT.png");
-  }, 1000);
+    PlayBT.attribute("src", "materials/images/buttons/PlayBT.png");
+  }, 500);
   
   //Animation Section
   setTimeout(function () {
@@ -959,6 +1204,9 @@ function PlayBTPressed() {
   setTimeout(function () {
     T15.hide();
   }, 12750);
+  setTimeout(function () {
+	backgroundMS.setVolume(0.4);  
+  }, 13750);
 }
 
 let fullscreenActivated = false;
@@ -966,7 +1214,7 @@ let fullscreenActivated = false;
 function mousePressed() {
   if (!fullscreenActivated && mouseX > 0 && mouseX < width && mouseY > 0 && mouseY < height) {
     let fs = fullscreen();
-    //fullscreen(!fs);
+    fullscreen(!fs);
     fullscreenActivated = true; // Mark as activated
   }
 }
