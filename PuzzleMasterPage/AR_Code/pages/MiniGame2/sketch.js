@@ -614,7 +614,7 @@ function ConfirmPressed() {
 	ConfirmBT.attribute("src", "materials/images/buttons/ConfirmBT_Pressed.png");
 	setTimeout(function () {
 		ConfirmBT.attribute("src", "materials/images/buttons/ConfirmBT.png");
-	}, 200);
+	}, 300);
 	
 	if (B1 == 1 && B2 == 1 && B3 == 1 && B4 == 2 && B5 == 1 && B6 == 1 && B7 == 2 && B8 == 1 && B9 == 1 && B10 == 2 && B11 == 1 && B12 == 1 && B13 == 2 && B14 == 1 && B15 ==1) {
 		//Victory
@@ -737,7 +737,7 @@ function AnswerBTPressed() {
   AnswerBT.attribute("src", "materials/images/buttons/AnswerBT_Pressed.png");
   setTimeout(function () {
     AnswerBT.attribute("src", "materials/images/buttons/AnswerBT.png");
-  }, 200);
+  }, 300);
   setTimeout(function () {
 	ConfirmBT.show();
 	ResetBT.show();
@@ -775,7 +775,7 @@ function AnswerBTPressed() {
 	BT2_14.show();
 	BT1_15.show();
 	BT2_15.show();
-  }, 500);
+  }, 600);
 }
 
 function MinimizePressed() {
@@ -785,7 +785,7 @@ function MinimizePressed() {
 	MinimizeBT.attribute("src", "materials/images/buttons/MinimizeBT_Pressed.png");
     setTimeout(function () {
 	   MinimizeBT.attribute("src", "materials/images/buttons/MinimizeBT.png");
-    }, 200);
+    }, 300);
 	
 	setTimeout(function () {
 	  PlayBT.show();
@@ -824,7 +824,7 @@ function MinimizePressed() {
 	  BT2_14.hide();
 	  BT1_15.hide();
 	  BT2_15.hide();
-	}, 500);
+	}, 600);
 }
 
 function ResetPressed(){
@@ -834,7 +834,7 @@ function ResetPressed(){
 	ResetBT.attribute("src", "materials/images/buttons/ResetBT_Pressed.png");
 	setTimeout(function () {
 		ResetBT.attribute("src", "materials/images/buttons/ResetBT.png");
-	}, 200);
+	}, 300);
 	
 	setTimeout(function () {
 		BT1_1.attribute("src", "materials/images/buttons/GBT0.png");
@@ -882,7 +882,7 @@ function ResetPressed(){
 		BT1_15.attribute("src", "materials/images/buttons/GBT0.png");
 		BT2_15.attribute("src", "materials/images/buttons/GBT0.png");
 		B15 = 0;
-	}, 400);
+	}, 500);
 }
 
 function BT1_1Pressed(){
@@ -1203,10 +1203,11 @@ function PlayBTPressed() {
   }, 12000);
   setTimeout(function () {
     T15.hide();
+	
   }, 12750);
   setTimeout(function () {
 	backgroundMS.setVolume(0.4);  
-  }, 13750);
+}, 13750);
 }
 
 let fullscreenActivated = false;

@@ -614,7 +614,7 @@ function ConfirmPressed() {
 	ConfirmBT.attribute("src", "materials/images/buttons/ConfirmBT_Pressed.png");
 	setTimeout(function () {
 		ConfirmBT.attribute("src", "materials/images/buttons/ConfirmBT.png");
-	}, 200);
+	}, 300);
 	
 	if (B1 == 0 && B2 == 0 && B3 == 0 && B4 == 1 && B5 == 2 && B6 == 2 && B7 == 1 && B8 == 2 && B9 == 2 && B10 == 1 && B11 == 2 && B12 == 2 && B13 == 1 && B14 == 2 && B15 ==2) {
 		//Victory
@@ -736,7 +736,7 @@ function MinimizePressed() {
 	MinimizeBT.attribute("src", "materials/images/buttons/MinimizeBT_Pressed.png");
     setTimeout(function () {
 	   MinimizeBT.attribute("src", "materials/images/buttons/MinimizeBT.png");
-    }, 200);
+    }, 300);
 	
 	setTimeout(function () {
 	  AnswerBG.hide();
@@ -774,7 +774,7 @@ function MinimizePressed() {
 	  BT2_14.hide();
 	  BT1_15.hide();
 	  BT2_15.hide();
-	}, 500);
+	}, 600);
 }
 
 function ResetPressed(){
@@ -784,7 +784,7 @@ function ResetPressed(){
 	ResetBT.attribute("src", "materials/images/buttons/ResetBT_Pressed.png");
 	setTimeout(function () {
 		ResetBT.attribute("src", "materials/images/buttons/ResetBT.png");
-	}, 200);
+	}, 300);
 	
 	setTimeout(function () {
 		BT1_1.attribute("src", "materials/images/buttons/GBT0.png");
@@ -832,7 +832,7 @@ function ResetPressed(){
 		BT1_15.attribute("src", "materials/images/buttons/GBT0.png");
 		BT2_15.attribute("src", "materials/images/buttons/GBT0.png");
 		B15 = 0;
-	}, 400);	
+	}, 500);	
 }
 
 function AnswerBTPressed() {
@@ -844,7 +844,7 @@ function AnswerBTPressed() {
   AnswerBT.attribute("src", "materials/images/buttons/AnswerBT_Pressed.png");
   setTimeout(function () {
     AnswerBT.attribute("src", "materials/images/buttons/AnswerBT.png");
-  }, 200);
+  }, 300);
   
   setTimeout(function () {
     AnswerBT.hide();
