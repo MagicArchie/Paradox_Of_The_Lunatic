@@ -11,8 +11,11 @@ let AdminHelper = false;
 // Optional custom font
 let customFont;
 
+let OneUse = false;
+let OneUse2 = false;
+
 // Background images
-let backgroundImage1, backgroundImage2;
+let backgroundImage, backgroundImage2;
 let ActiveCard = 0;
 
 // Card dimensions and positions
@@ -28,6 +31,9 @@ let cards = [];
 let visibleCards = []; 
 let matchedCards = []; 
 let isProcessing = false; 
+
+// Global variables for text positions
+let roundTextY, matchesTextY, roomCodeTextY, roomCodeTextY2;
 
 // Round tracking
 let showRoundMessage = true;   
@@ -78,8 +84,18 @@ function preload() {
   // If you have a custom font, load it here:
   // customFont = loadFont('materials/fonts/WitchMystery.otf'); 
 
-  backgroundImage1 = loadImage('materials/images/BackGround.png');
+  backgroundImage = loadImage('materials/images/BackGround.png');
   backgroundImage2 = loadImage('materials/images/PathFinderBG2.png');
+  
+  backgroundMS = loadSound('materials/sounds/DarkPiano_Silence.mp3');
+  CardFlip1 = loadSound('materials/sounds/CardFlip1.mp3');
+  CardFlip2 = loadSound('materials/sounds/CardFlip2.wav');
+  HeartLost = loadSound('materials/sounds/HeartLost.mp3');
+  LevelUp = loadSound('materials/sounds/LevelUp.mp3');
+  RoundStart = loadSound('materials/sounds/RoundStart.mp3');
+  RoundLost = loadSound('materials/sounds/RoundLost.mp3');
+  Complete = loadSound('materials/sounds/Complete.mp3');
+  GameStart = loadSound('materials/sounds/GameStart.mp3');
 }
 
 function setup() {
@@ -102,6 +118,12 @@ function setup() {
 
   // Start timer for initial round message
   messageStartTime = millis();
+  
+  // Play background music on loop
+  backgroundMS.loop();
+  backgroundMS.setVolume(0.4);
+  
+  windowResized();
 }
 
 /**********************************************
@@ -110,6 +132,12 @@ function setup() {
 function initializeRound() {
   initializeRandomCardPairs();
   createAllCards(); 
+  
+  if (OneUse2 == false) {
+	GameStart.setVolume(0.9);
+	GameStart.play();  
+	OneUse2 = true;
+  }
 }
 
 function initializeRandomCardPairs() {
@@ -285,6 +313,8 @@ function handleCardPress(card, index) {
   if (isProcessing || showRoundMessage || showLostMessage || matchedCards.includes(index)) {
     return;
   }
+  
+  CardFlip1.play(); 
 
   const frontImagePath = cardImages[index];
   card.attribute('src', frontImagePath);
@@ -296,6 +326,11 @@ function handleCardPress(card, index) {
     const [first, second] = visibleCards;
 
     if (cardImages[first.index] === cardImages[second.index]) {
+		
+      setTimeout(() => {
+	    Complete.play();	
+	  }, 500);		
+		
       console.log('Match found!');
       matchedCards.push(first.index, second.index);
 
@@ -309,7 +344,9 @@ function handleCardPress(card, index) {
       console.log('No match!');
       loseOneHeart();
 
-      setTimeout(() => {
+      setTimeout(() => {  
+		CardFlip2.play();  
+		  
         first.card.attribute('src', currentBackImagePath);
         second.card.attribute('src', currentBackImagePath);
         visibleCards = [];
@@ -321,6 +358,9 @@ function handleCardPress(card, index) {
 
 // Hearts do NOT reset on round complete => only on user-lost
 function loseOneHeart() {
+	
+	HeartLost.play();
+	
   if (heartsLost < HEART_COUNT) {
     let indexToKill = (HEART_COUNT - 1) - heartsLost;
     hearts[indexToKill].attribute('src', 'materials/images/HealthBar/DeadHeart.png');
@@ -341,6 +381,9 @@ function loseOneHeart() {
 
 function checkForRoundCompletion() {
   if (matchedCards.length === cardImages.length) {
+	  
+	  LevelUp.play();  
+	  
     console.log(`Round ${currentRound} Completed!`);
 
     setTimeout(() => {
@@ -355,6 +398,9 @@ function checkForRoundCompletion() {
         cards = [];
       } else {
         // do NOT reset hearts => only user-lost resets them
+		
+		RoundStart.play();
+		
         cards.forEach(c => c.remove());
         cards = [];
         initializeRound();
@@ -371,6 +417,12 @@ function draw() {
 
   // 1) If "You lost" message
   if (showLostMessage) {
+	  
+	if (OneUse == false) {
+	  RoundLost.play();  
+	  OneUse = true;
+    }
+	  
     background(0);
     fill(255);
     textAlign(CENTER, CENTER);
@@ -439,7 +491,7 @@ function draw() {
 
       if (millis() - messageStartTime >= roundMessageTimer && currentRound <= TOTAL_ROUNDS) {
         showRoundMessage = false;
-        image(backgroundImage1, 0, 0, width, height);
+        image(backgroundImage, 0, 0, width, height);
 
         cards.forEach(c => c.show());
         hearts.forEach(h => h.show());
@@ -447,7 +499,7 @@ function draw() {
     }
   } else {
     // 3) Normal gameplay
-    image(backgroundImage1, 0, 0, width, height);
+    image(backgroundImage, 0, 0, width, height);
 
     // Round text top-center
     textAlign(CENTER, TOP);
@@ -474,12 +526,107 @@ function draw() {
   }
 }
 
+/**********************************************
+ * windowResized
+ **********************************************/
+function windowResized() {
+  let newWidth = fullscreen() ? displayWidth : windowWidth;
+  let newHeight = fullscreen() ? displayHeight : windowHeight;
+  
+  resizeCanvas(newWidth, newHeight);
+
+  // Ensure background image covers full canvas
+  redrawBackground();
+
+  // Maintain proportional scaling of game elements
+  let aspectRatio = width / height;
+  let heartScale = aspectRatio > 1.5 ? 0.045 : 0.055;
+
+  // Adjust card dimensions dynamically
+  CardWidth = width * 0.13; // Cards take up 13% of width
+  CardHeight = height * 0.48; // Cards take up 48% of height
+
+  let cardSpacingX = width * 0.02; // Spacing between cards
+
+  // Calculate total width occupied by all 6 cards + 5 spaces in between
+  let totalCardWidth = (CardWidth * 6) + (cardSpacingX * 5);
+
+  // Calculate starting X position to center the row
+  let startX = (width - totalCardWidth) / 2;
+
+  // Adjust card positions dynamically to maintain equal margins
+  CardX1 = startX;
+  CardX2 = CardX1 + CardWidth + cardSpacingX;
+  CardX3 = CardX2 + CardWidth + cardSpacingX;
+  CardX4 = CardX3 + CardWidth + cardSpacingX;
+  CardX5 = CardX4 + CardWidth + cardSpacingX;
+  CardX6 = CardX5 + CardWidth + cardSpacingX;
+
+  CardY123 = height * 0.25; // Aligns all cards on the same Y-axis
+
+  if (cards.length > 0) {
+    cards[0].position(CardX1, CardY123);
+    cards[1].position(CardX2, CardY123);
+    cards[2].position(CardX3, CardY123);
+    cards[3].position(CardX4, CardY123);
+    cards[4].position(CardX5, CardY123);
+    cards[5].position(CardX6, CardY123);
+
+    cards.forEach(card => {
+      card.size(CardWidth, CardHeight);
+    });
+  }
+
+  heartWidth = width * heartScale;
+  heartHeight = heartWidth;
+  heartSpacing = width * 0.005;
+
+  let totalHeartWidth = (HEART_COUNT * heartWidth) + ((HEART_COUNT - 1) * heartSpacing);
+  let heartStartX = (width - totalHeartWidth) / 2;
+  let heartY = height * 0.82;
+
+  heartsRectX = heartStartX - 5;
+  heartsRectY = heartY - 5;
+  heartsRectW = totalHeartWidth + 10;
+  heartsRectH = heartHeight + 10;
+
+  hearts.forEach((heart, i) => {
+    let x = heartStartX + i * (heartWidth + heartSpacing);
+    heart.position(x, heartY);
+    heart.size(heartWidth, heartHeight);
+  });
+
+  //Store text positions globally so they update dynamically!
+  roundTextY = height * 0.05;
+  matchesTextY = height * 0.10;
+  roomCodeTextY = height * 0.75;
+  roomCodeTextY2 = height * 0.80;
+
+  //Limit text size so it doesn't become too large!
+  textSize(min(width * 0.08, 80));
+  textSize(min(width * 0.05, 50));
+
+  // Make sure all elements are shown correctly after resizing
+  hearts.forEach(h => h.show());
+  cards.forEach(c => c.show());
+}
+
+
+function redrawBackground() {
+  background(0); // Clear canvas to prevent flickering
+  image(backgroundImage, 0, 0, width, height);
+}
+
 let fullscreenActivated = false;
 
 function mousePressed() {
   if (!fullscreenActivated && mouseX > 0 && mouseX < width && mouseY > 0 && mouseY < height) {
     let fs = fullscreen();
-    //fullscreen(!fs);
+    fullscreen(!fs);
     fullscreenActivated = true; // Mark as activated
+
+    setTimeout(() => {
+      windowResized(); //Recalculate positions after fullscreen is applied
+    }, 300);
   }
 }

@@ -5,12 +5,15 @@ let backgroundImage1, backgroundImage2;
 let BT_H;
 let BT_W1, BT_W2;
 
+let OneUse = false;
+
 function preload() {
   
   BackgroundIMG = loadImage('materials/images/ItemBackground.png');
   
   //backgroundMS = loadSound('materials/sounds/horrorBGM.mp3');
-  //BT_Press = loadSound('materials/sounds/.mp3');
+  BT_Press = loadSound('materials/sounds/Button.mp3');
+  ItemFound = loadSound('materials/sounds/ItemFound.mp3');
 }
 
 function setup() {
@@ -57,7 +60,12 @@ function setup() {
 }
 
 function draw() {
-  //fullscreen(true);
+	
+  if (OneUse == false) {
+	ItemFound.play();  
+	OneUse = true;
+  }
+  
   if (displayHeight < 700) {
     image(BackgroundIMG, 0, 0, width, height);
   }else{
@@ -69,9 +77,26 @@ function draw() {
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
+
+  // Dynamically adjust button heights and widths
+  BT_H = height * 0.05; // Adjust button height
+  BT_W1 = width * 0.3;  // Adjust button 1 width
+  BT_W2 = width * 0.4;  // Adjust button 2 width
+
+  // Reposition buttons dynamically to remain centered
+  ChoiceBT1.size(BT_W1, BT_H);
+  ChoiceBT1.position(width / 2 - BT_W1 / 2, height * 0.78);
+
+  ChoiceBT2.size(BT_W2, BT_H);
+  ChoiceBT2.position(width / 2 - BT_W2 / 2, height * 0.845);
+  
+  // Ensure background image scales correctly
+  image(BackgroundIMG, 0, 0, width, height);
 }
 
 function Choice1() {
+	BT_Press.play();
+	
 	localStorage.setItem('Choice1', true);
 	ChoiceBT1.attribute("src", "materials/images/buttons/Choice1_BT_Pressed.png");
 	setTimeout(function () {
@@ -79,10 +104,12 @@ function Choice1() {
     }, 400);
 	setTimeout(function () {
 		window.location.href = "../../../index.html";
-    }, 500);
+    }, 1000);
 }
 
 function Choice2() {
+	BT_Press.play();
+	
 	localStorage.setItem('Choice2', true);
 	ChoiceBT2.attribute("src", "materials/images/buttons/Choice2_BT_Pressed.png");
 	setTimeout(function () {
@@ -92,7 +119,7 @@ function Choice2() {
 		//Ending 1
 		console.log("Ending 1")
 		showEndingScreen();
-    }, 500);
+    }, 1000);
 }
 
 function showEndingScreen() {
