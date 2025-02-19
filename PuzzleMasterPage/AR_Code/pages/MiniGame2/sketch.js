@@ -633,10 +633,10 @@ function windowResized() {
   ConfirmBT.size(ConfirmBT_WH, ConfirmBT_WH);
   ConfirmBT.position(ConfirmBT_X, ConfirmBT_Y);
   
-  VictoryMsg_W = width * 0.45;
-  VictoryMsg_H = height * 0.15;
+  VictoryMsg_W = width * 0.4;
+  VictoryMsg_H = height * 0.12;
   VictoryMsg_X = width / 2 - VictoryMsg_W / 2;
-  VictoryMsg_Y = height / 2.2 - VictoryMsg_H / 2;
+  VictoryMsg_Y = height / 2.48 - VictoryMsg_H / 2;
   
   VictoryMsg.size(VictoryMsg_W, VictoryMsg_H);
   VictoryMsg.position(VictoryMsg_X, VictoryMsg_Y);
@@ -651,7 +651,7 @@ function ConfirmPressed() {
 		ConfirmBT.attribute("src", "materials/images/buttons/ConfirmBT.png");
 	}, 300);
 	
-	if (B1 == 1 && B2 == 1 && B3 == 1 && B4 == 2 && B5 == 1 && B6 == 1 && B7 == 2 && B8 == 1 && B9 == 1 && B10 == 2 && B11 == 1 && B12 == 1 && B13 == 2 && B14 == 1 && B15 ==1) {
+	if (B1 == 1 && B2 == 1 && B3 == 2 && B4 == 1 && B5 == 1 && B6 == 2 && B7 == 1 && B8 == 1 && B9 == 2 && B10 == 1 && B11 == 1 && B12 == 2 && B13 == 1 && B14 == 1 && B15 ==1) {
 		//Victory
 		console.log('Victory');
 		

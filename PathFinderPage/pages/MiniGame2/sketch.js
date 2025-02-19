@@ -637,7 +637,7 @@ function windowResized() {
   VictoryMsg_W = width * 0.35;
   VictoryMsg_H = height * 0.15;
   VictoryMsg_X = (width / 2 - VictoryMsg_W / 2) + (width * 0.1);
-  VictoryMsg_Y = height / 2.2 - VictoryMsg_H / 2;
+  VictoryMsg_Y = height / 2 - VictoryMsg_H / 2;
   
   VictoryMsg.size(VictoryMsg_W, VictoryMsg_H);
   VictoryMsg.position(VictoryMsg_X, VictoryMsg_Y);
