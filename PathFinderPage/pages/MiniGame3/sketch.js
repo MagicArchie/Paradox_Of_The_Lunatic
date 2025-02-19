@@ -13,6 +13,7 @@ let customFont;
 
 let OneUse = false;
 let OneUse2 = false;
+let OneUse3 = false;
 
 // Background images
 let backgroundImage, backgroundImage2;
@@ -77,6 +78,18 @@ let showLostMessage = false;
 let lostMessageStartTime = 0;
 let lostMessageDuration = 3000; 
 
+// Achivements 🥇
+
+  //MiniGames 🕹
+  //MiniGame-2:
+  const AC_MG3_1 = localStorage.getItem('MG3_1');
+  const AC_MG3_2 = localStorage.getItem('MG3_2');
+  const AC_MG3_3 = localStorage.getItem('MG3_3');
+
+  //MiniGames 🕹
+  //MiniGame-2:
+  let MG3_1 = false, MG3_2 = false, MG3_3 = false;
+
 /**********************************************
  * Preload and Setup
  **********************************************/
@@ -118,6 +131,24 @@ function setup() {
 
   // Start timer for initial round message
   messageStartTime = millis();
+  
+  //Check for Achivements
+  if (!OneUse3) {
+	  if (AC_MG3_1 !== null) {
+		  MG3_1 = AC_MG3_1;
+		  console.log("Achievement-(MG3_1): You Never Lost. Right?");
+	  }
+	  if (AC_MG3_2 !== null) {
+		  MG3_2 = AC_MG3_2;
+		  console.log("Achievement-(MG3_2): The System Remembers, Even If You Don't");
+	  }
+	  if (AC_MG3_3 !== null) {
+		  MG3_3 = AC_MG3_3;
+		  console.log("Achievement-(MG3_3): Memory Fragment Lost");
+	  }
+	  
+	  OneUse3 = true;
+  }
   
   // Play background music on loop
   backgroundMS.loop();
@@ -365,12 +396,26 @@ function loseOneHeart() {
     let indexToKill = (HEART_COUNT - 1) - heartsLost;
     hearts[indexToKill].attribute('src', 'materials/images/HealthBar/DeadHeart.png');
     heartsLost++;
+	
+	//Achievement Storage - Memory Fragment Lost
+	if (MG3_3 == false) {
+		console.log("Memory Fragment Lost");
+		localStorage.setItem('MG3_3', true);
+		MG3_3 = true;
+	}
   }
 
   // If all hearts are lost => show "You lost" after 2s, revert round
   if (heartsLost >= HEART_COUNT) {
     console.log("All hearts lost => wait 2s, then show lost message");
     isProcessing = true;
+	
+	//Achievement Storage - You Never Lost. Right?
+	if (MG3_1 == false) {
+		console.log("You Never Lost. Right?");
+		localStorage.setItem('MG3_1', true);
+		MG3_1 = true;
+	}
 
     setTimeout(() => {
       showLostMessage = true;
@@ -396,6 +441,15 @@ function checkForRoundCompletion() {
       if (currentRound > TOTAL_ROUNDS) {
         cards.forEach(c => c.remove());
         cards = [];
+		
+		if (DifficultySL == "3") {
+			//Achievement Storage - The System Remembers, Even If You Don't
+			if (MG3_2 == false) {
+				console.log("The System Remembers, Even If You Don't");
+				localStorage.setItem('MG3_2', true);
+				MG3_2 = true;
+			}
+		}
       } else {
         // do NOT reset hearts => only user-lost resets them
 		

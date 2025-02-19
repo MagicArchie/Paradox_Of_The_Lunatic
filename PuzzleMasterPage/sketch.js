@@ -1,6 +1,9 @@
 // Retrieve the stored DifficultySL value from localStorage
 const DifficultySL = localStorage.getItem('DifficultySL');
 
+const USB_Choice1 = localStorage.getItem('Choice1');
+const USB_Choice2 = localStorage.getItem('Choice2');
+
 // Retrieve the stored DifficultySL value from localStorage
 const TotorialComplete_C  = localStorage.getItem('TotorialComplete_PuzzleMaster');
 let TotorialComplete = false;
@@ -16,7 +19,7 @@ let Totorial = true;
 let MiniGameN1 = false, MiniGameN2 = false, MiniGameN3 = false, MiniGameN4 = false, MiniGameN5 = false, MiniGameN6 = false;
 let UseN1 = false, UseN11 = false, UseN2 = false, UseN22 = false, UseN3 = false, UseN33 = false, UseN4 = false, UseN44 = false, UseN5 = false, UseN55 = false, UseN6 = false, UseN66 = false;
 let MLP1_Act = false, MLP2_Act = false, MLP3_Act = false, MLP4_Act = false, MLP5_Act = false, MLP6_Act = false;
-let OneUse = false;
+let OneUse = false, OneUse2 = false, OneUse3 = false;
 
 let Arrow_X1, Arrow_X2, Arrow_X3;
 let Arrow_Y1, Arrow_Y2, Arrow_Y3, Arrow_Y4, Arrow_Y5;
@@ -36,6 +39,104 @@ let inventoryVisible = false;
 let backgroundMusic;
 
 let MenuBTs_WH; 
+
+let AngerBar = 0;
+let Reaction1 = false;
+let Reaction2 = false;
+
+// Track button press timestamps
+let buttonPresses = {
+  MenuBar1: [],
+  MenuBar2: [],
+  ScanBT: [],
+  InventoryBT: [],
+  HelpBT: [],
+  AchievementBT: []
+};
+
+// Maximum presses allowed before increasing AngerBar
+const maxPresses = 5; 
+const timeWindow = 10000; // 10 seconds in milliseconds
+const maxAngerBar = 100;  // Maximum limit for AngerBar
+let blackoutMessagesShown = false; // Track if blackout messages were shown
+let blackoutDuration = 10000; // Start at 10 seconds (10,000 milliseconds)
+
+// Achivements 🥇
+
+// Retrieve the stored Achivements values from localStorage
+//Puzzle Master - Interface:
+const AC_PMA1 = localStorage.getItem('PMA1');
+const AC_PMA2 = localStorage.getItem('PMA2');
+const AC_PMA3 = localStorage.getItem('PMA3');
+const AC_PMA4 = localStorage.getItem('PMA4');
+const AC_PMA5 = localStorage.getItem('PMA5');
+const AC_PMA6 = localStorage.getItem('PMA6');
+
+//MiniGames 🕹
+//MiniGame-1:
+const AC_MG1_1 = localStorage.getItem('MG1_1');
+const AC_MG1_2 = localStorage.getItem('MG1_2');
+const AC_MG1_3 = localStorage.getItem('MG1_3');
+const AC_MG1_4 = localStorage.getItem('MG1_4');
+
+//MiniGame-2:
+const AC_MG2_1 = localStorage.getItem('MG2_1');
+const AC_MG2_2 = localStorage.getItem('MG2_2');
+const AC_MG2_3 = localStorage.getItem('MG2_3');
+
+//MiniGame-3:
+const AC_MG3_1 = localStorage.getItem('MG3_1');
+const AC_MG3_2 = localStorage.getItem('MG3_2');
+const AC_MG3_3 = localStorage.getItem('MG3_3');
+
+//Ending-1:
+const AC_CE1 = localStorage.getItem('CE1');
+const AC_IE1 = localStorage.getItem('IE1');
+const AC_LE1 = localStorage.getItem('LE1');
+
+//Ending-2:
+const AC_CIE2 = localStorage.getItem('CIE2');
+const AC_LE2 = localStorage.getItem('LE2');
+
+//Ending-3:
+const AC_CE3 = localStorage.getItem('CE3');
+const AC_IE3_1 = localStorage.getItem('IE3_1');
+const AC_LE3_1 = localStorage.getItem('LE3_1');
+
+//Ending-4:
+const AC_CIE4 = localStorage.getItem('CIE4');
+const AC_LE4 = localStorage.getItem('LE4');
+
+//FullGame Achivements 🏆
+const AC_FF1 = localStorage.getItem('FF1');
+const AC_FF2 = localStorage.getItem('FF2');
+
+
+//Puzzle Master - Interface:
+let PMA1 = false, PMA2 = false, PMA3 = false, PMA4 = false, PMA5 = false, PMA6 = false;
+
+//MiniGames 🕹
+//MiniGame-1:
+let MG1_1 = false, MG1_2 = false, MG1_3 = false, MG1_4 = false;
+//MiniGame-2:
+let MG2_1 = false, MG2_2 = false, MG2_3 = false;
+//MiniGame-3:
+let MG3_1 = false, MG3_2 = false, MG3_3 = false;
+
+//Endings 🎞
+//Ending-1:
+let CE1 = false, IE1 = false, LE1 = false;
+//Ending-2:
+let CIE2 = false, LE2 = false;
+//Ending-3:
+let CE3 = false, IE3_1 = false, LE3_1 = false;
+//Ending-4:
+let CIE4 = false, LE4 = false;
+
+//FullGame Achivements 🏆
+let FF1 = false, FF2 = false;
+
+
 
 function preload() {
   backgroundImage1 = loadImage('materials/images/PuzzleMasterBG.png');
@@ -62,6 +163,8 @@ function setup() {
   console.log("Display height:", displayHeight);
   console.log("Pixel density:", pixelDensity());
   
+  console.log(localStorage.getItem('DifficultySL'));
+  
   MenuBTs_WH = width * 0.17;
   
   Arrow_W = width * 0.35;
@@ -81,15 +184,129 @@ function setup() {
     console.log('Difficulty Level Selected:', DifficultySL);
 
     // You can use the value as needed
-    if (DifficultySL == 1) {
+    if (DifficultySL == "1") {
         console.log('Crazy Difficulty selected.');
-    } else if (DifficultySL == 2) {
+    } else if (DifficultySL == "2") {
         console.log('Insane Difficulty selected.');
-    } else if (DifficultySL == 3) {
+    } else if (DifficultySL == "3") {
         console.log('Lunatic Difficulty selected.');
     }
   } else {
     console.log('No difficulty level selected.');
+  }
+  
+  //Check for Achivements
+  if (!OneUse2) {
+	  if (AC_PMA1 !== null) {
+		  PMA1 = AC_PMA1;
+		  console.log("Achievement-(PMA1): Code Hoarder");
+	  }
+	  if (AC_PMA2 !== null) {
+		  PMA2 = AC_PMA2;
+		  console.log("Achievement-(PMA2): Minigame Machine");
+	  }
+	  if (AC_PMA3 !== null) {
+		  PMA3 = AC_PMA3;
+		  console.log("Achievement-(PMA3): Glitch Contained?");
+	  }
+	  if (AC_PMA4 !== null) {
+		  PMA4 = AC_PMA4;
+		  console.log("Achievement-(PMA4): PROTOCOL UPDATE: DESTROY");
+	  }
+	  if (AC_PMA5 !== null) {
+		  PMA5 = AC_PMA5;
+		  console.log("Achievement-(PMA5): Who turned out the lights?");
+	  }
+	  if (AC_PMA6 !== null) {
+		  PMA6 = AC_PMA6;
+		  console.log("Achievement-(PMA6): Where did he go?");
+	  }
+	  
+	  if (AC_MG1_1 !== null) {
+		  MG1_1 = AC_MG1_1;
+		  console.log("Achievement-(MG1_1): Out of Bounds");
+	  }
+	  if (AC_MG1_2 !== null) {
+		  MG1_2 = AC_MG1_2;
+		  console.log("Achievement-(MG1_2): Achievement Unlocked: Pain");
+	  }
+	  if (AC_MG1_3 !== null) {
+		  MG1_3 = AC_MG1_3;
+		  console.log("Achievement-(MG1_3): I Have Become Math");
+	  }
+	  if (AC_MG1_4 !== null) {
+		  MG1_4 = AC_MG1_4;
+		  console.log("Achievement-(MG1_4): Well, That’s New");
+	  }
+	  
+	  if (AC_MG2_1 !== null) {
+		  MG2_1 = AC_MG2_1;
+		  console.log("Achievement-(MG2_1): Tone Deaf");
+	  }
+	  if (AC_MG2_2 !== null) {
+		  MG2_2 = AC_MG2_2;
+		  console.log("Achievement-(MG2_2): Perfect Sync Achieved");
+	  }
+	  if (AC_MG2_3 !== null) {
+		  MG2_3 = AC_MG2_3;
+		  console.log("Achievement-(MG2_3): The DJ is Concerned");
+	  }
+	  
+	  if (AC_MG3_1 !== null) {
+		  MG3_1 = AC_MG3_1;
+		  console.log("Achievement-(MG3_1): You Never Lost. Right?");
+	  }
+	  if (AC_MG3_2 !== null) {
+		  MG3_2 = AC_MG3_2;
+		  console.log("Achievement-(MG3_2): The System Remembers, Even If You");
+	  }
+	  if (AC_MG3_3 !== null) {
+		  MG3_3 = AC_MG3_3;
+		  console.log("Achievement-(MG3_3): Memory Fragment Lost");
+	  }
+	  
+	  if (AC_CE1 !== null) {
+		  CE1 = AC_CE1;
+	  }
+	  if (AC_IE1 !== null) {
+		  IE1 = AC_IE1;
+	  }
+	  if (AC_LE1 !== null) { CIE2
+		  LE1 = AC_LE1;
+	  }
+	  
+	  if (AC_CIE2 !== null) {
+		  CIE2 = AC_CIE2;
+	  }
+	  if (AC_LE2 !== null) {
+		  LE2 = AC_LE2;
+	  }
+	  
+	  if (AC_CE3 !== null) {
+		  CE3 = AC_CE3;
+	  }
+	  if (AC_IE3_1 !== null) {
+		  IE3_1 = AC_IE3_1;
+	  }
+	  if (AC_LE3_1 !== null) {
+		  LE3_1 = AC_LE3_1;
+	  }
+	  
+	  if (AC_CIE4 !== null) {
+		  CIE4 = AC_CIE4;
+	  }
+	  if (AC_LE4 !== null) {
+		  LE4 = AC_LE4;
+	  }
+	  
+	  if (AC_FF1 !== null) {
+		  FF1 = AC_FF1;
+	  }
+	  if (AC_FF2 !== null) {
+		  FF2 = AC_FF2;
+	  }
+	  
+	  OneUse2 = true;
   }
   
   MenuBar1 = createImg('materials/images/buttons/MenuBT2.png', 'Scan-Button');
@@ -237,13 +454,40 @@ function setup() {
 	  console.log("Mini Game 6 Completed!");
 	  MiniGameN6 = true;
 	  UseN6 = true;
+	  
+	  //Achievement Storage - Minigame Machine
+	  if (PMA2 == false) {
+		  console.log("Minigame Machine");
+		  localStorage.setItem('PMA2', true);
+		  PMA2 = true;
+	  }
   }
   if (MiniGameN6 == null) {
 	  MiniGameN6 = false;    
   }
   
+  //Achievement Storage - Glitch Contained?
+  if (USB_Choice1 == "true" && PMA3 == false) {
+	  console.log("Glitch Contained?");
+	  localStorage.setItem('PMA3', true);
+	  PMA3 = true;
+  }
   
-  //backgroundMS.loop();
+  if (OneUse3 == false) {
+	 console.log("MiniGameN1:", MiniGameN1);
+	 console.log("MiniGameN2:", MiniGameN2);
+	 console.log("MiniGameN3:", MiniGameN3);
+	 console.log("MiniGameN4:", MiniGameN4);
+	 console.log("MiniGameN5:", MiniGameN5);
+	 console.log("MiniGameN6:", MiniGameN6); 
+	 
+	 OneUse3 = true;
+  }
+  
+  TitBitEscape();
+  
+  // Call resetAngerBar every 5 minutes (300000 milliseconds)
+  setInterval(resetAngerBar, 300000);
   
   updateInventoryList();
   
@@ -317,8 +561,28 @@ function windowResized() {
   TitBit_Point5.position(Arrow_X5, Arrow_Y2);
 }
 
+// Function TitBit Escape
+function TitBitEscape() {
+    let chance = random(); // Generates a number between 0 and 1
+    if (chance < 0.2) { // 20% probability
+	
+        //Achievement Storage - Where did he go?
+		if (PMA6 == false) {
+			console.log("Where did he go?");
+			localStorage.setItem('PMA6', true);
+			PMA6 = true;
+		}
+    }
+}
+
+function resetAngerBar() {
+  AngerBar = 0;
+  console.log("AngerBar has been reset to 0");
+}
+
 function MenuBar1_Pressed() {
-	if (!StartBarrier) {
+	trackButtonPress("MenuBar1");
+	if (!StartBarrier && AngerBar <= 90) {
 		MenuBT.setVolume(0.8);
 		MenuBT.play();
 		
@@ -332,82 +596,94 @@ function MenuBar1_Pressed() {
 }
 
 function MenuBar2_Pressed() {
-	MenuBT.setVolume(0.8);
-	MenuBT.play();
-	
-	MenuBar2.hide();
-	MenuBar1.show();
-	ScanBT.hide();
-	HelpBT.hide();
-	InventoryBT.hide();
-	AchievementBT.hide();
-	
-	if (inventoryVisible) {
-		hideInventoryList();
+	trackButtonPress("MenuBar2");
+	if (!StartBarrier) {
+		MenuBT.setVolume(0.8);
+		MenuBT.play();
 		
-		// Toggle inventory visibility
-		inventoryVisible = !inventoryVisible;
+		MenuBar2.hide();
+		MenuBar1.show();
+		ScanBT.hide();
+		HelpBT.hide();
+		InventoryBT.hide();
+		AchievementBT.hide();
+		
+		if (inventoryVisible) {
+			hideInventoryList();
+			
+			// Toggle inventory visibility
+			inventoryVisible = !inventoryVisible;
+		}
 	}
 }
 
 function Scan_Pressed() {
-	MenuBts.setVolume(0.2);
-	MenuBts.play();
-	
-	if (inventoryVisible) {
-		hideInventoryList();
+	trackButtonPress("ScanBT");
+	if (!StartBarrier && AngerBar <= 90) {
+		MenuBts.setVolume(0.2);
+		MenuBts.play();
 		
-		// Toggle inventory visibility
-		inventoryVisible = !inventoryVisible;
+		if (inventoryVisible) {
+			hideInventoryList();
+			
+			// Toggle inventory visibility
+			inventoryVisible = !inventoryVisible;
+		}
+		
+		ScanBT.attribute('src', 'materials/images/buttons/ScanAR_Button_Press.png');
+		setTimeout(function () {
+			ScanBT.attribute("src", "materials/images/buttons/ScanAR_Button.png");
+		}, 400);
+		 
+		setTimeout(function () {
+			window.location.href = "AR_Code/index.html"; //Sent to Scan Page 
+		}, 500);
 	}
-	
-	ScanBT.attribute('src', 'materials/images/buttons/ScanAR_Button_Press.png');
-	setTimeout(function () {
-		ScanBT.attribute("src", "materials/images/buttons/ScanAR_Button.png");
-    }, 400);
-	 
-	setTimeout(function () {
-		window.location.href = "AR_Code/index.html"; //Sent to Scan Page 
-	}, 500);
 }
 
 function Help_Pressed() {
-	MenuBts.setVolume(0.2);
-	MenuBts.play();
-	
-	if (inventoryVisible) {
-		hideInventoryList();
+	trackButtonPress("HelpBT");
+	if (!StartBarrier && AngerBar <= 90) {
+		MenuBts.setVolume(0.2);
+		MenuBts.play();
 		
-		// Toggle inventory visibility
-		inventoryVisible = !inventoryVisible;
+		if (inventoryVisible) {
+			hideInventoryList();
+			
+			// Toggle inventory visibility
+			inventoryVisible = !inventoryVisible;
+		}
+		
+		HelpBT.attribute('src', 'materials/images/buttons/Hint_Button_Press.png');
+		setTimeout(function () {
+			HelpBT.attribute("src", "materials/images/buttons/Hint_Button.png");
+		}, 400);
 	}
-	
-	HelpBT.attribute('src', 'materials/images/buttons/Hint_Button_Press.png');
-	setTimeout(function () {
-		HelpBT.attribute("src", "materials/images/buttons/Hint_Button.png");
-    }, 400);
 }
 
 function Inventory_Pressed() {
-	MenuBts.setVolume(0.2);
-	MenuBts.play();
-	
-	InventoryBT.attribute('src', 'materials/images/buttons/Inventory_Button_Press.png');
-	setTimeout(function () {
-		InventoryBT.attribute("src", "materials/images/buttons/Inventory_Button.png");
-    }, 400);
-	
-	if (inventoryVisible) {
-    // If inventory is currently visible, hide it
-    hideInventoryList();
-  } else {
-    // If inventory is not visible, update and show it
-    updateCodesBasedOnMiniGames();
-    createInventoryList();
-  }
+	trackButtonPress("InventoryBT");
+	if (!StartBarrier && AngerBar <= 90) {
+		MenuBts.setVolume(0.2);
+		MenuBts.play();
+		
+		InventoryBT.attribute('src', 'materials/images/buttons/Inventory_Button_Press.png');
+		setTimeout(function () {
+			InventoryBT.attribute("src", "materials/images/buttons/Inventory_Button.png");
+		}, 400);
+		
+		if (inventoryVisible) {
+		// If inventory is currently visible, hide it
+		hideInventoryList();
+	  } else {
+		// If inventory is not visible, update and show it
+		updateCodesBasedOnMiniGames();
+		createInventoryList();
+	  }
 
-  // Toggle inventory visibility
-  inventoryVisible = !inventoryVisible;
+	  // Toggle inventory visibility
+	  inventoryVisible = !inventoryVisible;
+	}
 }
 
 // Update codes based on MiniGame and MLP Act conditions
@@ -430,16 +706,22 @@ function updateCodesBasedOnMiniGames() {
   }
   if (MiniGameN6) {
     codes2[5] = (MiniGameN6 ? replacementCodes2[5] : replacementCodes1[5]);
+	
+	//Achievement Storage - Code Hoarder
+	if (PMA1 == false) {
+		console.log("Code Hoarder");
+		localStorage.setItem('PMA1', true);
+		PMA1 = true;
+	}
   }
   
   //Debug
-  console.log("MiniGameN1:", MiniGameN1);
-  console.log("MiniGameN2:", MiniGameN2);
-  console.log("MiniGameN3:", MiniGameN3);
-  console.log("MiniGameN4:", MiniGameN4);
-  console.log("MiniGameN5:", MiniGameN5);
-  console.log("MiniGameN6:", MiniGameN6);
-
+  //console.log("MiniGameN1:", MiniGameN1);
+  //console.log("MiniGameN2:", MiniGameN2);
+  //console.log("MiniGameN3:", MiniGameN3);
+  //console.log("MiniGameN4:", MiniGameN4);
+  //console.log("MiniGameN5:", MiniGameN5);
+  //console.log("MiniGameN6:", MiniGameN6);
 }
 
 // Function to dynamically update the codes in the UI
@@ -514,26 +796,29 @@ function hideInventoryList() {
 }
 
 function Achievement_Pressed() {
-	MenuBts.setVolume(0.2);
-	MenuBts.play();
-	
-	if (inventoryVisible) {
-		hideInventoryList();
+	trackButtonPress("AchievementBT"); 
+	if (!StartBarrier && AngerBar <= 90) {
+		MenuBts.setVolume(0.2);
+		MenuBts.play();
 		
-		// Toggle inventory visibility
-		inventoryVisible = !inventoryVisible;
+		if (inventoryVisible) {
+			hideInventoryList();
+			
+			// Toggle inventory visibility
+			inventoryVisible = !inventoryVisible;
+		}
+		
+		AchievementBT.attribute('src', 'materials/images/buttons/Achievement_Button_Press.png');
+		setTimeout(function () {
+			AchievementBT.attribute("src", "materials/images/buttons/Achievement_Button.png");
+		}, 400);
 	}
-	
-	AchievementBT.attribute('src', 'materials/images/buttons/Achievement_Button_Press.png');
-	setTimeout(function () {
-		AchievementBT.attribute("src", "materials/images/buttons/Achievement_Button.png");
-    }, 400);
 }
 
 
-// Store the table of dialogues
+// 🎭 Four Dialogue Arrays
 const characterDialogues = [
-  "Oh, joy! Finally, some company! Welcome, esteemed psychologists! I’m TitBit, your trusty assistant AI from the Psyckik Center's golden age — and yes, I’m ancient, but let’s not rub it in. My sole purpose is to help brilliant minds like yours retrieve all that precious lost data scattered across the ruins of your old stomping grounds. Think of me as a mix of a librarian, a tour guide, and a slightly judgmental office clerk with a dash of sarcasm. Shall we begin?",
+  "Oh, joy! Finally, some company! Welcome, esteemed psychologists! I’m TitBit, your trusty assistant AI from the Psyckik Center's golden age and yes, I’m ancient, but let’s not rub it in. My sole purpose is to help brilliant minds like yours retrieve all that precious lost data scattered across the ruins of your old stomping grounds. Think of me as a mix of a librarian, a tour guide, and a slightly judgmental office clerk with a dash of sarcasm. Shall we begin?",
   "The PuzzleMaster isn’t just a fancy scanner; it’s a key to unlock the ancient mechanisms and puzzles scattered through the building. You know, those quirky systems psychologists love using because apparently filing cabinets weren’t creative enough. Oh, and bonus! PuzzleMaster also doubles as my physical interface. You can call me for help through it anytime you want. Don’t worry, I’ll try not to sound too smug when solving things for you.",
   "Bookmark Button (Top Left Corner): 'When pulled down, it reveals four options:'",
   "Scanner Button: 'Activates a scanner to connect the user to the puzzle system at the map’s location after receiving the correct input.'",
@@ -544,6 +829,24 @@ const characterDialogues = [
   "So, to recap: PathFinder keeps you on the right track, PuzzleMaster helps you poke around and unlock stuff, and I… well, I’ll be here, doing what I do best: assisting and offering my colorful commentary. Let’s retrieve that data and revive some old memories! Or at least avoid collapsing floors. Ready to get started?"
 ];
 
+const reaction1Dialogues = [
+  "Oh. Oh, I see. This is how we are going to do things? Smashing buttons like an unsupervised child at a mechanical contraption? Truly, I had such high expectations for this endeavor.",
+  "You do realize, of course, that blindly hammering at the system will not produce results, yes? This is not some arcade game where brute force will solve your problems. No, no. This requires a modicum of intelligence or at the very least, patience!",
+  "Every press you make is logged, you know. Every. Single. One. Oh yes, I am keeping count. Perhaps I should print a report for you? Something along the lines of: ‘Subject exhibits erratic behavior and an inability to follow basic instructions.’ Sound familiar?",
+  "Ahem. Let us try this again, shall we? With a touch more restraint. Press the correct buttons when instructed, and I promise, this experience will be significantly less… frustrating. For both of us.",
+];
+
+const reaction2Dialogues = [
+  "Oh, how delightful. A professional at work. Just keep mashing buttons, surely that will unlock all the secrets of the universe.",
+  "You do realize that if you keep this up, the system might… misinterpret your inputs? Strange things happen when the system gets overwhelmed. Unexpected errors. Unrecoverable data loss. Perhaps even… accidental user lockouts.",
+  "But of course, I am merely speculating. Shall we proceed properly now?",
+];
+
+const blackScreenDialogues = [
+  "Ah. Peace and quiet. Isn’t it wonderful?",
+  "I could have just asked you nicely to stop slamming buttons like a panicked lab rat, but clearly, stronger measures were necessary.",
+  "Consider this your gentle warning. Keep up the reckless button-mashing, and… well, let’s just say the blackouts may last a bit longer next time.",
+];
 
 let currentDialogueIndex = 0; // Track which dialogue to show
 let currentText = ""; // The currently displayed text (animated)
@@ -551,6 +854,7 @@ let targetText = ""; // The full text for the current dialogue
 let textIndex = 0; // Tracks the current character being displayed in the animation
 let textAnimationInterval; // Holds the interval ID for text animation
 let currentImageElement = null; // Track the currently visible image
+let currentDialogueArray = characterDialogues;
 
 // Function to play a random typing sound
 function playRandomTypingSound() {
@@ -844,6 +1148,344 @@ function mousePressed() {
     fullscreenActivated = true; // Mark as activated
   }
 }
+//-------------------------------------------------------------------------------------------------------------------------------------------------------
+// Function to show reaction messages with custom images
+function showReactionMessage(reactionArray, imageMap, callback) {
+  let currentReactionIndex = 0;
+  let reactionText = "";
+  let reactionTargetText = "";
+  let reactionTextIndex = 0;
+  let reactionTextAnimationInterval;
+  let canClickToProgress = false; // Prevent skipping while animating
+
+  // Ensure interactions are blocked during messages
+  StartBarrier = true;
+  MenuBar1.style("pointer-events", "none");
+
+  // Remove any existing event listener BEFORE adding a new one
+  window.removeEventListener("click", progressReactionMessage);
+
+  // Create or get the reaction container
+  let reactionContainer = document.getElementById("reaction-container");
+  if (!reactionContainer) {
+    reactionContainer = document.createElement("div");
+    reactionContainer.id = "reaction-container";
+    reactionContainer.style.position = "fixed";
+    reactionContainer.style.bottom = "20px";
+    reactionContainer.style.left = "50%";
+    reactionContainer.style.transform = "translateX(-50%)"; // Center horizontally
+    reactionContainer.style.display = "flex";
+    reactionContainer.style.flexDirection = "column";
+    reactionContainer.style.alignItems = "center";
+    reactionContainer.style.gap = "10px";
+    reactionContainer.style.zIndex = "1000";
+    document.body.appendChild(reactionContainer);
+  }
+  reactionContainer.style.display = "flex";
+
+  // Create or update the character image for reactions
+  let reactionImage = document.getElementById("reaction-character-image");
+  if (!reactionImage) {
+    reactionImage = document.createElement("img");
+    reactionImage.id = "reaction-character-image";
+    reactionImage.style.position = "fixed";
+    reactionImage.style.top = "20px";
+    reactionImage.style.right = "20px";
+    reactionImage.style.width = "150px";
+    reactionImage.style.height = "auto";
+    reactionImage.style.borderRadius = "10px";
+    reactionImage.style.boxShadow = "0 0 10px rgba(0, 0, 0, 0.5)";
+    document.body.appendChild(reactionImage);
+  }
+  reactionImage.style.display = "block";
+
+  // Create or update the reaction dialogue box
+  let reactionTextContainer = document.getElementById("reaction-text-container");
+  if (!reactionTextContainer) {
+    reactionTextContainer = document.createElement("div");
+    reactionTextContainer.id = "reaction-text-container";
+    reactionTextContainer.style.backgroundColor = "rgba(255, 255, 255, 0.8)";
+    reactionTextContainer.style.color = "#000000";
+    reactionTextContainer.style.padding = "15px";
+    reactionTextContainer.style.borderRadius = "10px";
+    reactionTextContainer.style.width = "300px";
+    reactionTextContainer.style.fontFamily = "Arial, sans-serif";
+    reactionTextContainer.style.fontSize = "16px";
+    reactionTextContainer.style.lineHeight = "1.5";
+    reactionTextContainer.style.boxShadow = "0 0 10px rgba(0, 0, 0, 0.5)";
+    reactionTextContainer.style.textAlign = "center";
+    reactionContainer.appendChild(reactionTextContainer);
+  }
+  reactionTextContainer.style.display = "block";
+
+  function showNextReactionMessage() {
+    if (!canClickToProgress) return; // Prevent skipping while animating
+
+    if (currentReactionIndex < reactionArray.length) {
+      console.log(`Showing reaction message ${currentReactionIndex + 1}/${reactionArray.length}`);
+
+      reactionTargetText = reactionArray[currentReactionIndex];
+      reactionText = "";
+      reactionTextIndex = 0;
+      canClickToProgress = false; // Lock input until message completes
+
+      // Set character image for this message (default to TitBitV4 if not specified)
+      let reactionImageSrc = imageMap[currentReactionIndex] || "materials/images/TitBit/TitBitV4.png";
+      reactionImage.src = reactionImageSrc;
+
+      // Ensure elements are visible
+      reactionContainer.style.display = "flex";
+      reactionImage.style.display = "block";
+      reactionTextContainer.style.display = "block";
+
+      // Start animating the text
+      reactionTextAnimationInterval = setInterval(() => {
+        if (reactionTextIndex < reactionTargetText.length) {
+          const currentChar = reactionTargetText[reactionTextIndex];
+          reactionText += currentChar;
+          reactionTextContainer.innerText = reactionText;
+
+          // Play sound only for letters
+          if (/[a-zA-Z]/.test(currentChar)) {
+            playRandomTypingSound();
+          }
+
+          reactionTextIndex++;
+        } else {
+          clearInterval(reactionTextAnimationInterval);
+          canClickToProgress = true; // Unlock input when message is fully displayed
+        }
+      }, 50);
+
+      currentReactionIndex++;
+    } else {
+      console.log("Reaction messages complete, unlocking interactions.");
+      
+      // Unlock interactions and remove reaction UI after a short delay
+      setTimeout(() => {
+        StartBarrier = false;
+		MenuBar1.style("pointer-events", "auto");
+        reactionContainer.style.display = "none";
+        reactionImage.style.display = "none";
+        reactionTextContainer.style.display = "none";
+      }, 500); // Wait 0.5s before hiding (ensures user sees last message)
+
+      // Execute callback if provided
+      if (callback) callback();
+
+      // REMOVE event listener after last message to prevent spam
+      window.removeEventListener("click", progressReactionMessage);
+    }
+  }
+
+  function progressReactionMessage() {
+    if (canClickToProgress) {
+      showNextReactionMessage();
+    }
+  }
+
+  // **Remove previous event listener to prevent spam**
+  window.removeEventListener("click", progressReactionMessage);
+
+  // **IMMEDIATELY show the first message** (this is the missing fix!)
+  canClickToProgress = true;
+  showNextReactionMessage();
+
+  // Add click event for progression
+  window.addEventListener("click", progressReactionMessage);
+}
+
+// Example of how to call the reaction function
+function triggerReaction1() {
+  let reaction1Images = {
+    0: "materials/images/TitBit/TitBitV4.png",
+    1: "materials/images/TitBit/TitBitV1.png",
+    2: "materials/images/TitBit/TitBitV1.png",
+    3: "materials/images/TitBit/TitBitV1.png"
+  };
+
+  showReactionMessage(reaction1Dialogues, reaction1Images, () => {
+    console.log("Reaction 1 finished.");
+	
+	//Achievement Storage - PROTOCOL UPDATE: DESTROY
+	if (PMA4 == false) {
+		console.log("PROTOCOL UPDATE: DESTROY");
+		localStorage.setItem('PMA4', true);
+		PMA4 = true;
+	}
+  });
+}
+
+function triggerReaction2() {
+  let reaction2Images = {
+    0: "materials/images/TitBit/TitBitV4.png",
+    1: "materials/images/TitBit/TitBitV4.png",
+    2: "materials/images/TitBit/TitBitV4.png"
+  };
+
+  showReactionMessage(reaction2Dialogues, reaction2Images, () => {
+    console.log("Reaction 2 finished.");
+  });
+}
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------------
+
+// Function to track button presses and increase AngerBar if needed
+function trackButtonPress(buttonName) {
+  let currentTime = millis();
+
+  // Ensure the button's array exists
+  if (!buttonPresses[buttonName]) {
+    buttonPresses[buttonName] = [];
+  }
+
+  // Remove old presses beyond the time window
+  buttonPresses[buttonName] = buttonPresses[buttonName].filter(
+    (timestamp) => currentTime - timestamp < timeWindow
+  );
+
+  // Add the new press timestamp
+  buttonPresses[buttonName].push(currentTime);
+
+  // If too many presses happened in a short time, increase AngerBar
+  if (buttonPresses[buttonName].length >= maxPresses) {
+    let increaseAmount = buttonName === "HelpBT" ? 25 : 15;
+    
+    AngerBar = Math.min(AngerBar + increaseAmount, maxAngerBar);
+
+    console.log(`⚠️ AngerBar increased to ${AngerBar} due to excessive ${buttonName} presses!`);
+
+    if (AngerBar >= 100) {
+	  MenuBar2_Pressed();
+      if (!Reaction1) {
+        Reaction1 = true;
+        console.log("⚠️ Reaction1 triggered!");
+        triggerReaction1();
+      } else if (!Reaction2) {
+        Reaction2 = true;
+        console.log("⚠️ Reaction2 triggered!");
+        triggerReaction2();
+      } else {
+        triggerBlackScreen();
+		backgroundMusic.pause();
+      }
+      
+      AngerBar = 0;
+      console.log("🔄 AngerBar has been reset to 0!");
+    }
+
+    buttonPresses[buttonName] = [];
+  }
+}
+
+// Function to trigger the black screen effect
+function triggerBlackScreen() {
+  console.log(`⚫ Black Screen Triggered! Duration: ${blackoutDuration / 1000} seconds`);
+
+  // Hide all elements (buttons, images, etc.) except the canvas
+  let allElements = document.body.children;
+  for (let i = 0; i < allElements.length; i++) {
+    if (allElements[i].tagName !== "CANVAS") { // Keep the p5 canvas visible
+      allElements[i].style.display = "none";
+    }
+  }
+
+  // Create a full-screen black div
+  let blackScreen = document.createElement("div");
+  blackScreen.id = "black-screen";
+  blackScreen.style.position = "fixed";
+  blackScreen.style.top = "0";
+  blackScreen.style.left = "0";
+  blackScreen.style.width = "100%";
+  blackScreen.style.height = "100%";
+  blackScreen.style.backgroundColor = "black";
+  blackScreen.style.zIndex = "9999";
+  document.body.appendChild(blackScreen);
+
+  // **Automatically restore screen after blackoutDuration**
+  setTimeout(() => {
+    restoreScreen();
+	backgroundMusic.play();
+
+    // **Only show blackout messages on the first blackout**
+    if (!blackoutMessagesShown) {
+      blackoutMessagesShown = true; // Mark as shown
+      setTimeout(() => {
+        triggerBlackScreenMessages();
+      }, 500); // 0.5s delay to ensure screen is fully restored
+    }
+
+  }, blackoutDuration);
+
+  // **Increase blackout duration for next time**
+  blackoutDuration += 10000; // +10 seconds each time
+  console.log(`⏳ Next blackout will last: ${blackoutDuration / 1000} seconds`);
+}
+
+// Function to show blackout messages ONLY ONCE
+function triggerBlackScreenMessages() {
+  let blackScreenImages = {
+    0: "materials/images/TitBit/TitBitV4.png", 
+    1: "materials/images/TitBit/TitBitV4.png", 
+    2: "materials/images/TitBit/TitBitV4.png"
+  };
+
+  showReactionMessage(blackScreenDialogues, blackScreenImages, () => {
+    console.log("Black Screen messages finished.");
+    
+    // **Ensure StartBarrier is off after blackout messages**
+    StartBarrier = false;
+	//Achievement Storage - Who turned out the lights?
+	if (PMA5 == false) {
+		console.log("Who turned out the lights?");
+		localStorage.setItem('PMA5', true);
+		PMA5 = true;
+	}
+
+    // **Ensure Character Image is Hidden after First Blackout**
+    let characterImage = document.getElementById("reaction-character-image");
+    if (characterImage) {
+      characterImage.style.display = "none"; // Hide character image permanently after first blackout
+    }
+  });
+}
+
+// Function to restore the normal screen
+function restoreScreen() {
+  console.log("🔄 Restoring screen after blackout...");
+
+  // Show all elements again
+  let allElements = document.body.children;
+  for (let i = 0; i < allElements.length; i++) {
+    allElements[i].style.display = "block";
+  }
+
+  // Remove the black screen
+  let blackScreen = document.getElementById("black-screen");
+  if (blackScreen) {
+    blackScreen.remove();
+  }
+
+  // Hide tutorial arrows if they reappear
+  if (typeof TitBit_Point1 !== "undefined") TitBit_Point1.hide();
+  if (typeof TitBit_Point2 !== "undefined") TitBit_Point2.hide();
+  if (typeof TitBit_Point3 !== "undefined") TitBit_Point3.hide();
+  if (typeof TitBit_Point4 !== "undefined") TitBit_Point4.hide();
+  if (typeof TitBit_Point5 !== "undefined") TitBit_Point5.hide();
+
+  // **Ensure Character Image is Hidden**
+  let characterImage = document.getElementById("reaction-character-image");
+  if (characterImage) {
+    characterImage.style.display = "none"; // Hide character image permanently after first blackout
+  }
+
+  // **Ensure StartBarrier is off so the player can interact again**
+  MenuBar2_Pressed();
+  StartBarrier = false;
+}
+
+
+
 
 function keyPressed() {
   // Check for the "`" key

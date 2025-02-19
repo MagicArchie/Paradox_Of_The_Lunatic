@@ -98,6 +98,7 @@ function Choice1() {
 	BT_Press.play();
 	
 	localStorage.setItem('Choice1', true);
+	localStorage.setItem('Choice2', false);
 	ChoiceBT1.attribute("src", "materials/images/buttons/Choice1_BT_Pressed.png");
 	setTimeout(function () {
 		ChoiceBT1.attribute("src", "materials/images/buttons/Choice1_BT.png");
@@ -111,6 +112,7 @@ function Choice2() {
 	BT_Press.play();
 	
 	localStorage.setItem('Choice2', true);
+	localStorage.setItem('Choice1', false);
 	ChoiceBT2.attribute("src", "materials/images/buttons/Choice2_BT_Pressed.png");
 	setTimeout(function () {
 		ChoiceBT2.attribute("src", "materials/images/buttons/Choice2_BT.png");

@@ -259,6 +259,7 @@ function selectDifficulty(difficulty, button, images) {
     }
     animateDifficultyButton(button, images[1], images[2], 400);
     gameState.difficultySelected = difficulty;
+	localStorage.setItem('DifficultySL', difficulty); // Store difficulty in localStorage
     assets.difficultyButtonSound.play();
     console.log(`Difficulty selected: ${difficulty}`);
 }

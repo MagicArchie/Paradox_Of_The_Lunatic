@@ -9,6 +9,7 @@ let bgImage;
 
 let OneUse = false;
 let OneUse2 = false;
+let OneUse3 = false;
 
 let FinalBT_WH;
 let Final_X, Final_Y;
@@ -50,6 +51,21 @@ let questionDiv;
 
 let typingSounds = [];
 let soundsStopped = false; // Flag to track if stopTypingSounds is active
+
+let Mistakes = 0;
+
+// Achivements 🥇
+
+  //MiniGames 🕹
+  //MiniGame-1:
+  const AC_MG1_1 = localStorage.getItem('MG1_1');
+  const AC_MG1_2 = localStorage.getItem('MG1_2');
+  const AC_MG1_3 = localStorage.getItem('MG1_3');
+  const AC_MG1_4 = localStorage.getItem('MG1_4');
+
+  //MiniGames 🕹
+  //MiniGame-1:
+  let MG1_1 = false, MG1_2 = false, MG1_3 = false, MG1_4 = false;
 
 function preload() {
   bgImage = loadImage('materials/images/MiniGame1_BackGround1.png');
@@ -230,6 +246,44 @@ function setup() {
 
   // Display the first math problem
   displayNewProblem();
+  
+  //Check for Achivements
+  if (!OneUse3) {
+	  if (AC_MG1_1 !== null) {
+		  MG1_1 = AC_MG1_1;
+		  console.log("Achievement-(MG1_1): Out of Bounds");
+	  }
+	  if (AC_MG1_2 !== null) {
+		  MG1_2 = AC_MG1_2;
+		  console.log("Achievement-(MG1_2): Achievement Unlocked: Pain");
+	  }
+	  if (AC_MG1_3 !== null) {
+		  MG1_3 = AC_MG1_3;
+		  console.log("Achievement-(MG1_3): I Have Become Math");
+	  }
+	  if (AC_MG1_4 !== null) {
+		  MG1_4 = AC_MG1_4;
+		  console.log("Achievement-(MG1_4): Well, That’s New");
+	  }
+
+	  OneUse3 = true;
+  }
+  
+  //Achievement Storage - Out of Bounds
+  if (MG1_1 == false) {
+	 console.log("Out of Bounds");
+	 localStorage.setItem('MG1_1', true);
+	 MG1_1 = true;
+  }
+  
+  if (DifficultySL == "3") {
+	  //Achievement Storage - Achievement Unlocked: Pain
+	  if (MG1_2 == false) {
+		 console.log("Achievement Unlocked: Pain");
+		 localStorage.setItem('MG1_2', true);
+		 MG1_2 = true;
+	  }
+  }
   
   BG_Music.loop();
   BG_Music.setVolume(0.1);
@@ -717,6 +771,24 @@ function checkAnswer() {
 			setTimeout(() => {
 				if (MathProgress >= 5) { // Check if the user solved 5 problems
 					console.log("Victory!");
+					
+					if (DifficultySL == "3") {
+						//Achievement Storage - Well, That’s New
+						if (MG1_4 == false) {
+							console.log("Well, That’s New");
+							localStorage.setItem('MG1_4', true);
+							MG1_4 = true;
+						}
+					}
+					
+					if (Mistakes == 0) {
+						//Achievement Storage -  I Have Become Math
+						if (MG1_3 == false) {
+							console.log("I Have Become Math");
+							localStorage.setItem('MG1_3', true);
+							MG1_3 = true;
+						}
+					}
 
 					// Adjust the "Completed" box width
 					questionDiv.html("C*mp!et&d"); // Show the "Completed" text
@@ -749,6 +821,7 @@ function checkAnswer() {
 			IncorrectAnswer.play();
 		
 			console.log("Incorrect. Try again.");
+			Mistakes = Mistakes + 1;
 			
 			// Show "Incorrect" message
 			questionDiv.html("Incorrect"); // Display incorrect message

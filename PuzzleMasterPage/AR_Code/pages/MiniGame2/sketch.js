@@ -3,6 +3,8 @@ const DifficultySL = localStorage.getItem('DifficultySL');
 
 let backgroundImage1, backgroundImage2;
 
+let OneUse = false;
+
 let PlayBT_WH = 130;
 let PlayBT_X;
 let PlayBT_Y = 670;
@@ -26,6 +28,8 @@ let ResetBT_X, ResetBT_Y;
 let VictoryMsg_W, VictoryMsg_H, VictoryMsg_X, VictoryMsg_Y;
 
 let BT_WH = 150;
+
+let MusicCounter = 0;
 
 let BTX1;
 let BTX2;
@@ -65,6 +69,18 @@ let CBT, CBT2;
 
 let RectVisible = false;
 
+// Achivements 🥇
+
+  //MiniGames 🕹
+  //MiniGame-2:
+  const AC_MG2_1 = localStorage.getItem('MG2_1');
+  const AC_MG2_2 = localStorage.getItem('MG2_2');
+  const AC_MG2_3 = localStorage.getItem('MG2_3');
+
+  //MiniGames 🕹
+  //MiniGame-2:
+  let MG2_1 = false, MG2_2 = false, MG2_3 = false;
+
 function preload() {
   BackgroundIMG = loadImage('materials/images/PuzzleMasterBG.png');
   
@@ -72,6 +88,7 @@ function preload() {
   BitMS = loadSound('materials/sounds/hihatversion4.mp3');
   Fbeat = loadSound('materials/sounds/CompleteBeat.mp3');
   
+  WrongSFX = loadSound('materials/sounds/WrongSFX.mp3');
   BoxChecked = loadSound('materials/sounds/BoxCheck.mp3');
   PlayPressed = loadSound('materials/sounds/PlayBT.mp3');
   BT_Press = loadSound('materials/sounds/BTPressed.mp3');
@@ -406,6 +423,24 @@ function setup() {
   } else {
     console.log('No difficulty level selected.');
   }
+  
+  //Check for Achivements
+  if (!OneUse) {
+	  if (AC_MG2_1 !== null) {
+		  MG2_1 = AC_MG2_1;
+		  console.log("Achievement-(MG2_1): Tone Deaf");
+	  }
+	  if (AC_MG2_2 !== null) {
+		  MG2_2 = AC_MG2_2;
+		  console.log("Achievement-(MG2_2): Perfect Sync Achieved");
+	  }
+	  if (AC_MG2_3 !== null) {
+		  MG2_3 = AC_MG2_3;
+		  console.log("Achievement-(MG2_3): The DJ is Concerned");
+	  }
+	  
+	  OneUse = true;
+  }
 
   // Play background music on loop
   backgroundMS.loop();
@@ -664,6 +699,15 @@ function ConfirmPressed() {
 		  BT2_14.hide();
 		  BT1_15.hide();
 		  BT2_15.hide();
+		  
+		  if (DifficultySL == "3") {
+			  //Achievement Storage - Perfect Sync Achieved
+			  if (MG2_2 == false) {
+				  console.log("Perfect Sync Achieved");
+				  localStorage.setItem('MG2_2', true);
+				  MG2_2 = true;
+			  }
+		  }
 		}, 1500);
 		
 		//Animation Section
@@ -725,6 +769,20 @@ function ConfirmPressed() {
 	} else {
 		//Diffeat
 		console.log('Diffeat');
+		
+		setTimeout(function () { 
+		console.log("Sound Play?");
+			WrongSFX.play();
+			
+			setTimeout(function () { 
+				//Achievement Storage - The Logs Spoke Back
+				if (MG2_1 == false) {
+					console.log("Tone Deaf");
+					localStorage.setItem('MG2_1', true);
+					MG2_1 = true;
+				}
+			}, 5000);
+		}, 500);
 	}
 }
 
@@ -1130,6 +1188,8 @@ function PlayBTPressed() {
   PlayPressed.play();
   
   backgroundMS.setVolume(0.05);
+  
+  MusicCounter = MusicCounter + 1;
 
   PlayBT.attribute("src", "materials/images/buttons/PlayBT_Pressed.png");
   setTimeout(function () {
@@ -1207,7 +1267,19 @@ function PlayBTPressed() {
   }, 12750);
   setTimeout(function () {
 	backgroundMS.setVolume(0.4);  
+	CheckMusicSpam();
 }, 13750);
+}
+
+function CheckMusicSpam() {
+	if (MusicCounter >= 5) {
+		//Achievement Storage - The DJ is Concerned
+		if (MG2_3 == false) {
+			console.log("The DJ is Concerned");
+			localStorage.setItem('MG2_3', true);
+			MG2_3 = true;
+		}
+	}
 }
 
 let fullscreenActivated = false;

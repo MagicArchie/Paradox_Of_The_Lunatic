@@ -13,7 +13,7 @@ let Totorial = true;
 let MiniGameN1 = false, MiniGameN2 = false, MiniGameN3 = false, MiniGameN4 = false, MiniGameN5 = false, MiniGameN6 = false;
 let UseN1 = false, UseN11 = false, UseN2 = false, UseN22 = false, UseN3 = false, UseN33 = false, UseN4 = false, UseN44 = false, UseN5 = false, UseN55 = false, UseN6 = false, UseN66 = false;
 let MLP1_Act = false, MLP2_Act = false, MLP3_Act = false, MLP4_Act = false, MLP5_Act = false, MLP6_Act = false;
-let OneUse = false;
+let OneUse = false, OneUse2 = false, OneUse3 = false;
 
 let Arrow_X1, Arrow_X2, Arrow_X3;
 let Arrow_Y1, Arrow_Y2, Arrow_Y3, Arrow_Y4, Arrow_Y5;
@@ -47,6 +47,93 @@ let backgroundMusic;
   // Define variables at the top of the script
   let currentJoinRoomInput = null;
   let currentJoinRoomSubmitButton = null;
+  
+  // ReadInfo
+  let Location1_Info = false, Location2_Info = false, Location3_Info = false, Location4_Info = false, Location5_Info = false, Location6_Info = false, LocationUSB_Info = false;
+  
+  const ST_Location1_Info = localStorage.getItem('Location1_Info');
+  const ST_Location2_Info = localStorage.getItem('Location2_Info');
+  const ST_Location3_Info = localStorage.getItem('Location3_Info');
+  const ST_Location4_Info = localStorage.getItem('Location4_Info');
+  const ST_Location5_Info = localStorage.getItem('Location5_Info');
+  const ST_Location6_Info = localStorage.getItem('Location6_Info');
+  const ST_LocationUSB_Info = localStorage.getItem('LocationUSB_Info');
+  
+  // Achivements 🥇
+  
+  // Retrieve the stored Achivements values from localStorage
+  //Path Finder - Interface:
+  const AC_PFA1 = localStorage.getItem('PFA1');
+  const AC_PFA2 = localStorage.getItem('PFA2');
+  const AC_PFA3 = localStorage.getItem('PFA3');
+  const AC_PFA4 = localStorage.getItem('PFA4');
+  const AC_PFA5 = localStorage.getItem('PFA5');
+  const AC_PFA6 = localStorage.getItem('PFA6');
+
+  //MiniGames 🕹
+  //MiniGame-1:
+  const AC_MG1_1 = localStorage.getItem('MG1_1');
+  const AC_MG1_2 = localStorage.getItem('MG1_2');
+  const AC_MG1_3 = localStorage.getItem('MG1_3');
+  const AC_MG1_4 = localStorage.getItem('MG1_4');
+
+  //MiniGame-2:
+  const AC_MG2_1 = localStorage.getItem('MG2_1');
+  const AC_MG2_2 = localStorage.getItem('MG2_2');
+  const AC_MG2_3 = localStorage.getItem('MG2_3');
+
+  //MiniGame-3:
+  const AC_MG3_1 = localStorage.getItem('MG3_1');
+  const AC_MG3_2 = localStorage.getItem('MG3_2');
+  const AC_MG3_3 = localStorage.getItem('MG3_3');
+
+  //Ending-1:
+  const AC_CE1 = localStorage.getItem('CE1');
+  const AC_IE1 = localStorage.getItem('IE1');
+  const AC_LE1 = localStorage.getItem('LE1');
+  
+  //Ending-2:
+  const AC_CIE2 = localStorage.getItem('CIE2');
+  const AC_LE2 = localStorage.getItem('LE2');
+
+  //Ending-3:
+  const AC_CE3 = localStorage.getItem('CE3');
+  const AC_IE3_2 = localStorage.getItem('IE3_1');
+  const AC_LE3_2 = localStorage.getItem('LE3_1');
+
+  //Ending-4:
+  const AC_CIE4 = localStorage.getItem('CIE4');
+  const AC_LE4 = localStorage.getItem('LE4');
+
+  //FullGame Achivements 🏆
+  const AC_FF1 = localStorage.getItem('FF1');
+  const AC_FF2 = localStorage.getItem('FF2');
+  
+  //Puzzle Master - Interface:
+  let PFA1 = false, PFA2 = false, PFA3 = false, PFA4 = false, PFA5 = false, PFA6 = false;
+
+  //MiniGames 🕹
+  //MiniGame-1:
+  let MG1_1 = false, MG1_2 = false, MG1_3 = false, MG1_4 = false;
+  //MiniGame-2:
+  let MG2_1 = false, MG2_2 = false, MG2_3 = false;
+  //MiniGame-3:
+  let MG3_1 = false, MG3_2 = false, MG3_3 = false;
+
+  //Endings 🎞
+  //Ending-1:
+  let CE1 = false, IE1 = false, LE1 = false;
+  //Ending-2:
+  let CIE2 = false, LE2 = false;
+  //Ending-3:
+  let CE3 = false, IE3_2  = false, LE3_2 = false;
+  //Ending-4:
+  let CIE4 = false, LE4 = false;
+
+  //FullGame Achivements 🏆
+  let FF1 = false, FF2 = false;
+
+
 
 function preload() {
   backgroundImage1 = loadImage('materials/images/PathFinderBG1.png'); 
@@ -61,6 +148,7 @@ function preload() {
   typingSounds.push(loadSound('materials/sounds/Type2.mp3'));
   typingSounds.push(loadSound('materials/sounds/Type3.mp3'));
   
+  SoulsSFX = loadSound('materials/sounds/SoulsCalling.mp3');
   CloseInfo = loadSound('materials/sounds/CloseInfo.mp3');
   MarkerPress = loadSound('materials/sounds/MarkerPress.mp3');
   LocationSelect = loadSound('materials/sounds/LocationSelected.mp3');
@@ -70,7 +158,8 @@ function preload() {
   MapPiece = loadSound('materials/sounds/MapPiece.mp3');
   SubmitBT = loadSound('materials/sounds/SubmitBT.mp3');
   CompleteMap = loadSound('materials/sounds/CompleteMap.mp3');
-  Error = loadSound('materials/sounds/Error.mp3');
+  Error = loadSound('materials/sounds/Error.mp3'); 
+  
 }
 
 function setup() {
@@ -374,17 +463,145 @@ document.head.appendChild(customStyleElement);
     console.log('Difficulty Level Selected:', DifficultySL);
 
     // You can use the value as needed
-    if (DifficultySL == 1) {
+    if (DifficultySL == "1") {
         console.log('Crazy Difficulty selected.');
-    } else if (DifficultySL == 2) {
+    } else if (DifficultySL == "2") {
         console.log('Insane Difficulty selected.');
-    } else if (DifficultySL == 3) {
+    } else if (DifficultySL == "3") {
         console.log('Lunatic Difficulty selected.');
     }
   } else {
     console.log('No difficulty level selected.');
   }
   
+  //Check for ReadInfo
+  if (!OneUse3) {
+	  if (ST_Location1_Info !== null) {
+		Location1_Info = ST_Location1_Info;
+	  }
+	  if (ST_Location2_Info !== null) {
+		Location2_Info = ST_Location2_Info;
+	  }
+	  if (ST_Location3_Info !== null) {
+		Location3_Info = ST_Location3_Info;
+	  }
+	  if (ST_Location4_Info !== null) {
+		Location4_Info = ST_Location4_Info;
+	  }
+	  if (ST_Location5_Info !== null) {
+		Location5_Info = ST_Location5_Info;
+	  }
+	  if (ST_Location6_Info !== null) {
+		Location6_Info = ST_Location6_Info;
+	  }
+	  if (ST_LocationUSB_Info !== null) {
+		LocationUSB_Info = ST_LocationUSB_Info;
+	  }
+  }
+  
+  //Check for Achivements
+  if (!OneUse2) {
+	  if (AC_PFA1 !== null) {
+		  PFA1 = AC_PFA1;
+		  console.log("Achievement-(PFA1): What Wasn't Meant to Be Seen");
+	  }
+	  if (AC_PFA2 !== null) {
+		  PFA2 = AC_PFA2;
+		  console.log("Achievement-(PFA2): The Forgotten Records");
+	  }
+	  if (AC_PFA3 !== null) {
+		  PFA3 = AC_PFA3;
+		  console.log("Achievement-(PFA3): Code Hoarder");
+	  }
+	  if (AC_PFA4 !== null) {
+		  PFA4 = AC_PFA4;
+		  console.log("Achievement-(PFA4): What Could Possibly Go Wrong?");
+	  }
+	  if (AC_PFA5 !== null) {
+		  PFA5 = AC_PFA5;
+		  console.log("Achievement-(PFA5): Boundary Breached");
+	  }
+	  if (AC_PFA6 !== null) {
+		  PFA6 = AC_PFA6;
+		  console.log("Achievement-(PFA6): The Logs Spoke Back");
+	  }
+	  
+	  if (AC_MG1_1 !== null) {
+		  MG1_1 = AC_MG1_1;
+		  console.log("Achievement-(MG1_1): Out of Bounds");
+	  }
+	  if (AC_MG1_2 !== null) {
+		  MG1_2 = AC_MG1_2;
+		  console.log("Achievement-(MG1_2): Achievement Unlocked: Pain");
+	  }
+	  if (AC_MG1_3 !== null) {
+		  MG1_3 = AC_MG1_3;
+		  console.log("Achievement-(MG1_3): I Have Become Math");
+	  }
+	  if (AC_MG1_4 !== null) {
+		  MG1_4 = AC_MG1_4;
+		  console.log("Achievement-(MG1_4): Well, That’s New");
+	  }
+	  
+	  if (AC_MG2_1 !== null) {
+		  MG2_1 = AC_MG2_1;
+		  console.log("Achievement-(MG2_1): Tone Deaf");
+	  }
+	  if (AC_MG2_2 !== null) {
+		  MG2_2 = AC_MG2_2;
+		  console.log("Achievement-(MG2_2): Perfect Sync Achieved");
+	  }
+	  if (AC_MG2_3 !== null) {
+		  MG2_3 = AC_MG2_3;
+		  console.log("Achievement-(MG2_3): The DJ is Concerned");
+	  }
+	  
+	  if (AC_MG3_1 !== null) {
+		  MG3_1 = AC_MG3_1;
+		  console.log("Achievement-(MG3_1): You Never Lost. Right?");
+	  }
+	  if (AC_MG3_2 !== null) {
+		  MG3_2 = AC_MG3_2;
+		  console.log("Achievement-(MG3_2): The System Remembers, Even If You");
+	  }
+	  if (AC_MG3_3 !== null) {
+		  MG3_3 = AC_MG3_3;
+		  console.log("Achievement-(MG3_3): Memory Fragment Lost");
+	  }
+	  
+	  if (AC_CIE2 !== null) {
+		  CIE2 = AC_CIE2;
+	  }
+	  if (AC_LE2 !== null) {
+		  LE2 = AC_LE2;
+	  }
+	  
+	  if (AC_CE3 !== null) {
+		  CE3 = AC_CE3;
+	  }
+	  if (AC_IE3_2 !== null) {
+		  IE3_2 = AC_IE3_2;
+	  }
+	  if (AC_LE3_2 !== null) {
+		  LE3_2 = AC_LE3_2;
+	  }
+	  
+	  if (AC_CIE4 !== null) {
+		  CIE4 = AC_CIE4;
+	  }
+	  if (AC_LE4 !== null) {
+		  LE4 = AC_LE4;
+	  }
+	  
+	  if (AC_FF1 !== null) {
+		  FF1 = AC_FF1;
+	  }
+	  if (AC_FF2 !== null) {
+		  FF2 = AC_FF2;
+	  }
+	  
+	  OneUse2 = true;
+  }
 
   //MiniGame-1 Progress
   if (UseN11 == false) {
@@ -640,45 +857,116 @@ function displayBlackRectWithImageAndText(imageSrc, descriptionText, title) {
 
     closeButton.onclick = () => {
         overlay.style.display = "none";
+		clearTimeout(soulsCallingTimeout); // Cancel the SoulsCalling function
         CloseInfo.play();
     };
+	
+	soulsCallingTimeout = setTimeout(function () {
+        SoulsCalling();
+    }, 10000);
+}
+
+function SoulsCalling() {
+	let chance = random(); // Generates a number between 0 and 1
+    if (chance < 0.2) { // 20% probability
+		
+		SoulsSFX.play();
+		
+		setTimeout(function () {
+			//Achievement Storage - The Logs Spoke Back
+			if (PFA6 == false) {
+				console.log("The Logs Spoke Back");
+				localStorage.setItem('PFA6', true);
+				PFA6 = true;
+			}
+		}, 8000);
+    }
 }
 
 
 // Define specific marker functions
 function MapMarker1Pressed() {
     handleMapMarkerPress(MapMarker1, "materials/images/buttons/MapMarker1_2.png", "materials/images/buttons/MapMarker1_1.png", "materials/images/Locations/Location1.jpg", "Hope lies deep within the rotten walls of the monumental Adylum, left by patients wheeping like little children. Those who passed the stone cold iron gates of the Main Entrance knew no exit. The musty wooden planks nailed outside the pine door of the arched gate left by workers marked the end of a sinister era. The colour on the walls faded and the glass on the windows tarnished and shattered in thousands of pieces. Those who attempt to transpass shall suffer a fate worse than death!", "The Main Entrance");
+	localStorage.setItem('Location1_Info', true);
+	Location1_Info = true;
+	CheckForReadA();
+	
+	console.log("Location1 InfoRead=true");
 }
 
 function MapMarker2Pressed() {
     handleMapMarkerPress(MapMarker2, "materials/images/buttons/MapMarker1_2.png", "materials/images/buttons/MapMarker1_1.png", "materials/images/Locations/Location2.jpg", "As they were passing throught the frosty white coridors, the dense cold atmosphere started to choke them and drain every last bit of humanity left within their blood. The room was filled with sitting benches and at the far right  end, the secretary's office where they kept records  of all those poor subjects who God abandoned to rot and putrefy. Now only darkness remains at the frosty white coridors of the Reception, leaving a sence of stench lurking beneath  the locked doors and countless of numerals  piled up on the secretery's office. Some, paid  no mind at them, while others...", "The Reception");
+	localStorage.setItem('Location2_Info', true);
+	Location2_Info = true;
+	CheckForReadA();
+	
+	console.log("Location2 InfoRead=true");
 }
 
 function MapMarker3Pressed() {
     handleMapMarkerPress(MapMarker3, "materials/images/buttons/MapMarker1_2.png", "materials/images/buttons/MapMarker1_1.png", "materials/images/Locations/Location3.jpg", "The once bustling hallways of the Repose Chamber have turned into hollow pits of sorrow and fear. Where  once was standing a booth that visitors could hang their  coats and leave their personal items, now only lies empty  hallways with trembling lights and broken pipes. The perished  scientists where once taking their test subjects to the large rooms of the first floor. Where once was liyng madness and terror, now one can find nothing but dust and mold and  broken syrienges used by the 'doctors' to 'treat' their patients in rather uncanny ways. 'It's for the common good' they repeatidly said. 'LET THERE BE LIGHT!' they said. But with great light, comes great darkness as well.", "The Repose Chamber");
+	localStorage.setItem('Location3_Info', true);
+	Location3_Info = true;
+	CheckForReadA();
+	
+	console.log("Location3 InfoRead=true");
 }
 
 function MapMarker4Pressed() {
     handleMapMarkerPress(MapMarker4, "materials/images/buttons/MapMarker1_2.png", "materials/images/buttons/MapMarker1_1.png", "materials/images/Locations/Location4.jpg", "This is a random description for Location 4.");
+	localStorage.setItem('Location4_Info', true);
+	Location4_Info = true;
+	CheckForReadA();
+	
+	console.log("Location4 InfoRead=true");
 }
 
 function MapMarker5Pressed() {
     handleMapMarkerPress(MapMarker5, "materials/images/buttons/MapMarker1_2.png", "materials/images/buttons/MapMarker1_1.png", "materials/images/Locations/Location5.jpg", "This is a random description for Location 5.");
+	localStorage.setItem('Location5_Info', true);
+	Location5_Info = true;
+	CheckForReadA();
+	
+	console.log("Location5 InfoRead=true");
 }
 
 function MapMarker6Pressed() {
     handleMapMarkerPress(MapMarker6, "materials/images/buttons/MapMarker1_2.png", "materials/images/buttons/MapMarker1_1.png", "materials/images/Locations/Location6.jpg", "This is a random description for Location 6.");
+	localStorage.setItem('Location6_Info', true);
+	Location6_Info = true;
+	CheckForReadA();
+	
+	console.log("Location6 InfoRead=true");
 }
 
 function MapMarker7Pressed() {
     handleMapMarkerPress(MapMarker7, "materials/images/buttons/MapMarker1_2.png", "materials/images/buttons/MapMarker1_1.png", "materials/images/Locations/Location7.jpg", "This is a random description for Location 7.");
+	localStorage.setItem('Location7_Info', true);
+	Location7_Info = true;
+	CheckForReadA();
+	
+	console.log("Location7 InfoRead=true");
 }
 
 function MapMarker_USBPressed() {
     handleMapMarkerPress(MapMarker_USB, "materials/images/buttons/MapMarker2_2.png", "materials/images/buttons/MapMarker2_1.png", "materials/images/Locations/USB_Location.jpg", "The most ominous and excrusiating of actions took places within the narrow dark halls of  the Crematorium. Screams and cries where  constistnly audible through the iron door of  the chambers but never to the outside. Most of those who entered inside never came out. A chapel was built next to the white building, where often a lot of faithful paid a visit to light up a  candle in memory of those who paid with  their flesh. The place today is filled with a bone cracking silence that sometimes feels louder than noise!", "The Crematorium");
+	localStorage.setItem('LocationUSB_Info', true);
+	LocationUSB_Info = true;
+	CheckForReadA();
+	
+	console.log("USB Location InfoRead=true");
 }
 
-
+function CheckForReadA() {
+	if (Location1_Info == true && Location2_Info== true && Location3_Info == true && Location4_Info == true && Location5_Info== true && Location6_Info == true && Location7_Info == true && USB_Location_Info == true) {
+		//Achievement Storage - The Forgotten Records
+		if (PFA2 == false) {
+			console.log("The Forgotten Records");
+			localStorage.setItem('PFA2', true);
+			PFA2 = true;
+		}
+	}
+}
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
@@ -909,6 +1197,13 @@ function updateCodesBasedOnMiniGames() {
   }
   if (MiniGameN6) {
     codes2[5] = (MLP6_Act ? replacementCodes2[5] : replacementCodes1[5]);
+	
+	//Achievement Storage - Code Hoarder
+	if (PFA3 == false) {
+		console.log("Code Hoarder");
+		localStorage.setItem('PFA3', true);
+		PFA3 = true;
+	}
   }
   
   //Debug
@@ -1067,7 +1362,19 @@ function JoinRoomPressed() {
     if (enteredCode === "00-00-01") {
       //No MiniGame
     } else if (enteredCode === "00-00-02" && MLP1_Act == true) {
-      window.location.href = "pages/MiniGame2/index.html";
+		
+	  //Achievement Storage - What Could Possibly Go Wrong?
+	  if (PFA4 == false) {
+		  console.log("What Could Possibly Go Wrong?");
+		  localStorage.setItem('PFA4', true);
+		  PFA4 = true;
+		  
+		  setTimeout(function () {
+			  window.location.href = "pages/MiniGame2/index.html";
+		  }, 2000);	
+	  }	else {
+		  window.location.href = "pages/MiniGame2/index.html";
+	  }
     } else if (enteredCode === "00-00-03" && MLP2_Act == true) {
       window.location.href = "pages/MiniGame3/index.html";
     } else if (enteredCode === "00-00-04") {
@@ -1165,6 +1472,13 @@ function ScanRoomPressed() {
 			MapMarker3.show();
 		} else if (MLP4_Act === false) {
 			MapMarker_USB.show();
+			
+			//Achievement Storage - Boundary Breached
+			if (PFA5 == false) {
+				console.log("Boundary Breached");
+				localStorage.setItem('PFA5', true);
+				PFA5 = true;
+			}
 		} else if (MLP5_Act === false) { //Check StoryChoice 1
 			MapMarker4.show();
 		} else if (MLP5_Act === false) {
@@ -1431,6 +1745,13 @@ function MLPPressed(mlpNumber) {
             MLP6_Act = true;
 			MapMarker6.hide();
 			MapMarker7.hide();
+			
+			//Achievement Storage - What Wasn't Meant to Be Seen
+			if (PFA1 == false) {
+				console.log("What Wasn't Meant to Be Seen");
+				localStorage.setItem('PFA1', true);
+				PFA1 = true;
+			}
 			
 			// Save state to localStorage
 		    localStorage.setItem('MLP6_Act', true);
