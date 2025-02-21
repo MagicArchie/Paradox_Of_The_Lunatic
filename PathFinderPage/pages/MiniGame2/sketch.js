@@ -1,10 +1,19 @@
 // Retrieve the stored DifficultySL value from localStorage
 const DifficultySL = localStorage.getItem('DifficultySL');
 
+// Retrieve the stored DifficultySL value from localStorage
+const TotorialComplete_C  = localStorage.getItem('TotorialComplete_MiniGame2');
+let TotorialComplete = false;
+
 let OneUse = false;
 
 let backgroundImage1, backgroundImage2;
 let Up1;
+
+let StartBarrier = true;
+let Totorial = true;
+
+let typingSounds = [];
 
 let Conf_X;
 let Conf_Y;
@@ -100,6 +109,11 @@ function preload() {
   BitMS = loadSound('materials/sounds/kicksnareversion5.mp3');
   Fbeat = loadSound('materials/sounds/CompleteBeat.mp3');
   
+  typingSounds.push(loadSound('materials/sounds/Type1.mp3'));
+  typingSounds.push(loadSound('materials/sounds/Type2.mp3'));
+  typingSounds.push(loadSound('materials/sounds/Type3.mp3'));
+  
+  AC_SFX = loadSound('materials/sounds/AC_SFX.mp3');
   WrongSFX = loadSound('materials/sounds/WrongSFX.mp3');
   BoxChecked = loadSound('materials/sounds/BoxCheck.mp3');
   PlayPressed = loadSound('materials/sounds/PlayBT.mp3');
@@ -430,6 +444,10 @@ function setup() {
 		  console.log("Achievement-(MG2_3): The DJ is Concerned");
 	  }
 	  
+	  if (TotorialComplete_C !== null) {
+		  TotorialComplete = TotorialComplete_C;
+	  }
+	  
 	  OneUse = true;
   }
 
@@ -706,6 +724,7 @@ function ConfirmPressed() {
 			  if (MG2_2 == false) {
 				  console.log("Perfect Sync Achieved");
 				  localStorage.setItem('MG2_2', true);
+				  showAchievement("MG2_2");
 				  MG2_2 = true;
 			  }
 		  }
@@ -773,7 +792,6 @@ function ConfirmPressed() {
 		console.log('Diffeat');
 		
 		setTimeout(function () { 
-		console.log("Sound Play?");
 			WrongSFX.play();
 			
 			setTimeout(function () { 
@@ -781,6 +799,7 @@ function ConfirmPressed() {
 				if (MG2_1 == false) {
 					console.log("Tone Deaf");
 					localStorage.setItem('MG2_1', true);
+					showAchievement("MG2_1");
 					MG2_1 = true;
 				}
 			}, 5000);
@@ -895,53 +914,55 @@ function ResetPressed(){
 }
 
 function AnswerBTPressed() {
-  BT_Press.setVolume(0.5);
-  BT_Press.play();
-  
-  RectVisible = true;
-  
-  AnswerBT.attribute("src", "materials/images/buttons/AnswerBT_Pressed.png");
-  setTimeout(function () {
-    AnswerBT.attribute("src", "materials/images/buttons/AnswerBT.png");
-  }, 300);
-  
-  setTimeout(function () {
-    AnswerBT.hide();
-    AnswerBG.show();
-	ConfirmBT.show();
-	MinimizeBT.show();
-	ResetBT.show();
-    BT1_1.show();
-	BT2_1.show();
-	BT1_2.show();
-	BT2_2.show();
-	BT1_3.show();
-	BT2_3.show();
-	BT1_4.show();
-	BT2_4.show();
-	BT1_5.show();
-	BT2_5.show();
-	BT1_6.show();
-	BT2_6.show();
-	BT1_7.show();
-	BT2_7.show();
-	BT1_8.show();
-	BT2_8.show();
-	BT1_9.show();
-	BT2_9.show();
-	BT1_10.show();
-	BT2_10.show();
-	BT1_11.show();
-	BT2_11.show();
-	BT1_12.show();
-	BT2_12.show();
-	BT1_13.show();
-	BT2_13.show();
-	BT1_14.show();
-	BT2_14.show();
-	BT1_15.show();
-	BT2_15.show();
-  }, 500);
+	if (StartBarrier == false) {
+	  BT_Press.setVolume(0.5);
+	  BT_Press.play();
+	  
+	  RectVisible = true;
+	  
+	  AnswerBT.attribute("src", "materials/images/buttons/AnswerBT_Pressed.png");
+	  setTimeout(function () {
+		AnswerBT.attribute("src", "materials/images/buttons/AnswerBT.png");
+	  }, 300);
+	  
+	  setTimeout(function () {
+		AnswerBT.hide();
+		AnswerBG.show();
+		ConfirmBT.show();
+		MinimizeBT.show();
+		ResetBT.show();
+		BT1_1.show();
+		BT2_1.show();
+		BT1_2.show();
+		BT2_2.show();
+		BT1_3.show();
+		BT2_3.show();
+		BT1_4.show();
+		BT2_4.show();
+		BT1_5.show();
+		BT2_5.show();
+		BT1_6.show();
+		BT2_6.show();
+		BT1_7.show();
+		BT2_7.show();
+		BT1_8.show();
+		BT2_8.show();
+		BT1_9.show();
+		BT2_9.show();
+		BT1_10.show();
+		BT2_10.show();
+		BT1_11.show();
+		BT2_11.show();
+		BT1_12.show();
+		BT2_12.show();
+		BT1_13.show();
+		BT2_13.show();
+		BT1_14.show();
+		BT2_14.show();
+		BT1_15.show();
+		BT2_15.show();
+	  }, 500);
+	}
 }
 
 function BT1_1Pressed(){
@@ -1185,87 +1206,89 @@ function BT2_15Pressed(){
 }	
 
 function PlayBTPressed() {
-  PlayPressed.setVolume(0.9);
-  PlayPressed.play();
-  
-  backgroundMS.setVolume(0.05);
-  
-  MusicCounter = MusicCounter + 1;
-  
-  PlayBT.attribute("src", "materials/images/buttons/PlayBT_Pressed.png");
-  setTimeout(function () {
-    PlayBT.attribute("src", "materials/images/buttons/PlayBT.png");
-  }, 500);
-  
-  //Animation Section
-  setTimeout(function () {
-    BitMS.setVolume(0.4);
-    BitMS.play();
-  }, 1500);
-  
-  setTimeout(function () {
-    //...
-  }, 1500);
-  setTimeout(function () {
-    //..
-  }, 2275);
-  setTimeout(function () {
-    //...
-  }, 3050);
-  setTimeout(function () {
-    T4.show();
-  }, 3825);
-  setTimeout(function () {
-    T4.hide();
-    T5.show();
-  }, 4600);
-  setTimeout(function () {
-    T5.hide();
-    T6.show();
-  }, 5375);
-  setTimeout(function () {
-    T6.hide();
-    T7.show();
-  }, 6130);
-  setTimeout(function () {
-    T7.hide();
-    T8.show();
-  }, 6905);
-  setTimeout(function () {
-    T8.hide();
-    T9.show();
-  }, 7680);
-  setTimeout(function () {
-    T9.hide();
-    T10.show();
-  }, 8455);
-  setTimeout(function () {
-    T10.hide();
-    T11.show();
-  }, 9210);
-  setTimeout(function () {
-    T11.hide();
-    T12.show();
-  }, 9965);
-  setTimeout(function () {
-    T12.hide();
-    T13.show();
-  }, 10720);
-  setTimeout(function () {
-    T13.hide();
-    T14.show();
-  }, 11475);
-  setTimeout(function () {
-    T14.hide();
-    T15.show();
-  }, 12230);
-  setTimeout(function () {
-    T15.hide();
-  }, 12985);
-  setTimeout(function () {
-	backgroundMS.setVolume(0.4);
-	CheckMusicSpam();
-  }, 13985);
+	if (StartBarrier == false) {
+	  PlayPressed.setVolume(0.9);
+	  PlayPressed.play();
+	  
+	  backgroundMS.setVolume(0.05);
+	  
+	  MusicCounter = MusicCounter + 1;
+	  
+	  PlayBT.attribute("src", "materials/images/buttons/PlayBT_Pressed.png");
+	  setTimeout(function () {
+		PlayBT.attribute("src", "materials/images/buttons/PlayBT.png");
+	  }, 500);
+	  
+	  //Animation Section
+	  setTimeout(function () {
+		BitMS.setVolume(0.4);
+		BitMS.play();
+	  }, 1500);
+	  
+	  setTimeout(function () {
+		//...
+	  }, 1500);
+	  setTimeout(function () {
+		//..
+	  }, 2275);
+	  setTimeout(function () {
+		//...
+	  }, 3050);
+	  setTimeout(function () {
+		T4.show();
+	  }, 3825);
+	  setTimeout(function () {
+		T4.hide();
+		T5.show();
+	  }, 4600);
+	  setTimeout(function () {
+		T5.hide();
+		T6.show();
+	  }, 5375);
+	  setTimeout(function () {
+		T6.hide();
+		T7.show();
+	  }, 6130);
+	  setTimeout(function () {
+		T7.hide();
+		T8.show();
+	  }, 6905);
+	  setTimeout(function () {
+		T8.hide();
+		T9.show();
+	  }, 7680);
+	  setTimeout(function () {
+		T9.hide();
+		T10.show();
+	  }, 8455);
+	  setTimeout(function () {
+		T10.hide();
+		T11.show();
+	  }, 9210);
+	  setTimeout(function () {
+		T11.hide();
+		T12.show();
+	  }, 9965);
+	  setTimeout(function () {
+		T12.hide();
+		T13.show();
+	  }, 10720);
+	  setTimeout(function () {
+		T13.hide();
+		T14.show();
+	  }, 11475);
+	  setTimeout(function () {
+		T14.hide();
+		T15.show();
+	  }, 12230);
+	  setTimeout(function () {
+		T15.hide();
+	  }, 12985);
+	  setTimeout(function () {
+		backgroundMS.setVolume(0.4);
+		CheckMusicSpam();
+	  }, 13985);
+	}
 }
 
 function CheckMusicSpam() {
@@ -1274,17 +1297,256 @@ function CheckMusicSpam() {
 		if (MG2_3 == false) {
 			console.log("The DJ is Concerned");
 			localStorage.setItem('MG2_3', true);
+			showAchievement("MG2_3");
 			MG2_3 = true;
 		}
 	}
 }
 
+// Store the table of dialogues
+const characterDialogues = [
+  "Ah… much better. Everything is back in order. No more unexpected surprises this time. Isn’t that wonderful?",
+  "Now, onto something a little more elegant. This next puzzle is not about what is wrong no, no. This is about differences. A test of your ears, your perception, your ability to notice the subtle shifts where others might hear only repetition.",
+  "You will each hear two versions of a musical piece, one for the Left and one for the Right. They are not incorrect just different. Your task? Discern where the variations lie.",
+  "Once you detect a difference in a line, check the corresponding box in the game list Left or Right. There are fifteen lines to evaluate. No guesswork, no hesitation. Just listen, analyze, and mark your choice.",
+  "And for those of you who prefer visual confirmation, how thoughtful of me to provide a little extra guidance. Look at the stars in the background they will glow Left or Right in sync with the differences in the melody. A… gentle nudge in the right direction."
+];
+
+
+let currentDialogueIndex = 0; // Track which dialogue to show
+let currentText = ""; // The currently displayed text (animated)
+let targetText = ""; // The full text for the current dialogue
+let textIndex = 0; // Tracks the current character being displayed in the animation
+let textAnimationInterval; // Holds the interval ID for text animation
+let currentImageElement = null; // Track the currently visible image
+
+// Function to play a random typing sound
+function playRandomTypingSound() {
+  const randomIndex = Math.floor(Math.random() * typingSounds.length);
+  const sound = typingSounds[randomIndex];
+  if (sound) {
+    sound.setVolume(0.3); // Adjust volume as needed
+    sound.play();
+  }
+}
+
+// Create a function to show the character image and dialogue
+function showCharacterDialogue() {
+  // Create a container for the dialogue (if not already present)
+  let dialogueContainer = document.getElementById("dialogue-container");
+  if (!dialogueContainer) {
+    dialogueContainer = document.createElement("div");
+    dialogueContainer.id = "dialogue-container";
+    dialogueContainer.style.position = "fixed";
+    dialogueContainer.style.bottom = "20px";
+    dialogueContainer.style.left = "20px";
+    dialogueContainer.style.display = "flex";
+    dialogueContainer.style.alignItems = "flex-start";
+    dialogueContainer.style.gap = "20px";
+    dialogueContainer.style.zIndex = "1000";
+    document.body.appendChild(dialogueContainer);
+  }
+
+  // Create or update the character image
+  let characterImage = document.getElementById("character-image");
+  if (!characterImage) {
+    characterImage = document.createElement("img");
+    characterImage.id = "character-image";
+    characterImage.src = "materials/images/TitBit/TitBitV1.png";
+	characterImage.style.backgroundColor = "rgba(0, 0, 0, 0.5)"; // Semi-transparent box
+    characterImage.style.width = "150px";
+    characterImage.style.height = "auto";
+    characterImage.style.borderRadius = "10px";
+    characterImage.style.boxShadow = "0 0 10px rgba(0, 0, 0, 0.5)";
+    dialogueContainer.appendChild(characterImage);
+  }
+
+  // Create or update the dialogue rectangle
+  let dialogueTextContainer = document.getElementById("dialogue-text-container");
+  if (!dialogueTextContainer) {
+    dialogueTextContainer = document.createElement("div");
+    dialogueTextContainer.id = "dialogue-text-container";
+    dialogueTextContainer.style.backgroundColor = "rgba(0, 0, 0, 0.8)";
+    dialogueTextContainer.style.color = "white";
+    dialogueTextContainer.style.padding = "15px";
+    dialogueTextContainer.style.borderRadius = "10px";
+    dialogueTextContainer.style.width = "500px";
+    dialogueTextContainer.style.fontFamily = "Arial, sans-serif";
+    dialogueTextContainer.style.fontSize = "15px";
+    dialogueTextContainer.style.lineHeight = "1.5";
+    dialogueTextContainer.style.boxShadow = "0 0 10px rgba(0, 0, 0, 0.5)";
+    dialogueContainer.appendChild(dialogueTextContainer);
+  }
+
+  // Set the target text for the animation
+  targetText = characterDialogues[currentDialogueIndex];
+  currentText = ""; // Reset current text
+  textIndex = 0; // Reset text index
+
+  // Hide the currently visible image, if any
+  if (currentImageElement) {
+    currentImageElement.hide();
+    currentImageElement = null;
+  }
+
+  // Determine which image to show and perform actions based on the current dialogue index
+  switch (currentDialogueIndex) {
+    case 2:
+
+      break;
+    case 3:
+
+      break;
+    case 4:
+
+      break;
+    case 5:
+
+      break;
+    case 6:
+
+      break;
+    case 7:
+
+      break;
+    default:
+      // No image for other dialogues
+      currentImageElement = null;
+  }
+
+	// Start animating the text
+	textAnimationInterval = setInterval(() => {
+	  if (textIndex < targetText.length) {
+		const currentChar = targetText[textIndex];
+		currentText += currentChar;
+		dialogueTextContainer.innerText = currentText;
+
+		// Play sound only for letters
+		if (/[a-zA-Z]/.test(currentChar)) {
+		  playRandomTypingSound();
+		}
+
+		textIndex++;
+	  } else {
+		clearInterval(textAnimationInterval);
+	  }
+	}, 50); // Adjust speed of text animation
+
+  // Move to the next dialogue for subsequent calls
+  currentDialogueIndex++;
+}
+
+// Advance dialogue on click
+function advanceDialogue() {
+	console.log('advanced dialogue');
+  if (textIndex === targetText.length) {
+    if (currentDialogueIndex < characterDialogues.length) {
+      showCharacterDialogue();
+    } else {
+      let dialogueContainer = document.getElementById("dialogue-container");
+      if (dialogueContainer) {
+        dialogueContainer.style.display = "none";
+        StartBarrier = false;
+		
+		console.log('Totorial Completed!');
+		localStorage.setItem('TotorialComplete_MiniGame2', true);
+      }
+      window.removeEventListener("click", advanceDialogue);
+    }
+  }
+}
+
 let fullscreenActivated = false;
 
 function mousePressed() {
+  if (Totorial && TotorialComplete == false) {
+    Totorial = false;
+    showCharacterDialogue();
+    window.addEventListener("click", advanceDialogue);
+  } else if (TotorialComplete == "true") {
+	StartBarrier = false;  
+  }
+  if (StartBarrier) {
+    //backgroundMusic.loop();
+  }
   if (!fullscreenActivated && mouseX > 0 && mouseX < width && mouseY > 0 && mouseY < height) {
     let fs = fullscreen();
     fullscreen(!fs);
     fullscreenActivated = true; // Mark as activated
+  }
+}
+
+function showAchievement(achievementCode) {
+  // Ensure only one achievement is shown at a time
+  let existingAchievement = document.getElementById("achievement-popup");
+  if (existingAchievement) {
+    existingAchievement.remove();
+  }
+  
+  AC_SFX.setVolume(0.9);
+  AC_SFX.play();
+  
+  // Create the achievement container
+  let achievementContainer = document.createElement("div");
+  achievementContainer.id = "achievement-popup";
+  achievementContainer.style.position = "fixed";
+  achievementContainer.style.top = `${window.innerHeight * 0.7}px`;
+  achievementContainer.style.left = `${window.innerWidth * -0.45}px`;
+  achievementContainer.style.width = "300px"; // Adjusted for wider images
+  achievementContainer.style.height = "100px"; // Adjusted for banner format
+  achievementContainer.style.backgroundColor = "rgba(0, 0, 0, 0.8)";
+  achievementContainer.style.borderRadius = "10px";
+  achievementContainer.style.display = "flex";
+  achievementContainer.style.justifyContent = "center";
+  achievementContainer.style.alignItems = "center";
+  achievementContainer.style.zIndex = "10000";
+  achievementContainer.style.transition = "left 1s ease-in-out";
+
+  // Create the achievement image
+  let achievementImage = document.createElement("img");
+  achievementImage.src = `materials/images/achievements/${achievementCode}.png`;
+  achievementImage.style.width = "100%";
+  achievementImage.style.height = "100%";
+  //achievementImage.style.borderRadius = "10px";
+
+  // Append elements
+  achievementContainer.appendChild(achievementImage);
+  document.body.appendChild(achievementContainer);
+
+  // Animate the achievement popup
+  setTimeout(() => {
+    achievementContainer.style.left = `${window.innerWidth * -0.006}px`;
+  }, 100);
+
+  // Remove the achievement popup after 10 seconds
+  setTimeout(() => {
+    achievementContainer.remove();
+  }, 10000);
+}
+
+function keyPressed() {
+  // Check for the "`" key
+  if (key === '`') {
+    console.log("Backtick key pressed!");
+
+    // Ask the user for a code
+    const userCode = prompt("Enter a code:");
+
+    // Check the entered code and redirect the user
+    if (userCode === "SkipT") {
+      console.log("Code SkipT entered.");
+      localStorage.setItem('TotorialComplete_MiniGame2', true);
+	  location.reload();
+    } else if (userCode === "ResetT") {
+      console.log("Code ResetT entered.");
+      localStorage.removeItem('TotorialComplete_MiniGame2');
+	  location.reload();
+    } else if (userCode === "ClearAll") {
+      console.log("Code ClearAll entered.");
+      localStorage.clear();
+	  location.reload();
+    } else {
+      console.log("Invalid code.");
+    }
   }
 }

@@ -5,6 +5,10 @@
 // Retrieve the stored DifficultySL value from localStorage
 const DifficultySL = localStorage.getItem('DifficultySL');
 
+// Retrieve the stored DifficultySL value from localStorage
+const TotorialComplete_C  = localStorage.getItem('TotorialComplete_MiniGame3');
+let TotorialComplete = false;
+
 // Debug logs?
 let AdminHelper = false;
 
@@ -18,6 +22,11 @@ let OneUse3 = false;
 // Single background image
 let backgroundImage;
 let ActiveCard = 0;
+
+let StartBarrier = true;
+let Totorial = true;
+
+let typingSounds = [];
 
 // Card dimensions for vertical layout
 let CardWidth = 250;
@@ -95,6 +104,11 @@ function preload() {
   // If using custom font: customFont = loadFont('materials/fonts/WitchMystery.otf');
   backgroundImage = loadImage('materials/images/BackGround.png');
   
+  typingSounds.push(loadSound('materials/sounds/Type1.mp3'));
+  typingSounds.push(loadSound('materials/sounds/Type2.mp3'));
+  typingSounds.push(loadSound('materials/sounds/Type3.mp3'));
+  
+  AC_SFX = loadSound('materials/sounds/AC_SFX.mp3');
   backgroundMS = loadSound('materials/sounds/DarkPiano_Silence.mp3');
   CardFlip1 = loadSound('materials/sounds/CardFlip1.mp3');
   CardFlip2 = loadSound('materials/sounds/CardFlip2.wav');
@@ -149,6 +163,10 @@ function setup() {
 		  MG3_3 = AC_MG3_3;
 		  console.log("Achievement-(MG3_3): Memory Fragment Lost");
 	  }
+	  
+	  if (TotorialComplete_C !== null) {
+		  TotorialComplete = TotorialComplete_C;
+	  } 
 	  
 	  OneUse3 = true;
   }
@@ -331,47 +349,49 @@ function createCard(x, y, index) {
 }
 
 function handleCardPress(card, index) {
-  if (isProcessing || showRoundMessage || showLostMessage || matchedCards.includes(index)) return;
-  
-  CardFlip1.play();  
-  
-  const frontImagePath = cardImages[index];
-  card.attribute('src', frontImagePath);
-  visibleCards.push({ card, index });
-
-  if (visibleCards.length === 2) {
-    isProcessing = true;
-    const [first, second] = visibleCards;
-
-    if (cardImages[first.index] === cardImages[second.index]) {
+	if (StartBarrier == false) {
+	  if (isProcessing || showRoundMessage || showLostMessage || matchedCards.includes(index)) return;
 	  
-	  setTimeout(() => {
-	    Complete.play();	
-	  }, 500);
-		
-      console.log('Match found!');
-      matchedCards.push(first.index, second.index);
+	  CardFlip1.play();  
+	  
+	  const frontImagePath = cardImages[index];
+	  card.attribute('src', frontImagePath);
+	  visibleCards.push({ card, index });
 
-      first.card.removeAttribute('mousePressed');
-      second.card.removeAttribute('mousePressed');
-      visibleCards = [];
-      isProcessing = false;
-      checkForRoundCompletion();
+	  if (visibleCards.length === 2) {
+		isProcessing = true;
+		const [first, second] = visibleCards;
 
-    } else {
-      console.log('No match!');
-      loseOneHeart();
-
-      setTimeout(() => {
-		CardFlip2.play();    
+		if (cardImages[first.index] === cardImages[second.index]) {
 		  
-        first.card.attribute('src', currentBackImagePath);
-        second.card.attribute('src', currentBackImagePath);
-        visibleCards = [];
-        isProcessing = false;
-      }, 2000);
-    }
-  }
+		  setTimeout(() => {
+			Complete.play();	
+		  }, 500);
+			
+		  console.log('Match found!');
+		  matchedCards.push(first.index, second.index);
+
+		  first.card.removeAttribute('mousePressed');
+		  second.card.removeAttribute('mousePressed');
+		  visibleCards = [];
+		  isProcessing = false;
+		  checkForRoundCompletion();
+
+		} else {
+		  console.log('No match!');
+		  loseOneHeart();
+
+		  setTimeout(() => {
+			CardFlip2.play();    
+			  
+			first.card.attribute('src', currentBackImagePath);
+			second.card.attribute('src', currentBackImagePath);
+			visibleCards = [];
+			isProcessing = false;
+		  }, 2000);
+		}
+	  }
+	}
 }
 
 function loseOneHeart() {
@@ -387,6 +407,7 @@ function loseOneHeart() {
 	if (MG3_3 == false) {
 		console.log("Memory Fragment Lost");
 		localStorage.setItem('MG3_3', true);
+		showAchievement("MG3_3");
 		MG3_3 = true;
 	}
   }
@@ -398,6 +419,7 @@ function loseOneHeart() {
 	if (MG3_1 == false) {
 		console.log("You Never Lost. Right?");
 		localStorage.setItem('MG3_1', true);
+		showAchievement("MG3_1");
 		MG3_1 = true;
 	}
 	
@@ -434,6 +456,7 @@ function checkForRoundCompletion() {
 			if (MG3_2 == false) {
 				console.log("The System Remembers, Even If You Don't");
 				localStorage.setItem('MG3_2', true);
+				showAchievement("MG3_2");
 				MG3_2 = true;
 			}
 		}
@@ -653,17 +676,324 @@ function windowResized() {
 }
 
 
+const characterDialogues = [
+  "Ah, memory. A fascinating thing, isn’t it? The way the mind holds onto details, the patterns it recognizes… or fails to recognize. Shall we see how well yours functions?",
+  "Before you lie six cards, face down. Your objective is simple flip them over and find the matching pairs. There are three pairs in total per round. A test of pattern recognition, logic, and most importantly your ability to remember what you’ve seen.",
+  "But, of course, I must make it interesting. You have ten hearts. Every time you fail to match two cards, the cards will reset… and you will lose a heart. Lose all of them, and well… let’s just say progress is a privilege, not a guarantee.",
+  "Ah, and one more thing should you deplete your hearts entirely, you’ll find yourself… a step backward. Wouldn’t that be unfortunate? So do try to focus.",
+  "Let’s see if your memory is as sharp as you think it is. Begin."
+];
+
+let currentDialogueIndex = 0; // Track which dialogue to show
+let currentText = ""; // The currently displayed text (animated)
+let targetText = ""; // The full text for the current dialogue
+let textIndex = 0; // Tracks the current character being displayed in the animation
+let textAnimationInterval; // Holds the interval ID for text animation
+let currentImageElement = null; // Track the currently visible image
+let currentDialogueArray = characterDialogues;
+
+// Function to play a random typing sound
+function playRandomTypingSound() {
+  const randomIndex = Math.floor(Math.random() * typingSounds.length);
+  const sound = typingSounds[randomIndex];
+  if (sound) {
+    sound.setVolume(0.3); // Adjust volume as needed
+    sound.play();
+  }
+}
+
+// Create a function to show the character image and dialogue
+function showCharacterDialogue() {
+  // Create a container for the dialogue (if not already present)
+  let dialogueContainer = document.getElementById("dialogue-container");
+  if (!dialogueContainer) {
+    dialogueContainer = document.createElement("div");
+    dialogueContainer.id = "dialogue-container";
+    dialogueContainer.style.position = "fixed";
+    dialogueContainer.style.bottom = "20px";
+    dialogueContainer.style.left = "50%";
+    dialogueContainer.style.transform = "translateX(-50%)"; // Center horizontally
+    dialogueContainer.style.display = "flex";
+    dialogueContainer.style.flexDirection = "column"; // Stack character image and text box
+    dialogueContainer.style.alignItems = "center"; // Center elements horizontally
+    dialogueContainer.style.gap = "10px"; // Space between image and text box
+    dialogueContainer.style.zIndex = "1000";
+    document.body.appendChild(dialogueContainer);
+  }
+
+  // Create or update the character image
+  let characterImage = document.getElementById("character-image");
+  if (!characterImage) {
+    characterImage = document.createElement("img");
+    characterImage.id = "character-image";
+    characterImage.src = "materials/images/TitBit/TitBitV1.png";
+	characterImage.style.backgroundColor = "rgba(100, 100, 100, 0.2)"; // Semi-transparent box
+    characterImage.style.position = "fixed";
+    characterImage.style.top = "20px";
+    characterImage.style.right = "20px";
+    characterImage.style.width = "150px";
+    characterImage.style.height = "auto";
+    characterImage.style.borderRadius = "10px";
+    characterImage.style.boxShadow = "0 0 10px rgba(0, 0, 0, 0.5)";
+    document.body.appendChild(characterImage);
+  }
+
+  // Create or update the dialogue rectangle
+  let dialogueTextContainer = document.getElementById("dialogue-text-container");
+  if (!dialogueTextContainer) {
+    dialogueTextContainer = document.createElement("div");
+    dialogueTextContainer.id = "dialogue-text-container";
+    dialogueTextContainer.style.backgroundColor = "rgba(255, 255, 255, 0.8)"; // White with 80% opacity
+    dialogueTextContainer.style.color = "#000000"; // Black text
+    dialogueTextContainer.style.padding = "15px";
+    dialogueTextContainer.style.borderRadius = "10px";
+    dialogueTextContainer.style.width = "300px"; // Adjust width as needed
+    dialogueTextContainer.style.fontFamily = "Arial, sans-serif";
+    dialogueTextContainer.style.fontSize = "16px";
+    dialogueTextContainer.style.lineHeight = "1.5";
+    dialogueTextContainer.style.boxShadow = "0 0 10px rgba(0, 0, 0, 0.5)";
+    dialogueTextContainer.style.textAlign = "center"; // Center text
+    dialogueContainer.appendChild(dialogueTextContainer);
+  }
+
+  // Set the target text for the animation
+  targetText = characterDialogues[currentDialogueIndex];
+  currentText = ""; // Reset current text
+  textIndex = 0; // Reset text index
+
+  // Hide the currently visible image, if any
+  if (currentImageElement) {
+    currentImageElement.hide();
+    currentImageElement = null;
+  }
+
+  // Determine which image to show and perform actions based on the current dialogue index
+  switch (currentDialogueIndex) {
+    case 2:
+
+      break;
+    case 3:
+
+      break;
+    case 4:
+
+      break;
+    case 5:
+
+      break;
+    case 6:
+
+      break;
+    case 7:
+
+      break;
+    default:
+      // No image for other dialogues
+      currentImageElement = null;
+  }
+
+  // Start animating the text
+  textAnimationInterval = setInterval(() => {
+    if (textIndex < targetText.length) {
+      const currentChar = targetText[textIndex];
+      currentText += currentChar;
+      dialogueTextContainer.innerText = currentText;
+
+      // Play sound only for letters
+      if (/[a-zA-Z]/.test(currentChar)) {
+        playRandomTypingSound();
+      }
+
+      textIndex++;
+    } else {
+      clearInterval(textAnimationInterval);
+    }
+  }, 50); // Adjust speed of text animation
+
+  // Move to the next dialogue for subsequent calls
+  currentDialogueIndex++;
+}
+
+// Advance dialogue on click
+function advanceDialogue() {
+	console.log('advanced dialogue');
+  if (textIndex === targetText.length) {
+    if (currentDialogueIndex < characterDialogues.length) {
+      showCharacterDialogue();
+    } else {
+      let dialogueContainer = document.getElementById("dialogue-container");
+      if (dialogueContainer) {
+        dialogueContainer.style.display = "none";
+        StartBarrier = false;
+		
+	    // Hide the character image at the end of the tutorial
+        let characterImage = document.getElementById("character-image");
+        if (characterImage) {
+          characterImage.style.display = "none"; // Hides the character image
+        }
+		
+		console.log('Totorial Completed!');
+		localStorage.setItem('TotorialComplete_MiniGame3', true);
+      }
+      window.removeEventListener("click", advanceDialogue);
+    }
+  }
+}
+
+function animateCharacter1() {
+  const characterImage = document.getElementById("character-image");
+
+  // Initial starting position (top-right corner)
+  characterImage.style.position = "fixed";
+  characterImage.style.top = "20px";
+  characterImage.style.right = "20px";
+
+  // Add transition for smooth movement
+  characterImage.style.transition = "all 1s ease"; // Adjust duration as needed
+
+  // Step 1: Move character out of the canvas to the right
+  setTimeout(() => {
+    characterImage.style.right = "-150px"; // Move fully out of canvas (width + padding)
+  }, 0);
+
+  // Step 2: Change to the bottom-right outside the canvas
+  setTimeout(() => {
+    characterImage.style.transition = "none"; // Disable transition for instant position change
+    characterImage.style.top = ""; // Reset top property
+    characterImage.style.right = "-150px"; // Stay outside canvas on the right
+    characterImage.style.bottom = "130px"; // Move to bottom-right outside the canvas
+  }, 1000); // Match the duration of Step 1
+
+  // Step 3: Re-enter the canvas from the right side
+  setTimeout(() => {
+    characterImage.style.transition = "all 1s ease"; // Re-enable transition
+    characterImage.style.right = "20px"; // Move into the canvas from the right
+  }, 1100); // Slight delay after Step 2 for smooth animation
+}
+
+function animateCharacter2() {
+  const characterImage = document.getElementById("character-image");
+
+  // Initial position (bottom-right corner)
+  characterImage.style.position = "fixed";
+  characterImage.style.bottom = "130px";
+  characterImage.style.right = "20px";
+
+  // Add transition for smooth movement
+  characterImage.style.transition = "all 1s ease"; // Adjust duration as needed
+
+  // Step 1: Move character out of the canvas to the right
+  setTimeout(() => {
+    characterImage.style.right = "-150px"; // Move fully out of canvas (width + padding)
+  }, 0);
+
+  // Step 2: Change to the top-right outside the canvas
+  setTimeout(() => {
+    characterImage.style.transition = "none"; // Disable transition for instant position change
+    characterImage.style.bottom = ""; // Reset bottom property
+    characterImage.style.right = "-150px"; // Stay outside canvas on the right
+    characterImage.style.top = "20px"; // Move to top-right outside the canvas
+  }, 1000); // Match the duration of Step 1
+
+  // Step 3: Re-enter the canvas from the right side
+  setTimeout(() => {
+    characterImage.style.transition = "all 1s ease"; // Re-enable transition
+    characterImage.style.right = "20px"; // Move into the canvas from the right
+  }, 1100); // Slight delay after Step 2 for smooth animation
+}
+
 
 let fullscreenActivated = false;
 
-function mousePressed() {
+function mousePressed() {		
+  if (Totorial && TotorialComplete == false) {
+    Totorial = false;
+    showCharacterDialogue();
+    window.addEventListener("click", advanceDialogue);
+  } else if (TotorialComplete == "true") {
+	StartBarrier = false;  
+  }
+  if (StartBarrier) {
+    //backgroundMusic.loop();
+  }
   if (!fullscreenActivated && mouseX > 0 && mouseX < width && mouseY > 0 && mouseY < height) {
     let fs = fullscreen();
     fullscreen(!fs);
     fullscreenActivated = true; // Mark as activated
+  }
+}
 
-    setTimeout(() => {
-      windowResized(); //Recalculate positions after fullscreen is applied
-    }, 300);
+function showAchievement(achievementCode) {
+  // Ensure only one achievement is shown at a time
+  let existingAchievement = document.getElementById("achievement-popup");
+  if (existingAchievement) {
+    existingAchievement.remove();
+  }
+  
+  AC_SFX.setVolume(0.9);
+  AC_SFX.play();
+  
+  // Create the achievement container
+  let achievementContainer = document.createElement("div");
+  achievementContainer.id = "achievement-popup";
+  achievementContainer.style.position = "fixed";
+  achievementContainer.style.top = `${window.innerHeight * 0.85}px`;
+  achievementContainer.style.left = `${window.innerWidth * 0.95}px`;
+  achievementContainer.style.width = "300px"; // Adjusted for wider images
+  achievementContainer.style.height = "100px"; // Adjusted for banner format
+  achievementContainer.style.backgroundColor = "rgba(0, 0, 0, 0.8)";
+  achievementContainer.style.borderRadius = "10px";
+  achievementContainer.style.display = "flex";
+  achievementContainer.style.justifyContent = "center";
+  achievementContainer.style.alignItems = "center";
+  achievementContainer.style.zIndex = "10000";
+  achievementContainer.style.transition = "left 1s ease-in-out";
+
+  // Create the achievement image
+  let achievementImage = document.createElement("img");
+  achievementImage.src = `materials/images/achievements/${achievementCode}.png`;
+  achievementImage.style.width = "100%";
+  achievementImage.style.height = "100%";
+  //achievementImage.style.borderRadius = "10px";
+
+  // Append elements
+  achievementContainer.appendChild(achievementImage);
+  document.body.appendChild(achievementContainer);
+
+  // Animate the achievement popup
+  setTimeout(() => {
+    achievementContainer.style.left = `${window.innerWidth * 0.28}px`;
+  }, 100);
+
+  // Remove the achievement popup after 10 seconds
+  setTimeout(() => {
+    achievementContainer.remove();
+  }, 10000);
+}
+
+function keyPressed() {
+  // Check for the "`" key
+  if (key === '`') {
+    console.log("Backtick key pressed!");
+
+    // Ask the user for a code
+    const userCode = prompt("Enter a code:");
+
+    // Check the entered code and redirect the user
+    if (userCode === "SkipT") {
+      console.log("Code SkipT entered.");
+      localStorage.setItem('TotorialComplete_MiniGame3', true);
+	  location.reload();
+    } else if (userCode === "ResetT") {
+      console.log("Code ResetT entered.");
+      localStorage.removeItem('TotorialComplete_MiniGame3');
+	  location.reload();
+    } else if (userCode === "ClearAll") {
+      console.log("Code ClearAll entered.");
+      localStorage.clear();
+	  location.reload();
+    } else {
+      console.log("Invalid code.");
+    }
   }
 }

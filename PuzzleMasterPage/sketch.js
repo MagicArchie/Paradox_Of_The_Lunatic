@@ -147,6 +147,7 @@ function preload() {
   
   // Load background music
   backgroundMusic = loadSound('materials/sounds/Dark Piano Sociopath.mp3');
+  AC_SFX = loadSound('materials/sounds/AC_SFX.mp3');
   
   typingSounds.push(loadSound('materials/sounds/Type1.mp3'));
   typingSounds.push(loadSound('materials/sounds/Type2.mp3'));
@@ -459,6 +460,7 @@ function setup() {
 	  if (PMA2 == false) {
 		  console.log("Minigame Machine");
 		  localStorage.setItem('PMA2', true);
+		  showAchievement("PMA2");
 		  PMA2 = true;
 	  }
   }
@@ -470,6 +472,7 @@ function setup() {
   if (USB_Choice1 == "true" && PMA3 == false) {
 	  console.log("Glitch Contained?");
 	  localStorage.setItem('PMA3', true);
+	  showAchievement("PMA3");
 	  PMA3 = true;
   }
   
@@ -570,6 +573,7 @@ function TitBitEscape() {
 		if (PMA6 == false) {
 			console.log("Where did he go?");
 			localStorage.setItem('PMA6', true);
+			showAchievement("PMA6");
 			PMA6 = true;
 		}
     }
@@ -711,6 +715,7 @@ function updateCodesBasedOnMiniGames() {
 	if (PMA1 == false) {
 		console.log("Code Hoarder");
 		localStorage.setItem('PMA1', true);
+		showAchievement("PMA1");
 		PMA1 = true;
 	}
   }
@@ -1311,6 +1316,7 @@ function triggerReaction1() {
 	if (PMA4 == false) {
 		console.log("PROTOCOL UPDATE: DESTROY");
 		localStorage.setItem('PMA4', true);
+		showAchievement("PMA4");
 		PMA4 = true;
 	}
   });
@@ -1439,6 +1445,7 @@ function triggerBlackScreenMessages() {
 	if (PMA5 == false) {
 		console.log("Who turned out the lights?");
 		localStorage.setItem('PMA5', true);
+		showAchievement("PMA5");
 		PMA5 = true;
 	}
 
@@ -1484,8 +1491,53 @@ function restoreScreen() {
   StartBarrier = false;
 }
 
+function showAchievement(achievementCode) {
+  // Ensure only one achievement is shown at a time
+  let existingAchievement = document.getElementById("achievement-popup");
+  if (existingAchievement) {
+    existingAchievement.remove();
+  }
+  
+  AC_SFX.setVolume(0.9);
+  AC_SFX.play();
+  
+  // Create the achievement container
+  let achievementContainer = document.createElement("div");
+  achievementContainer.id = "achievement-popup";
+  achievementContainer.style.position = "fixed";
+  achievementContainer.style.top = `${window.innerHeight * 0.85}px`;
+  achievementContainer.style.left = `${window.innerWidth * 0.95}px`;
+  achievementContainer.style.width = "300px"; // Adjusted for wider images
+  achievementContainer.style.height = "100px"; // Adjusted for banner format
+  achievementContainer.style.backgroundColor = "rgba(0, 0, 0, 0.8)";
+  achievementContainer.style.borderRadius = "10px";
+  achievementContainer.style.display = "flex";
+  achievementContainer.style.justifyContent = "center";
+  achievementContainer.style.alignItems = "center";
+  achievementContainer.style.zIndex = "10000";
+  achievementContainer.style.transition = "left 1s ease-in-out";
 
+  // Create the achievement image
+  let achievementImage = document.createElement("img");
+  achievementImage.src = `materials/images/achievements/${achievementCode}.png`;
+  achievementImage.style.width = "100%";
+  achievementImage.style.height = "100%";
+  //achievementImage.style.borderRadius = "10px";
 
+  // Append elements
+  achievementContainer.appendChild(achievementImage);
+  document.body.appendChild(achievementContainer);
+
+  // Animate the achievement popup
+  setTimeout(() => {
+    achievementContainer.style.left = `${window.innerWidth * 0.28}px`;
+  }, 100);
+
+  // Remove the achievement popup after 10 seconds
+  setTimeout(() => {
+    achievementContainer.remove();
+  }, 10000);
+}
 
 function keyPressed() {
   // Check for the "`" key

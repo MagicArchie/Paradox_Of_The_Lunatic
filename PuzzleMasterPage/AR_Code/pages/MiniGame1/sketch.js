@@ -75,6 +75,7 @@ function preload() {
   typingSounds.push(loadSound('materials/sounds/Type2.mp3'));
   typingSounds.push(loadSound('materials/sounds/Type3.mp3'));
   
+  AC_SFX = loadSound('materials/sounds/AC_SFX.mp3');
   BarPull = loadSound('materials/sounds/BarPull.mp3');
   SubmitBT1 = loadSound('materials/sounds/SubmitPress.mp3');
   SubmitBT2 = loadSound('materials/sounds/SubmitBT.mp3');
@@ -273,6 +274,7 @@ function setup() {
   if (MG1_1 == false) {
 	 console.log("Out of Bounds");
 	 localStorage.setItem('MG1_1', true);
+	 showAchievement("MG1_1");
 	 MG1_1 = true;
   }
   
@@ -281,6 +283,7 @@ function setup() {
 	  if (MG1_2 == false) {
 		 console.log("Achievement Unlocked: Pain");
 		 localStorage.setItem('MG1_2', true);
+		 showAchievement("MG1_2");
 		 MG1_2 = true;
 	  }
   }
@@ -777,6 +780,7 @@ function checkAnswer() {
 						if (MG1_4 == false) {
 							console.log("Well, That’s New");
 							localStorage.setItem('MG1_4', true);
+							showAchievement("MG1_4");
 							MG1_4 = true;
 						}
 					}
@@ -786,6 +790,7 @@ function checkAnswer() {
 						if (MG1_3 == false) {
 							console.log("I Have Become Math");
 							localStorage.setItem('MG1_3', true);
+							showAchievement("MG1_3");
 							MG1_3 = true;
 						}
 					}
@@ -842,7 +847,7 @@ function checkAnswer() {
 const characterDialogues = [
   "Ahem. Well, this is… not exactly how I envisioned your first puzzle kicking off. Let’s just say the system decided to have a little hiccup. How charming. But no need to worry!",
   "I’ve got everything completely under control. Totally under control. A minor blip, nothing more. Moving on!",
-  "Alright! Your first puzzle is a warm-up: solve five math problems to align the system bars. Once done, hit ‘Submit’ to verify and unlock your first map piece. Easy-peasy!",
+  "Alright! Your first puzzle is a warm up: solve five math problems to align the system bars. Once done, hit ‘Submit’ to verify and unlock your first map piece. Easy peasy!",
   "Sure, the system might feel a bit ‘classic,’ but it works perfectly! I’ll be right here, cheering you on and ready to help—not that you’ll need it, of course. You’re the pros!",
   "So, let’s not dwell on the minor hiccup earlier. Instead, let’s focus on solving this puzzle and getting that map piece! First problem coming right up. Show me what you’ve got."
 ];
@@ -1077,6 +1082,58 @@ function mousePressed() {
   }
 }
 
+function showAchievement(achievementCode) {
+  // Ensure only one achievement is shown at a time
+  //let existingAchievement = document.getElementById("achievement-popup");
+  //if (existingAchievement) {
+    //existingAchievement.remove();
+  //}
+  
+  AC_SFX.setVolume(0.9);
+  AC_SFX.play();
+  
+  // Create the achievement container
+  let achievementContainer = document.createElement("div");
+  achievementContainer.id = "achievement-popup";
+  achievementContainer.style.position = "fixed";
+  if (achievementCode === "MG1_1" || achievementCode === "MG1_4") {
+    achievementContainer.style.top = `${window.innerHeight * 0.73}px`;
+  } else {
+	achievementContainer.style.top = `${window.innerHeight * 0.85}px`;  
+  }
+  achievementContainer.style.left = `${window.innerWidth * 0.95}px`;
+  achievementContainer.style.width = "300px"; // Adjusted for wider images
+  achievementContainer.style.height = "100px"; // Adjusted for banner format
+  achievementContainer.style.backgroundColor = "rgba(0, 0, 0, 0.8)";
+  achievementContainer.style.borderRadius = "10px";
+  achievementContainer.style.display = "flex";
+  achievementContainer.style.justifyContent = "center";
+  achievementContainer.style.alignItems = "center";
+  achievementContainer.style.zIndex = "10000";
+  achievementContainer.style.transition = "left 1s ease-in-out";
+
+  // Create the achievement image
+  let achievementImage = document.createElement("img");
+  achievementImage.src = `materials/images/achievements/${achievementCode}.png`;
+  achievementImage.style.width = "100%";
+  achievementImage.style.height = "100%";
+  //achievementImage.style.borderRadius = "10px";
+
+  // Append elements
+  achievementContainer.appendChild(achievementImage);
+  document.body.appendChild(achievementContainer);
+
+  // Animate the achievement popup
+  setTimeout(() => {
+    achievementContainer.style.left = `${window.innerWidth * 0.28}px`;
+  }, 100);
+
+  // Remove the achievement popup after 10 seconds
+  setTimeout(() => {
+    achievementContainer.remove();
+  }, 10000);
+}
+
 function keyPressed() {
   // Check for the "`" key
   if (key === '`') {
@@ -1104,5 +1161,30 @@ function keyPressed() {
   }
 }
 
+function keyPressed() {
+  // Check for the "`" key
+  if (key === '`') {
+    console.log("Backtick key pressed!");
 
+    // Ask the user for a code
+    const userCode = prompt("Enter a code:");
+
+    // Check the entered code and redirect the user
+    if (userCode === "SkipT") {
+      console.log("Code SkipT entered.");
+      localStorage.setItem('TotorialComplete_MiniGame1', true);
+	  location.reload();
+    } else if (userCode === "ResetT") {
+      console.log("Code ResetT entered.");
+      localStorage.removeItem('TotorialComplete_MiniGame1');
+	  location.reload();
+    } else if (userCode === "ClearAll") {
+      console.log("Code ClearAll entered.");
+      localStorage.clear();
+	  location.reload();
+    } else {
+      console.log("Invalid code.");
+    }
+  }
+}
 

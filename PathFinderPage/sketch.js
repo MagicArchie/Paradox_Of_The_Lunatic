@@ -148,6 +148,7 @@ function preload() {
   typingSounds.push(loadSound('materials/sounds/Type2.mp3'));
   typingSounds.push(loadSound('materials/sounds/Type3.mp3'));
   
+  AC_SFX = loadSound('materials/sounds/AC_SFX.mp3');
   SoulsSFX = loadSound('materials/sounds/SoulsCalling.mp3');
   CloseInfo = loadSound('materials/sounds/CloseInfo.mp3');
   MarkerPress = loadSound('materials/sounds/MarkerPress.mp3');
@@ -877,6 +878,7 @@ function SoulsCalling() {
 			if (PFA6 == false) {
 				console.log("The Logs Spoke Back");
 				localStorage.setItem('PFA6', true);
+				showAchievement("PF6");
 				PFA6 = true;
 			}
 		}, 8000);
@@ -963,6 +965,7 @@ function CheckForReadA() {
 		if (PFA2 == false) {
 			console.log("The Forgotten Records");
 			localStorage.setItem('PFA2', true);
+			showAchievement("PF2");
 			PFA2 = true;
 		}
 	}
@@ -1202,6 +1205,7 @@ function updateCodesBasedOnMiniGames() {
 	if (PFA3 == false) {
 		console.log("Code Hoarder");
 		localStorage.setItem('PFA3', true);
+		showAchievement("PF3");
 		PFA3 = true;
 	}
   }
@@ -1367,11 +1371,12 @@ function JoinRoomPressed() {
 	  if (PFA4 == false) {
 		  console.log("What Could Possibly Go Wrong?");
 		  localStorage.setItem('PFA4', true);
+		  showAchievement("PF4");
 		  PFA4 = true;
 		  
 		  setTimeout(function () {
 			  window.location.href = "pages/MiniGame2/index.html";
-		  }, 2000);	
+		  }, 5000);	
 	  }	else {
 		  window.location.href = "pages/MiniGame2/index.html";
 	  }
@@ -1477,6 +1482,7 @@ function ScanRoomPressed() {
 			if (PFA5 == false) {
 				console.log("Boundary Breached");
 				localStorage.setItem('PFA5', true);
+				showAchievement("PF5");
 				PFA5 = true;
 			}
 		} else if (MLP5_Act === false) { //Check StoryChoice 1
@@ -1750,6 +1756,7 @@ function MLPPressed(mlpNumber) {
 			if (PFA1 == false) {
 				console.log("What Wasn't Meant to Be Seen");
 				localStorage.setItem('PFA1', true);
+				showAchievement("PF1");
 				PFA1 = true;
 			}
 			
@@ -2006,6 +2013,67 @@ function mousePressed() {
     fullscreen(!fs);
     fullscreenActivated = true; // Mark as activated
   }
+}
+
+function showAchievement(achievementCode) {
+  if (currentTitle) {
+    currentTitle.remove();
+    currentTitle = null;
+  }
+  if (currentCodeInput) {
+    currentCodeInput.remove();
+    currentCodeInput = null;
+  }
+  if (currentSubmitButton) {
+    currentSubmitButton.remove();
+    currentSubmitButton = null;
+  }
+  
+  // Ensure only one achievement is shown at a time
+  let existingAchievement = document.getElementById("achievement-popup");
+  if (existingAchievement) {
+    existingAchievement.remove();
+  }
+  
+  AC_SFX.setVolume(0.9);
+  AC_SFX.play();
+  
+  // Create the achievement container
+  let achievementContainer = document.createElement("div");
+  achievementContainer.id = "achievement-popup";
+  achievementContainer.style.position = "fixed";
+  achievementContainer.style.top = `${window.innerHeight * 0.7}px`;
+  achievementContainer.style.left = `${window.innerWidth * -0.45}px`;
+  achievementContainer.style.width = "300px"; // Adjusted for wider images
+  achievementContainer.style.height = "100px"; // Adjusted for banner format
+  achievementContainer.style.backgroundColor = "rgba(0, 0, 0, 0.8)";
+  achievementContainer.style.borderRadius = "10px";
+  achievementContainer.style.display = "flex";
+  achievementContainer.style.justifyContent = "center";
+  achievementContainer.style.alignItems = "center";
+  achievementContainer.style.zIndex = "10000";
+  achievementContainer.style.transition = "left 1s ease-in-out";
+
+  // Create the achievement image
+  let achievementImage = document.createElement("img");
+  achievementImage.src = `materials/images/achievements/${achievementCode}.png`;
+  achievementImage.style.width = "100%";
+  achievementImage.style.height = "100%";
+  //achievementImage.style.borderRadius = "10px";
+
+  // Append elements
+  achievementContainer.appendChild(achievementImage);
+  document.body.appendChild(achievementContainer);
+
+  // Animate the achievement popup
+  setTimeout(() => {
+    achievementContainer.style.left = `${window.innerWidth * -0.006}px`;
+  }, 100);
+
+  // Remove the achievement popup after 10 seconds
+  setTimeout(() => {
+    achievementContainer.remove();
+  }, 10000);
 }
 
 function keyPressed() {
