@@ -420,6 +420,17 @@ document.head.appendChild(customStyleElement);
   TitBit_Point5.position(Arrow_X3, Arrow_Y5);
   TitBit_Point5.hide();
   
+  EndingIMG = createImg('materials/images/Ending1_PF.png', 'Ending Image');
+  EndingIMG.size(width, height);
+  EndingIMG.position(0, 0);
+  //EndingIMG.mousePressed();
+  EndingIMG.hide();
+  
+  ToBeContinued = createImg('materials/images/ToBeContinued_PF.png', 'Ending Image');
+  ToBeContinued.size(width, height);
+  ToBeContinued.position(0, 0);
+  //ToBeContinued.mousePressed();
+  ToBeContinued.hide();
   
   // Check and restore MLP state
   if (localStorage.getItem('MLP1_Act') === 'true') {
@@ -1101,6 +1112,12 @@ function windowResized() {
   
   TitBit_Point5.size(Arrow_H, Arrow_W);
   TitBit_Point5.position(Arrow_X3, Arrow_Y5);
+  
+  EndingIMG.size(width, height);
+  EndingIMG.position(0, 0);
+  
+  ToBeContinued.size(width, height);
+  ToBeContinued.position(0, 0);
 }
 
 function MenuPressed1() {
@@ -1388,8 +1405,26 @@ function JoinRoomPressed() {
       //window.location.href = "folder5/index.html";
     } else if (enteredCode === "00-00-06") {
       //window.location.href = "folder6/index.html";
-	} else if (enteredCode === "00-00-00") {
-      localStorage.clear();
+	} else if (enteredCode === "00-10-00") {
+      EndingIMG.show();
+	  
+	  //Hide JoinRoom stuff
+	  if (currentJoinRoomInput && currentJoinRoomSubmitButton) {
+			currentJoinRoomInput.remove();
+			currentJoinRoomSubmitButton.remove();
+			currentJoinRoomInput = null;
+			currentJoinRoomSubmitButton = null;
+	  }
+	} else if (enteredCode === "00-20-00") {
+	  ToBeContinued.show();
+	  
+	  //Hide JoinRoom stuff
+	  if (currentJoinRoomInput && currentJoinRoomSubmitButton) {
+			currentJoinRoomInput.remove();
+			currentJoinRoomSubmitButton.remove();
+			currentJoinRoomInput = null;
+			currentJoinRoomSubmitButton = null;
+	  }	
     } else {
       console.log("Invalid codec or Not Active yet. Please try again.");
     }

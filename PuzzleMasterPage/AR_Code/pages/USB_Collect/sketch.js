@@ -36,6 +36,18 @@ function setup() {
   ChoiceBT2.mousePressed(Choice2);
   //ChoiceBT2.hide();
   
+  EndingIMG = createImg('materials/images/Ending1_PM.png', 'Ending Image');
+  EndingIMG.size(width, height);
+  EndingIMG.position(0, 0);
+  //EndingIMG.mousePressed();
+  EndingIMG.hide();
+  
+  ToBeContinued = createImg('materials/images/ToBeContinued_PM.png', 'Ending Image');
+  ToBeContinued.size(width, height);
+  ToBeContinued.position(0, 0);
+  //ToBeContinued.mousePressed();
+  ToBeContinued.hide();
+  
   // Check if the value exists
   if (DifficultySL) {
     console.log('Difficulty Level Selected:', DifficultySL);
@@ -90,6 +102,12 @@ function windowResized() {
   ChoiceBT2.size(BT_W2, BT_H);
   ChoiceBT2.position(width / 2 - BT_W2 / 2, height * 0.845);
   
+  EndingIMG.size(width, height);
+  EndingIMG.position(0, 0);
+  
+  ToBeContinued.size(width, height);
+  ToBeContinued.position(0, 0);
+  
   // Ensure background image scales correctly
   image(BackgroundIMG, 0, 0, width, height);
 }
@@ -104,7 +122,12 @@ function Choice1() {
 		ChoiceBT1.attribute("src", "materials/images/buttons/Choice1_BT.png");
     }, 400);
 	setTimeout(function () {
-		window.location.href = "../../../index.html";
+		//window.location.href = "../../../index.html";
+		
+		//To be Continued
+		console.log("To be Continued")
+		ToBeContinued.show();
+		
     }, 1000);
 }
 
@@ -125,31 +148,7 @@ function Choice2() {
 }
 
 function showEndingScreen() {
-    // Create a black rectangle
-    const blackRect = document.createElement('div');
-    blackRect.style.position = 'fixed';
-    blackRect.style.top = '0';
-    blackRect.style.left = '0';
-    blackRect.style.width = '100%';
-    blackRect.style.height = '100%';
-    blackRect.style.backgroundColor = 'black';
-    blackRect.style.display = 'flex';
-    blackRect.style.justifyContent = 'center';
-    blackRect.style.alignItems = 'center';
-    blackRect.style.zIndex = '1000'; // Ensure it overlays other elements
-
-    // Create the text element
-    const textElement = document.createElement('div');
-    textElement.textContent = 'Ending 1';
-    textElement.style.color = 'white';
-    textElement.style.fontSize = '8rem';
-    textElement.style.fontFamily = 'Arial, sans-serif';
-
-    // Append the text to the rectangle
-    blackRect.appendChild(textElement);
-
-    // Append the rectangle to the body
-    document.body.appendChild(blackRect);
+    EndingIMG.show();
 }
 
 let fullscreenActivated = false;
