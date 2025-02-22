@@ -926,7 +926,7 @@ function keyPressed() {
     // Check the entered code and redirect the user
     if (userCode === "SkipT") {
       console.log("Code SkipT entered.");
-      localStorage.setItem('TotorialComplete_MiniGame3' true);
+      localStorage.setItem('TotorialComplete_MiniGame3', true);
 	  location.reload();
     } else if (userCode === "ResetT") {
       console.log("Code ResetT entered.");
