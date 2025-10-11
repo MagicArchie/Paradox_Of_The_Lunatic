@@ -30,7 +30,7 @@ let typingSounds = [];
 
 // Array to store the initial codes and their replacements
 let codes2 = ["????", "????", "????", "????", "????", "????"];
-let replacementCodes1 = ["2468", "XX57", "X0X5", "XXXX", "4321", "1984"];
+let replacementCodes1 = ["2468", "1X5X", "X0X5", "XXXX", "4321", "1984"];
 let replacementCodes2 = ["2468", "1357", "2025", "1999", "4321", "1984"];
 
 // Variable to track if the inventory is currently visible
@@ -498,7 +498,7 @@ function setup() {
   
   // Play background music on loop
   backgroundMusic.loop();
-  backgroundMusic.setVolume(0.4); // Adjust volume if needed
+  backgroundMusic.setVolume(0.2); // Adjust volume if needed
 }
 
 function draw() {
@@ -1017,6 +1017,7 @@ function showCharacterDialogue() {
 			characterImage.setAttribute("src", "materials/images/TitBit/TitBitV1.png");
 		}, 700)
       }
+	  
       break;
     default:
       // No image for other dialogues
@@ -1065,6 +1066,10 @@ function advanceDialogue() {
 		
 		console.log('Totorial Completed!');
 		localStorage.setItem('TotorialComplete_PuzzleMaster', true);
+		
+		setTimeout(() => {
+			location.reload();
+        }, 2000); 
       }
       window.removeEventListener("click", advanceDialogue);
     }
