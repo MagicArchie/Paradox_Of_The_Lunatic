@@ -38,7 +38,7 @@ let backgroundMusic;
   
   // Array to store the initial codes and their replacements
   let codes2 = ["????", "????", "????", "????", "????", "????"];
-  let replacementCodes1 = ["XXXX", "13XX", "2X2X", "XXXX", "4321", "1984"];
+  let replacementCodes1 = ["XXXX", "X3X7", "2X2X", "XXXX", "4321", "1984"];
   let replacementCodes2 = ["2468", "1357", "2025", "1999", "4321", "1984"];
   
   // Variable to track if the inventory is currently visible
@@ -708,7 +708,7 @@ document.head.appendChild(customStyleElement);
   
   // Play background music on loop
   backgroundMusic.loop();
-  backgroundMusic.setVolume(0.4); // Adjust volume if needed
+  backgroundMusic.setVolume(0.2); // Adjust volume if needed
 }
 
 function draw() {
@@ -2024,6 +2024,10 @@ function advanceDialogue() {
 		
 		console.log('Totorial Completed!');
 		localStorage.setItem('TotorialComplete_PathFinder', true);
+		
+		setTimeout(() => {
+			location.reload();
+        }, 2000); 
       }
       window.removeEventListener("click", advanceDialogue);
     }
