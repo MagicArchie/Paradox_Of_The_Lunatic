@@ -462,7 +462,7 @@ function setup() {
 
   // Play background music on loop
   backgroundMS.loop();
-  backgroundMS.setVolume(0.4);
+  backgroundMS.setVolume(0.2);
   
   windowResized();
 }
@@ -1288,7 +1288,7 @@ function PlayBTPressed() {
 		
 	  }, 12750);
 	  setTimeout(function () {
-		backgroundMS.setVolume(0.4);  
+		backgroundMS.setVolume(0.2);  
 		CheckMusicSpam();
 	  }, 13750);
 	}
@@ -1464,6 +1464,10 @@ function advanceDialogue() {
 		
 		console.log('Totorial Completed!');
 		localStorage.setItem('TotorialComplete_MiniGame2', true);
+		
+		setTimeout(() => {
+			location.reload();
+        }, 2000); 
       }
       window.removeEventListener("click", advanceDialogue);
     }
