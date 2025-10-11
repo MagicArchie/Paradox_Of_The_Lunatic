@@ -210,23 +210,23 @@ function setup() {
   T15.hide();
   
   //Final Guess BT
-  BT1_1 = createImg('materials/images/buttons/GBT0.png', 'Answer 1');
+  BT1_1 = createImg('materials/images/buttons/GBT2.png', 'Answer 1');
   BT1_1.size(BT_WH, BT_WH);
   BT1_1.position(BTX1, BTY1);
   BT1_1.hide();
-  BT1_1.mousePressed(BT1_1Pressed);
+  //BT1_1.mousePressed(BT1_1Pressed);
   
-  BT1_2 = createImg('materials/images/buttons/GBT0.png', 'Answer 2');
+  BT1_2 = createImg('materials/images/buttons/GBT2.png', 'Answer 2');
   BT1_2.size(BT_WH, BT_WH);
   BT1_2.position(BTX1, BTY2);
   BT1_2.hide();
-  BT1_2.mousePressed(BT1_2Pressed);
+  //BT1_2.mousePressed(BT1_2Pressed);
   
-  BT1_3 = createImg('materials/images/buttons/GBT0.png', 'Answer 3');
+  BT1_3 = createImg('materials/images/buttons/GBT2.png', 'Answer 3');
   BT1_3.size(BT_WH, BT_WH);
   BT1_3.position(BTX1, BTY3);
   BT1_3.hide();
-  BT1_3.mousePressed(BT1_3Pressed);
+  //BT1_3.mousePressed(BT1_3Pressed);
   
   BT1_4 = createImg('materials/images/buttons/GBT0.png', 'Answer 4');
   BT1_4.size(BT_WH, BT_WH);
@@ -300,23 +300,23 @@ function setup() {
   BT1_15.hide();
   BT1_15.mousePressed(BT1_15Pressed);
   
-  BT2_1 = createImg('materials/images/buttons/GBT0.png', 'Answer 1');
+  BT2_1 = createImg('materials/images/buttons/GBT2.png', 'Answer 1');
   BT2_1.size(BT_WH, BT_WH);
   BT2_1.position(BTX2, BTY1);
   BT2_1.hide();
-  BT2_1.mousePressed(BT2_1Pressed);
+  //BT2_1.mousePressed(BT2_1Pressed);
   
-  BT2_2 = createImg('materials/images/buttons/GBT0.png', 'Answer 2');
+  BT2_2 = createImg('materials/images/buttons/GBT2.png', 'Answer 2');
   BT2_2.size(BT_WH, BT_WH);
   BT2_2.position(BTX2, BTY2);
   BT2_2.hide();
-  BT2_2.mousePressed(BT2_2Pressed);
+  //BT2_2.mousePressed(BT2_2Pressed);
   
-  BT2_3 = createImg('materials/images/buttons/GBT0.png', 'Answer 3');
+  BT2_3 = createImg('materials/images/buttons/GBT2.png', 'Answer 3');
   BT2_3.size(BT_WH, BT_WH);
   BT2_3.position(BTX2, BTY3);
   BT2_3.hide();
-  BT2_3.mousePressed(BT2_3Pressed);
+  //BT2_3.mousePressed(BT2_3Pressed);
   
   BT2_4 = createImg('materials/images/buttons/GBT0.png', 'Answer 4');
   BT2_4.size(BT_WH, BT_WH);
@@ -453,7 +453,7 @@ function setup() {
 
   // Play background music on loop
   backgroundMS.loop();
-  backgroundMS.setVolume(0.4);
+  backgroundMS.setVolume(0.2);
   
   windowResized();
 }
@@ -1285,7 +1285,7 @@ function PlayBTPressed() {
 		T15.hide();
 	  }, 12985);
 	  setTimeout(function () {
-		backgroundMS.setVolume(0.4);
+		backgroundMS.setVolume(0.2);
 		CheckMusicSpam();
 	  }, 13985);
 	}
@@ -1450,6 +1450,10 @@ function advanceDialogue() {
 		
 		console.log('Totorial Completed!');
 		localStorage.setItem('TotorialComplete_MiniGame2', true);
+		
+		setTimeout(() => {
+			location.reload();
+        }, 2000); 
       }
       window.removeEventListener("click", advanceDialogue);
     }
