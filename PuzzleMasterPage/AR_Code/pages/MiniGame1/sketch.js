@@ -24,7 +24,7 @@ let MathProgress = 0;
 let BarPulled = 0;
 let CodeLocked = true;
 
-let AdminTester = true;
+let AdminTester = false;
 
 // Array of math problems
 const mathProblems = [
@@ -289,7 +289,7 @@ function setup() {
   }
   
   BG_Music.loop();
-  BG_Music.setVolume(0.1);
+  BG_Music.setVolume(0.04);
 }
 
 function draw() {
@@ -1187,4 +1187,3 @@ function keyPressed() {
     }
   }
 }
-
