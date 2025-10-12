@@ -1045,6 +1045,10 @@ function advanceDialogue() {
 	  console.log('Totorial Completed!');
 	  localStorage.setItem('TotorialComplete_MiniGame1', true);
 	  unlockInputBox();
+
+	  setTimeout(() => {
+		 location.reload();
+      }, 2000); 
     }
   }
 }
@@ -1064,7 +1068,7 @@ function mousePressed() {
     StartBarrier = false; // Remove the starting barrier if the tutorial is completed
   } else if (TotorialComplete == "true"){
 	StartBarrier = false; 
-    unlockInputBox();	
+    unlockInputBox();
   }
 
   // Check if the starting barrier is active
